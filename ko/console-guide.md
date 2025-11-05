@@ -1,4 +1,4 @@
-# Management > Private CA > 콘솔 사용 가이드 > 시작하기
+# Management > Private CA > 콘솔 사용 가이드
 시작하기에서는 Private CA를 사용하는 데 필요한 기본적인 내용을 설명합니다.
 
 Private CA 콘솔은 인증 기관(Certificate Authority, CA)을 중심으로 구성되어 있으며, 모든 리소스(인증서 템플릿, 발급자, 인증서, ACME 토큰)는 특정 저장소에 속합니다. 콘솔 화면은 왼쪽에 저장소 목록, 오른쪽에 선택한 저장소의 상세 정보를 표시하는 탭 구조로 되어 있습니다.
@@ -435,16 +435,7 @@ ACME 관리 탭에서는 생성된 모든 ACME 토큰을 테이블 형태로 확
 
 ### ACME 클라이언트 설정 예시
 
-생성된 ACME 토큰을 certbot과 함께 사용하는 예시입니다.
-
-```bash
-certbot certonly \
-  --server https://your-pca-server/acme/directory \
-  --eab-kid YOUR_ACME_TOKEN_ID \
-  --eab-hmac-key YOUR_ACME_HMAC_KEY \
-  -d example.com \
-  -d www.example.com
-```
+[ACME를 이용한 인증서 갱신](./acme-guide.md) 페이지를 참고하여 작성합니다.
 
 ### ACME 토큰 삭제
 
