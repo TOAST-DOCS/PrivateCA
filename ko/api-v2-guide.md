@@ -57,7 +57,7 @@ GET /appkeys/{appkey}/cas/{caId}/certs/{certId}/download
 
 ```sh
 curl -X GET "https://pca.api.nhncloudservice.com/appkeys/my-appkey/cas/1/certs/100/download" \
-  -H "Authorization: Bearer {access_token}"
+  -H "X-NHN-Authorization: Bearer {access_token}"
 ```
 </details>
 
@@ -202,7 +202,7 @@ GET /appkeys/{appkey}/cas/{caId}/certs/{signedCertificateId}/crl/pem
 
 ```sh
 curl -X GET "https://pca.api.nhncloudservice.com/appkeys/my-appkey/cas/1/certs/100/crl/pem" \
-  -H "Authorization: Bearer {access_token}" \
+  -H "X-NHN-Authorization: Bearer {access_token}" \
   -o crl.pem
 ```
 </details>
@@ -245,7 +245,7 @@ POST /appkeys/{appkey}/cas/{caId}/certs/{signedCertificateId}/crl
 
 ```sh
 curl -X POST "https://pca.api.nhncloudservice.com/appkeys/my-appkey/cas/1/certs/100/crl" \
-  -H "Authorization: Bearer {access_token}"
+  -H "X-NHN-Authorization: Bearer {access_token}"
 ```
 </details>
 
