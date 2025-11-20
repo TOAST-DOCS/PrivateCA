@@ -15,7 +15,7 @@ Private CA는 조직 내부에서 사용하는 인증서를 직접 발급하고 
 
 ### 인증서 폐기 관리
 - CRL(Certificate Revocation List)을 통해 폐기된 인증서 목록을 주기적으로 제공합니다.
-- OCSP(Online Certificate Status Protocol)를 통해 실시간으로 인증서 폐기 상태를 확인할 수 있습니다.
+- OCSP(Online Certificate Status Protocol)를 통해 인증서 상태를 확인할 수 있습니다.
 - 인증서 폐기 이력을 추적하고 감사할 수 있습니다.
 
 ### API 지원

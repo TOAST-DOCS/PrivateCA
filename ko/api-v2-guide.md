@@ -106,11 +106,13 @@ MIIDXTCCAkWgAwIBAgIJAKJ...
 
 ## CRL API
 
-CRL(Certificate Revocation List)은 폐기된 인증서 목록을 제공하는 메커니즘입니다. 클라이언트는 CRL을 다운로드하여 인증서가 폐기되었는지 확인할 수 있습니다.
+CRL(Certificate Revocation List)은 폐기된 인증서 목록을 제공하는 메커니즘입니다.
+클라이언트는 CRL을 다운로드하여 인증서가 폐기되었는지 확인할 수 있습니다.
 
 ### CRL 정보 조회
 
-특정 인증서의 CRL 정보를 조회합니다.
+발급자(issuerCertId)의 CRL을 조회합니다. 발급자의 CRL은 발급자가 서명한 인증서의 폐기 목록을 제공합니다.
+
 
 #### 요청
 
@@ -288,7 +290,7 @@ curl -X POST "https://pca.api.nhncloudservice.com/appkeys/my-appkey/cas/1/certs/
 
 ## OCSP API
 
-OCSP(Online Certificate Status Protocol)는 인증서의 폐기 상태를 실시간으로 확인할 수 있는 프로토콜입니다. CRL과 달리 개별 인증서의 상태를 즉시 조회할 수 있습니다.
+OCSP(Online Certificate Status Protocol)는 인증서의 폐기 상태를 확인할 수 있는 프로토콜입니다.
 
 ### OCSP 상태 조회 (GET)
 
@@ -403,7 +405,7 @@ OCSP 응답 (DER 형식)
 | 캐싱 | 가능 (nextUpdate까지) | 제한적 |
 | 프라이버시 | 높음 (특정 인증서 노출 안됨) | 낮음 (조회하는 인증서 노출) |
 | 오프라인 검증 | 가능 | 불가능 |
-| 권장 사용 | 배치 검증, 오프라인 환경 | 실시간 검증, 온라인 환경 |
+| 권장 사용 | 배치 검증, 오프라인 환경 | 인증서 상태 검증, 온라인 환경 |
 
 ## 문제 해결
 
@@ -412,6 +414,9 @@ OCSP 응답 (DER 형식)
 1. 콘솔의 저장소 상세정보에서 CRL이 활성화 되었는지 확인합니다.
 2. 수동 갱신 API를 호출하여 즉시 갱신합니다.
 3. CRL 갱신 주기(`crlRefreshPeriod`)를 확인하고 조정합니다.
+
+### OCSP의 응답 결과가 인증서 상태와 다를 경우
+1. OCSP 갱신 주기(`ocspRefreshPeriod`)를 확인하고 조정합니다.
 
 ### OCSP 응답이 없는 경우
 
