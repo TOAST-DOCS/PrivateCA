@@ -219,7 +219,6 @@ renew_before_expiry = 30 days
 
 1. **Renewal 설정 확인**: `/etc/letsencrypt/renewal/<도메인>.conf` 파일이 존재하고 올바른지 확인합니다.
 2. **Hook 스크립트 존재 확인**: `manual-auth-hook`으로 지정한 스크립트가 여전히 존재하는지 확인합니다.
-3. **수동 갱신 테스트**: `certbot renew --dry-run`으로 실제 갱신 없이 테스트를 수행합니다.
 
 ## ACME 프로토콜 정보
 

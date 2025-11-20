@@ -1,11 +1,25 @@
 # Management > Private CA > API v2.0 가이드
 NHN Cloud Private CA API를 사용하여 인증서를 프로그래밍 방식으로 관리할 수 있습니다.
 
-## API Endpoint
+## 기본 정보
+
+### API Endpoint
 
 | 리전 | 엔드포인트 |
 | --- | --- |
 | KR1 | https://pca.api.nhncloudservice.com |
+
+### API 목록
+
+| Method | URI | 설명 |
+|--------|-----|------|
+| GET | /appkeys/{appkey}/cas/{caId}/certs/{certId}/download | PEM 형식의 인증서를 다운로드합니다. |
+| GET | /appkeys/{appkey}/cas/{caId}/certs/{issuerCertId}/crl | CRL 정보(PEM, 발행/갱신 시간)를 조회합니다. |
+| GET | /appkeys/{appkey}/cas/{caId}/certs/{issuerCertId}/crl/der | DER 형식의 CRL을 다운로드합니다. |
+| GET | /appkeys/{appkey}/cas/{caId}/certs/{issuerCertId}/crl/pem | PEM 형식의 CRL을 다운로드합니다. |
+| POST | /appkeys/{appkey}/cas/{caId}/certs/{issuerCertId}/crl | CRL을 수동으로 갱신합니다. |
+| GET | /appkeys/{appkey}/cas/{caId}/ocsp/{ocspRequestBase64} | Base64 인코딩된 OCSP 요청으로 인증서 상태를 조회합니다. |
+| POST | /appkeys/{appkey}/cas/{caId}/ocsp | DER 형식의 OCSP 요청으로 인증서 상태를 조회합니다. |
 
 ## 사전 준비
 
@@ -20,6 +34,14 @@ X-NHN-Authorization: Bearer {access_token}
 !!! tip "알아두기"
     - 인증 헤더에 필요한 인증 토큰에 대한 자세한 사항은 [여기](https://docs.nhncloud.com/ko/nhncloud/ko/public-api/api-authentication/)에서 자세히 확인하실 수 있습니다.
     - 앱키(appkey)는 콘솔에서 확인할 수 있으며, 모든 API 경로에 포함되어야 합니다.
+
+### 권한 관리
+
+Private CA API는 역할 기반 접근 제어(RBAC)를 사용하며, 다음과 같이 구분됩니다.
+
+- **VIEWER**: 인증서 다운로드, CRL 조회 등 읽기 작업만 수행할 수 있습니다.
+- **ADMIN**: CRL 수동 갱신 등 모든 관리 작업을 수행할 수 있습니다.
+- **공개 엔드포인트**: CRL 다운로드(DER/PEM)와 OCSP API는 인증서 검증을 위해 인증 없이 접근 가능합니다.
 
 ### 인증서 형식
 
@@ -93,7 +115,7 @@ CRL(Certificate Revocation List)은 폐기된 인증서 목록을 제공하는 �
 #### 요청
 
 ```
-GET /appkeys/{appkey}/cas/{caId}/certs/{signedCertificateId}/crl
+GET /appkeys/{appkey}/cas/{caId}/certs/{issuerCertId}/crl
 ```
 
 **Path Parameters**
@@ -102,7 +124,7 @@ GET /appkeys/{appkey}/cas/{caId}/certs/{signedCertificateId}/crl
 |------|------|------|------|
 | appkey | String | Y | 앱키 |
 | caId | Long | Y | 저장소 ID |
-| signedCertificateId | Long | Y | 서명된 인증서 ID |
+| issuerCertId | Long | Y | 발급자 인증서 ID |
 
 **필요 권한**
 
@@ -140,7 +162,7 @@ CRL을 DER(바이너리) 형식으로 다운로드합니다.
 #### 요청
 
 ```
-GET /appkeys/{appkey}/cas/{caId}/certs/{signedCertificateId}/crl/der
+GET /appkeys/{appkey}/cas/{caId}/certs/{issuerCertId}/crl/der
 ```
 
 **Path Parameters**
@@ -149,7 +171,7 @@ GET /appkeys/{appkey}/cas/{caId}/certs/{signedCertificateId}/crl/der
 |------|------|------|------|
 | appkey | String | Y | 앱키 |
 | caId | Long | Y | 저장소 ID |
-| signedCertificateId | Long | Y | 서명된 인증서 ID |
+| issuerCertId | Long | Y | 발급자 인증서 ID |
 
 **필요 권한**
 
@@ -169,7 +191,7 @@ curl -X GET "https://pca.api.nhncloudservice.com/appkeys/my-appkey/cas/1/certs/1
 **Response Headers**
 
 - Content-Type: `application/pkix-crl`
-- Content-Disposition: `attachment; filename=crl_{caId}_{signedCertificateId}.crl`
+- Content-Disposition: `attachment; filename=crl_{caId}_{certId}.crl`
 
 **Response Body**
 
@@ -182,7 +204,7 @@ CRL을 PEM 형식으로 다운로드합니다.
 #### 요청
 
 ```
-GET /appkeys/{appkey}/cas/{caId}/certs/{signedCertificateId}/crl/pem
+GET /appkeys/{appkey}/cas/{caId}/certs/{issuerCertId}/crl/pem
 ```
 
 **Path Parameters**
@@ -191,11 +213,11 @@ GET /appkeys/{appkey}/cas/{caId}/certs/{signedCertificateId}/crl/pem
 |------|------|------|------|
 | appkey | String | Y | 앱키 |
 | caId | Long | Y | 저장소 ID |
-| signedCertificateId | Long | Y | 서명된 인증서 ID |
+| issuerCertId | Long | Y | 발급자 인증서 ID |
 
 **필요 권한**
 
-- `VIEWER` 이상
+- 권한 체크 없음 (공개 엔드포인트)
 
 <details>
 <summary>요청 예시</summary>
@@ -212,7 +234,7 @@ curl -X GET "https://pca.api.nhncloudservice.com/appkeys/my-appkey/cas/1/certs/1
 **Response Headers**
 
 - Content-Type: `application/pkix-crl`
-- Content-Disposition: `attachment; filename=crl_{caId}_{signedCertificateId}.pem`
+- Content-Disposition: `attachment; filename=crl_{caId}_{certId}.pem`
 
 **Response Body**
 
@@ -225,7 +247,7 @@ CRL을 수동으로 갱신합니다.
 #### 요청
 
 ```
-POST /appkeys/{appkey}/cas/{caId}/certs/{signedCertificateId}/crl
+POST /appkeys/{appkey}/cas/{caId}/certs/{issuerCertId}/crl
 ```
 
 **Path Parameters**
@@ -234,7 +256,7 @@ POST /appkeys/{appkey}/cas/{caId}/certs/{signedCertificateId}/crl
 |------|------|------|------|
 | appkey | String | Y | 앱키 |
 | caId | Long | Y | 저장소 ID |
-| signedCertificateId | Long | Y | 서명된 인증서 ID |
+| issuerCertId | Long | Y | 발급자 인증서 ID |
 
 **필요 권한**
 
@@ -382,59 +404,6 @@ OCSP 응답 (DER 형식)
 | 프라이버시 | 높음 (특정 인증서 노출 안됨) | 낮음 (조회하는 인증서 노출) |
 | 오프라인 검증 | 가능 | 불가능 |
 | 권장 사용 | 배치 검증, 오프라인 환경 | 실시간 검증, 온라인 환경 |
-
-### 인증서에서 CRL/OCSP URL 확인
-
-인증서 조회 API를 통해 해당 인증서의 CRL 및 OCSP 서버 URL을 확인할 수 있습니다.
-
-#### 요청
-
-```
-GET /appkeys/my-appkey/cas/1/certs/100
-```
-
-#### 응답
-
-```json
-{
-  "header": {
-    "resultCode": 0,
-    "resultMessage": "SUCCESS",
-    "isSuccessful": true
-  },
-  "body": {
-    "certificateId": 100,
-    "name": "My Certificate",
-    "commonName": "example.com",
-    "serialNumber": "1A2B3C4D",
-    ...
-    "crlUrl": "https://pca.api.nhncloudservice.com/appkeys/my-appkey/cas/1/certs/100/crl/der",
-    "ocspUrl": "https://pca.api.nhncloudservice.com/appkeys/my-appkey/cas/1/ocsp"
-  }
-}
-```
-
-!!! tip "알아두기"
-    이 URL들은 인증서에 포함되는 Extension 정보로, 클라이언트가 인증서 검증 시 자동으로 참조합니다.
-
-## 보안 고려사항
-
-### 권한 관리
-
-- **설정 조회**: `VIEWER` 이상의 권한이 필요합니다.
-- **설정 수정**: `ADMIN` 권한이 필요합니다.
-- **CRL/OCSP 조회**: 공개 엔드포인트로 인증이 불필요합니다.
-
-### CRL 보안
-
-- CRL 파일은 공개 정보이므로 인증 없이 접근 가능합니다 (DER 형식).
-- CRL 갱신 주기를 적절히 설정하여 최신 폐기 정보가 반영되도록 해야 합니다.
-- 큰 CRL 파일은 네트워크 및 클라이언트 성능에 영향을 줄 수 있습니다.
-
-### OCSP 보안
-
-- OCSP 요청/응답은 공개 엔드포인트로 제공됩니다.
-- OCSP 응답은 디지털 서명되어 있어 무결성이 보장됩니다.
 
 ## 문제 해결
 
