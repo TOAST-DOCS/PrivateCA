@@ -112,7 +112,7 @@ ACME 정보 하단에는 저장소 상세 정보가 표시됩니다.
 ### 발급자 유형 선택 가이드
 
 - **Root CA만 사용하는 경우**: 소규모 조직 내부용 인증서 발급
-- **Root CA + Intermediate CA 사용하는 경우**:
+- **Root CA + Intermediate CA 사용하는 경우**
   - Root CA의 개인키를 안전하게 보관하고 싶을 때
   - 여러 부서/프로젝트별로 별도의 CA를 운영하고 싶을 때
   - 보안 모범 사례를 따르고 싶을 때 (권장)
@@ -161,10 +161,10 @@ ACME 정보 하단에는 저장소 상세 정보가 표시됩니다.
 
   - SAN (Subject Alternative Name) 설정
     - **SAN에서 일반 이름 제외**: SAN 목록에서 일반 이름(CN)을 자동으로 제외할지 여부를 선택합니다.
-    - **주체(식별자) 시리얼 번호**: 주체의 고유 시리얼 번호를 입력합니다.
-    - **주체(식별자) 대체 이름 (SANs)**: 도메인 형식의 추가 식별 이름 (예: example.com, sub.example.com)
-    - **IP 주체(식별자) 대체 이름 (IP SANs)**: IP 주소 형식의 추가 식별 이름 (예: 192.168.1.1, 10.0.0.1)
-    - **URI 주체(식별자) 대체 이름 (URI SANs)**: URI 형식의 추가 식별 이름 (예: https://example.com, spiffe://example.org)
+    - **주체 시리얼 번호**: 주체의 고유 시리얼 번호를 입력합니다.
+    - **주체 대체 이름 (SANs)**: 도메인 형식의 추가 식별 이름 (예: example.com, sub.example.com)
+    - **IP 주체 대체 이름 (IP SANs)**: IP 주소 형식의 추가 식별 이름 (예: 192.168.1.1, 10.0.0.1)
+    - **URI 주체 대체 이름 (URI SANs)**: URI 형식의 추가 식별 이름 (예: https://example.com, spiffe://example.org)
     - **기타 SANs**: 기타 형식의 SAN (예: 1.2.3.4;UTF8:test@example.com)
 
   - 주체 정보 (Subject)
@@ -251,7 +251,7 @@ ACME 정보 하단에는 저장소 상세 정보가 표시됩니다.
 
     - SAN 옵션
       - **IP SANs 허용**: IP 주소를 SAN에 포함할 수 있도록 허용합니다.
-      - **URI 주체(식별자) 대체 이름 (URI SANs)**: URI 형식의 SAN을 입력합니다. (예: https://example.com, spiffe://example.org)
+      - **URI 주체 대체 이름 (URI SANs)**: URI 형식의 SAN을 입력합니다. (예: https://example.com, spiffe://example.org)
       - **기타 SANs**: 기타 형식의 SAN을 입력합니다. (예: 1.2.3.4;UTF8:test@example.com)
 
   - 공통 반영 설정
@@ -273,6 +273,11 @@ ACME 정보 하단에는 저장소 상세 정보가 표시됩니다.
     - 확장 키 용도 (Extended Key Usage)
       - serverAuth (TLS 서버 인증), clientAuth (TLS 클라이언트 인증), codeSigning (코드 서명) 등 확장 키 사용 용도를 선택합니다.
       - **확장 키 용도 OIDs**: 추가 확장 키 용도 OID를 직접 입력할 수 있습니다. (예: 1.3.6.1.5.5.7.3.1, 1.3.6.1.5.5.7.3.2)
+
+    - 정책 (Certificate Policies)
+      - **정책 목록**: 인증서가 준수하는 정책을 나타내는 OID를 입력합니다. 여러 개의 OID를 입력할 수 있습니다.
+        - 예: 2.5.29.32.0 (anyPolicy), 1.2.3.4.5 (조직 고유 정책)
+      - 인증서 정책 필드는 인증서가 어떤 정책 하에 발급되었는지를 명시하며, 인증서 검증 시 정책 준수 여부를 확인하는 데 사용됩니다.
 
     - 추가 주체 필드
       - **CSR 일반 이름 사용**: CSR의 CN을 인증서에 그대로 사용할지 여부를 선택합니다.
