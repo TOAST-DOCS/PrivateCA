@@ -74,15 +74,6 @@ GET /v2.0/appkeys/{appkey}/cas/{caId}/certs/{certId}/download
 
 - `VIEWER` 이상
 
-<details>
-<summary>요청 예시</summary>
-
-```sh
-curl -X GET "https://pca.api.nhncloudservice.com/appkeys/my-appkey/cas/1/certs/100/download" \
-  -H "X-NHN-Authorization: Bearer {access_token}"
-```
-</details>
-
 #### 응답
 
 **Response Headers**
@@ -93,16 +84,6 @@ curl -X GET "https://pca.api.nhncloudservice.com/appkeys/my-appkey/cas/1/certs/1
 **Response Body**
 
 인증서 데이터 (PEM 형식)
-
-<details>
-<summary>응답 예시</summary>
-
-```
------BEGIN CERTIFICATE-----
-MIIDXTCCAkWgAwIBAgIJAKJ...
------END CERTIFICATE-----
-```
-</details>
 
 ## CRL API
 
@@ -177,15 +158,6 @@ GET /v2.0/appkeys/{appkey}/cas/{caId}/certs/{issuerCertId}/crl/der
 
 - 권한 체크 없음 (공개 엔드포인트)
 
-<details>
-<summary>요청 예시</summary>
-
-```sh
-curl -X GET "https://pca.api.nhncloudservice.com/appkeys/my-appkey/cas/1/certs/100/crl/der" \
-  -o crl.crl
-```
-</details>
-
 #### 응답
 
 **Response Headers**
@@ -219,16 +191,6 @@ GET /v2.0/appkeys/{appkey}/cas/{caId}/certs/{issuerCertId}/crl/pem
 
 - 권한 체크 없음 (공개 엔드포인트)
 
-<details>
-<summary>요청 예시</summary>
-
-```sh
-curl -X GET "https://pca.api.nhncloudservice.com/appkeys/my-appkey/cas/1/certs/100/crl/pem" \
-  -H "X-NHN-Authorization: Bearer {access_token}" \
-  -o crl.pem
-```
-</details>
-
 #### 응답
 
 **Response Headers**
@@ -261,15 +223,6 @@ POST /v2.0/appkeys/{appkey}/cas/{caId}/certs/{issuerCertId}/crl
 **필요 권한**
 
 - `ADMIN`
-
-<details>
-<summary>요청 예시</summary>
-
-```sh
-curl -X POST "https://pca.api.nhncloudservice.com/appkeys/my-appkey/cas/1/certs/100/crl" \
-  -H "X-NHN-Authorization: Bearer {access_token}"
-```
-</details>
 
 #### 응답
 
@@ -323,17 +276,15 @@ GET /v2.0/appkeys/{appkey}/cas/{caId}/ocsp/{ocspRequestBase64}
 
 - 권한 체크 없음 (공개 엔드포인트)
 
-<details>
-<summary>요청 예시</summary>
+**요청 예시**
 
 ```sh
 # OCSP 요청 생성 및 Base64 인코딩
 OCSP_REQUEST=$(openssl ocsp -issuer ca.pem -cert cert.pem -reqout - | base64 -w 0)
 
 # URL 인코딩된 요청 전송
-curl -X GET "https://pca.api.nhncloudservice.com/appkeys/my-appkey/cas/1/ocsp/${OCSP_REQUEST}"
+curl -X GET "https://pca.api.nhncloudservice.com/v2.0/appkeys/my-appkey/cas/1/ocsp/${OCSP_REQUEST}"
 ```
-</details>
 
 #### 응답
 
@@ -374,15 +325,14 @@ POST /v2.0/appkeys/{appkey}/cas/{caId}/ocsp
 
 OCSP 요청 (DER 형식)
 
-<details>
-<summary>요청 예시</summary>
+**요청 예시**
 
 ```sh
 # OCSP 요청 생성
 openssl ocsp -issuer ca.pem -cert cert.pem -reqout ocsp-request.der
 
 # OCSP 요청 전송
-curl -X POST "https://pca.api.nhncloudservice.com/appkeys/my-appkey/cas/1/ocsp" \
+curl -X POST "https://pca.api.nhncloudservice.com/v2.0/appkeys/my-appkey/cas/1/ocsp" \
   -H "Content-Type: application/ocsp-request" \
   --data-binary @ocsp-request.der \
   -o ocsp-response.der
@@ -390,7 +340,6 @@ curl -X POST "https://pca.api.nhncloudservice.com/appkeys/my-appkey/cas/1/ocsp" 
 # OCSP 응답 확인
 openssl ocsp -respin ocsp-response.der -text
 ```
-</details>
 
 #### 응답
 
@@ -401,20 +350,6 @@ openssl ocsp -respin ocsp-response.der -text
 **Response Body**
 
 OCSP 응답 (DER 형식)
-
-## CRL vs OCSP
-
-### 주요 차이점
-
-| 항목 | CRL | OCSP |
-|------|-----|------|
-| 조회 방식 | 전체 폐기 목록 다운로드 | 개별 인증서 상태 조회 |
-| 응답 시간 | 느림 (목록이 클 경우) | 빠름 (개별 조회) |
-| 네트워크 부하 | 높음 (큰 파일 다운로드) | 낮음 (작은 요청/응답) |
-| 캐싱 | 가능 (nextUpdate까지) | 가능 (갱신 주기까지) |
-| 프라이버시 | 높음 (특정 인증서 노출 안됨) | 낮음 (조회하는 인증서 노출) |
-| 오프라인 검증 | 가능 | 불가능 |
-| 권장 사용 | 배치 검증, 오프라인 환경 | 개별 검증, 온라인 환경 |
 
 ## 문제 해결
 
