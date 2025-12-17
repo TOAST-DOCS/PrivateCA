@@ -13,13 +13,13 @@ NHN Cloud Private CA API를 사용하여 인증서를 프로그래밍 방식으�
 
 | Method | URI | 설명 |
 |--------|-----|------|
-| GET | /appkeys/{appkey}/cas/{caId}/certs/{certId}/download | PEM 형식의 인증서를 다운로드합니다. |
-| GET | /appkeys/{appkey}/cas/{caId}/certs/{issuerCertId}/crl | CRL 정보(PEM, 발행/갱신 시간)를 조회합니다. |
-| GET | /appkeys/{appkey}/cas/{caId}/certs/{issuerCertId}/crl/der | DER 형식의 CRL을 다운로드합니다. |
-| GET | /appkeys/{appkey}/cas/{caId}/certs/{issuerCertId}/crl/pem | PEM 형식의 CRL을 다운로드합니다. |
-| POST | /appkeys/{appkey}/cas/{caId}/certs/{issuerCertId}/crl | CRL을 수동으로 갱신합니다. |
-| GET | /appkeys/{appkey}/cas/{caId}/ocsp/{ocspRequestBase64} | Base64 인코딩된 OCSP 요청으로 인증서 상태를 조회합니다. |
-| POST | /appkeys/{appkey}/cas/{caId}/ocsp | DER 형식의 OCSP 요청으로 인증서 상태를 조회합니다. |
+| GET | /v2.0/appkeys/{appkey}/cas/{caId}/certs/{certId}/download | PEM 형식의 인증서를 다운로드합니다. |
+| GET | /v2.0/appkeys/{appkey}/cas/{caId}/certs/{issuerCertId}/crl | CRL 정보(PEM, 발행/갱신 시간)를 조회합니다. |
+| GET | /v2.0/appkeys/{appkey}/cas/{caId}/certs/{issuerCertId}/crl/der | DER 형식의 CRL을 다운로드합니다. |
+| GET | /v2.0/appkeys/{appkey}/cas/{caId}/certs/{issuerCertId}/crl/pem | PEM 형식의 CRL을 다운로드합니다. |
+| POST | /v2.0/appkeys/{appkey}/cas/{caId}/certs/{issuerCertId}/crl | CRL을 수동으로 갱신합니다. |
+| GET | /v2.0/appkeys/{appkey}/cas/{caId}/ocsp/{ocspRequestBase64} | Base64 인코딩된 OCSP 요청으로 인증서 상태를 조회합니다. |
+| POST | /v2.0/appkeys/{appkey}/cas/{caId}/ocsp | DER 형식의 OCSP 요청으로 인증서 상태를 조회합니다. |
 
 ## 사전 준비
 
@@ -59,7 +59,7 @@ Private CA API에서 사용하는 주요 인증서 형식은 다음과 같습니
 #### 요청
 
 ```
-GET /appkeys/{appkey}/cas/{caId}/certs/{certId}/download
+GET /v2.0/appkeys/{appkey}/cas/{caId}/certs/{certId}/download
 ```
 
 **Path Parameters**
@@ -115,7 +115,7 @@ CRL(Certificate Revocation List)은 특정 발급자가 발급한 인증서 중 
 #### 요청
 
 ```
-GET /appkeys/{appkey}/cas/{caId}/certs/{issuerCertId}/crl
+GET /v2.0/appkeys/{appkey}/cas/{caId}/certs/{issuerCertId}/crl
 ```
 
 **Path Parameters**
@@ -162,7 +162,7 @@ CRL을 DER(바이너리) 형식으로 다운로드합니다.
 #### 요청
 
 ```
-GET /appkeys/{appkey}/cas/{caId}/certs/{issuerCertId}/crl/der
+GET /v2.0/appkeys/{appkey}/cas/{caId}/certs/{issuerCertId}/crl/der
 ```
 
 **Path Parameters**
@@ -204,7 +204,7 @@ CRL을 PEM 형식으로 다운로드합니다.
 #### 요청
 
 ```
-GET /appkeys/{appkey}/cas/{caId}/certs/{issuerCertId}/crl/pem
+GET /v2.0/appkeys/{appkey}/cas/{caId}/certs/{issuerCertId}/crl/pem
 ```
 
 **Path Parameters**
@@ -247,7 +247,7 @@ CRL을 수동으로 갱신합니다.
 #### 요청
 
 ```
-POST /appkeys/{appkey}/cas/{caId}/certs/{issuerCertId}/crl
+POST /v2.0/appkeys/{appkey}/cas/{caId}/certs/{issuerCertId}/crl
 ```
 
 **Path Parameters**
@@ -297,7 +297,7 @@ Base64로 인코딩된 OCSP 요청을 처리합니다.
 #### 요청
 
 ```
-GET /appkeys/{appkey}/cas/{caId}/ocsp/{ocspRequestBase64}
+GET /v2.0/appkeys/{appkey}/cas/{caId}/ocsp/{ocspRequestBase64}
 ```
 
 **Path Parameters**
@@ -352,7 +352,7 @@ DER 형식의 OCSP 요청을 처리합니다.
 #### 요청
 
 ```
-POST /appkeys/{appkey}/cas/{caId}/ocsp
+POST /v2.0/appkeys/{appkey}/cas/{caId}/ocsp
 ```
 
 **Path Parameters**

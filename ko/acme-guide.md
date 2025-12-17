@@ -43,7 +43,7 @@ sudo yum install certbot
 
 Private CA 콘솔에서 다음 정보를 확인합니다.
 
-- **ACME Directory URL**: `https://kr1-pca.api.nhncloudservice.com/acme/cert/{certId}/directory`
+- **ACME Directory URL**: `https://kr1-pca.api.nhncloudservice.com/v2.0/acme/cert/{certId}/directory`
 - **ACME 토큰 ID**: 콘솔에서 발급한 ACME 토큰 ID (**YOUR_ACME_TOKEN_ID**)
 - **ACME HMAC 키**: 콘솔에서 발급한 ACME 토큰 HMAC 키 (**YOUR_ACME_TOKEN_HMAC_KEY**)
 
@@ -61,7 +61,7 @@ certbot certonly \
   --manual-auth-hook ./pre.sh \
   --deploy-hook ./post.sh \
   --preferred-challenges http \
-  --server https://kr1-pca.api.nhncloudservice.com/acme/cert/{certId}/directory \
+  --server https://kr1-pca.api.nhncloudservice.com/v2.0/acme/cert/{certId}/directory \
   -d example.com -d www.example.com \
   --eab-kid "YOUR_ACME_TOKEN_ID" \
   --eab-hmac-key "YOUR_ACME_TOKEN_HMAC_KEY" \
