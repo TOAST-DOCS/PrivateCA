@@ -81,13 +81,19 @@ certbot certonly \
 | `--preferred-challenges` | Challenge 방식을 지정합니다 (`http`, `dns`, `tls-alpn`). 일반적으로 `http`를 사용합니다. | O | - |
 | `--server` | ACME 서버의 Directory URL을 지정합니다. | O | - |
 | `-d` | 인증서에 포함할 도메인을 지정합니다. Base 인증서의 CN과 SAN을 콘솔에서 확인하여 정확히 입력해야 합니다. | O | - |
-| `--eab-kid` | External Account Binding의 Key ID입니다. Private CA에서 발급한 ACME 토큰 ID를 입력합니다. | O | - |
+| `--eab-kid` | External Account Binding의 키 ID입니다. Private CA에서 발급한 ACME 토큰 ID를 입력합니다. | O | - |
 | `--eab-hmac-key` | EAB HMAC 키 (Base64 인코딩)입니다. Private CA에서 발급한 ACME 토큰 HMAC 키를 입력합니다. | O | - |
 | `--key-type` | 개인키 유형 (`rsa`, `ecdsa`)을 지정합니다. | X | rsa |
 | `--rsa-key-size` | RSA 키 길이를 지정합니다. `--key-type rsa`일 경우에만 사용하며, `2048`, `3072`, `4096` 값을 사용할 수 있습니다. | X | 2048 |
 | `--elliptic-curve` | ECDSA 키 곡선을 지정합니다. `--key-type ecdsa`일 경우에만 사용하며, `secp256r1`, `secp384r1`, `secp521r1` 값을 사용할 수 있습니다. | X | secp256r1 |
 | `--agree-tos` | 서비스 약관에 자동으로 동의합니다. 인터랙티브 입력을 방지합니다. | X | - |
-| `--register-unsafely-without-email` | 이메일 없이 계정을 등록합니다. | X | - |
+| `--register-unsafely-without-email` | 이메일 없이 계정을 등록합니다. 인터랙티브 입력을 방지합니다. | X | - |
+
+!!! tip "알아두기"
+    - `--manual` 모드는 수동 Challenge 검증에 사용됩니다.
+    - `manual-auth-hook`은 인증서 renew 시 안정성 확보를 위해 반드시 필요합니다.
+    - `deploy-hook`을 활용하면 인증서 발급 후 자동으로 배포 및 후처리 작업을 수행할 수 있습니다.
+    - `--server`, `--eab-kid`, `--eab-hmac-key`는 Private CA ACME 서버 연동에 필수입니다.
 
 !!! danger "주의"
     도메인 지정 시 Base 인증서에 설정된 CN(Common Name)과 도메인 SAN(Subject Alternative Name)을 정확히 입력해야 합니다. 인증서 발급 전 콘솔에서 Base 인증서의 CN과 SAN 정보를 확인하여 `-d` 옵션에 올바른 도메인을 지정했는지 반드시 검증하십시오.
@@ -192,12 +198,6 @@ renew_before_expiry = 30 days
 ```
 
 `renew_before_expiry` 값을 변경하여 인증서 만료 며칠 전부터 갱신을 시도할지 설정할 수 있습니다.
-
-!!! tip "알아두기"
-    - `--manual` 모드는 수동 Challenge 검증에 사용됩니다.
-    - `manual-auth-hook`은 인증서 renew 시 안정성 확보를 위해 반드시 필요합니다.
-    - `deploy-hook`을 활용하면 인증서 발급 후 자동으로 배포 및 후처리 작업을 수행할 수 있습니다.
-    - `--server`, `--eab-kid`, `--eab-hmac-key`는 Private CA ACME 서버 연동에 필수입니다.
 
 !!! danger "주의"
     - ED25519 키 타입은 현재 Certbot에서 지원하지 않습니다. 인증서 체인에 ED25519 알고리즘을 사용하는 인증서가 포함된 경우 발급 및 갱신이 불가능합니다.
