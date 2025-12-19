@@ -352,7 +352,7 @@ openssl ocsp -respin ocsp-response.der -text
 
 OCSP 응답(DER 형식)
 
-## 문제 해결
+## 문제 해결하기
 
 ### CRL이 갱신되지 않는 경우
 
