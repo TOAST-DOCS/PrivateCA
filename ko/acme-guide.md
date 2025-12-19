@@ -1,5 +1,6 @@
 # ACME 인증서 갱신 가이드
 **Management > Private CA > ACME 인증서 갱신 가이드**
+
 Private CA 서비스는 ACME(automatic certificate management environment) 프로토콜을 지원하여 인증서의 자동 발급 및 갱신을 가능하게 합니다. ACME 클라이언트(예: Certbot)를 사용하면 수동 개입 없이 인증서를 발급 받고 주기적으로 갱신할 수 있습니다.
 
 본 가이드에서는 Private CA ACME 서버를 이용하여 Certbot으로 인증서를 발급하는 방법을 안내합니다.
