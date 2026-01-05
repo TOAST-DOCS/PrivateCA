@@ -29,7 +29,7 @@ Private CAは組織内部で使用する証明書を直接発行し管理でき�
 
 Private CAサービスは次のようなコンポーネントで構成されています。
 
-![Private CAサービス構造](https://static.toastoven.net/prod_privateca/2025-12-23_ko/NHN%20Cloud_PrivateCA_overview_ko_900.png)
+![Private CAサービス構造](https://static.toastoven.net/prod_privateca/2025-12-23_ko/NHN%20Cloud_PrivateCA_overview_ja_900.png)
 
 ### リポジトリ
 - Private CAを管理する基本単位です。
