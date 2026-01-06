@@ -263,8 +263,8 @@ Each certificate template entry has **Modify** and **Delete** buttons to help yo
             - **Key bit**: algorithmic key bit selection
             - **Signature bit**: Select the number of bits in the hash algorithm to use for signing the certificate
 
-              !!! danger "Caution"
-                  Signature bits can only be set when using the RSA algorithm. Otherwise, it is ignored by the algorithm.
+            !!! danger "Caution"
+                Signature bits can only be set when using the RSA algorithm. Otherwise, it is ignored by the algorithm.
 
         - Key usage
             - Select the purpose of the certificate: `digitalSignature`, `keyEncipherment`, `keyCertSign`, or certificate signing.
