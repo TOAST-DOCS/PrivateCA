@@ -251,7 +251,7 @@ ACME 정보 하단에는 저장소 상세 정보가 표시됩니다.
     - SAN 옵션
         - **IP SANs 허용**: IP 주소를 SAN에 포함할 수 있도록 허용합니다.
         - **URI 주체 대체 이름(URI SANs)**: URI 형식의 SAN을 입력합니다.(예: https://example.com, spiffe://example.org)
-      - **기타 SANs**: 기타 형식의 SAN을 입력합니다.(예: 1.2.3.4;UTF8:test@example.com)
+        - **기타 SANs**: 기타 형식의 SAN을 입력합니다.(예: 1.2.3.4;UTF8:test@example.com)
 
     - 공통 반영 설정
         - 설정
@@ -263,8 +263,8 @@ ACME 정보 하단에는 저장소 상세 정보가 표시됩니다.
             - **키 비트**: 알고리즘에 따른 키 비트 선택
             - **시그니처 비트**: 인증서 서명에 사용할 해시 알고리즘의 비트 수 선택
 
-            !!! danger "주의"
-                시그니처 비트는 RSA 알고리즘일 때만 설정이 가능합니다. 그 외의 알고리즘에서는 무시됩니다.
+              !!! danger "주의"
+                  시그니처 비트는 RSA 알고리즘일 때만 설정이 가능합니다. 그 외의 알고리즘에서는 무시됩니다.
 
         - 키 용도(Key Usage)
             - `digitalSignature`(디지털 서명), `keyEncipherment`(키 암호화), `keyCertSign`(인증서 서명) 등 인증서 용도를 선택합니다.

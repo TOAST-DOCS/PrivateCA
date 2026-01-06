@@ -195,7 +195,8 @@ sudo crontab -e
 You can adjust the renewal interval in the `/etc/letsencrypt/renewal/<domain>.conf` file.
 
 ```ini
-[renewalparams] renew_before_expiry = 30 days
+[renewalparams]
+renew_before_expiry = 30 days
 ```
 
 You can change the `renew_before_expiry` value to set how many days before the certificate expires to attempt to renew.
