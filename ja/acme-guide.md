@@ -5,7 +5,7 @@ Private CAサービスはACME(automatic certificate management environment)プ�
 
 本ガイドでは、Private CA ACMEサーバーを利用してCertbotで証明書を発行する方法を案内します。
 
-!!! tip 「ポイント」
+!!! tip "ポイント"
     - **ACME(automatic certificate management environment)**：証明書の発行と更新を自動化する標準プロトコルです。
     - **Certbot**：Let's Encryptで開発されたACMEクライアントツールで、証明書を自動的に発行及び更新します。
     - **Base証明書**：ACME自動更新時に参照するテンプレートの役割を果たす証明書です。
@@ -91,7 +91,7 @@ certbot certonly \
 | `--agree-tos` | サービス利用規約に自動的に同意します。インタラクティブな入力を回避します。 | X | - |
 | `--register-unsafely-without-email` | メールアドレスなしでアカウントを登録します。インタラクティブな入力を回避します。 | X | - |
 
-!!! tip 「ポイント」
+!!! tip "ポイント"
     - `--manual`モードは手動Challenge検証に使用されます。
     - `manual-auth-hook`は証明書更新時の安定性確保のために必ず必要です。
     - `deploy-hook`を活用すると、証明書発行後に自動的に配布及び後処理作業を実行できます。

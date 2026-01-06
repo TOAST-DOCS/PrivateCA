@@ -33,7 +33,7 @@ NHN Cloud Private CA APIを使用して証明書をプログラムで管理で�
 X-NHN-Authorization: Bearer {access_token}
 ```
 
-!!! tip 「ポイント」
+!!! tip "ポイント"
     - 認証ヘッダに必要な認証トークンの詳細については、[こちら](https://docs.nhncloud.com/ja/nhncloud/ja/public-api/api-authentication/)で詳しく確認できます。
     - アプリキー(appkey)はコンソールで確認でき、全てのAPIパスに含まれている必要があります。
 

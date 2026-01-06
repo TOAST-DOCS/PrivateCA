@@ -33,13 +33,13 @@ A repository is the basic unit for managing a private CA. Once you create a repo
     - **Repository name** (required): Enter a name to identify the repository.
     - **Repository description** (optional): enter a description for the repository.
     - **Enable CRL**
-      - Select whether to enable a certificate revocation list (CRL).
-      - Provide a list of revoked certificates periodically so clients can check certificate validity.
-      - If you enable CRLs, you can set the renewal interval to every day.
+        - Select whether to enable a certificate revocation list (CRL).
+        - Provide a list of revoked certificates periodically so clients can check certificate validity.
+        - If you enable CRLs, you can set the renewal interval to every day.
     - **Enable OCSP**
-      - Select whether to enable online certificate status protocol (OCSP).
-      - A protocol that allows you to quickly check the revocation status of individual certificates to their status at the time of the request.
-      - When OCSP is enabled, you can set the renewal interval in hours.
+        - Select whether to enable online certificate status protocol (OCSP).
+        - A protocol that allows you to quickly check the revocation status of individual certificates to their status at the time of the request.
+        - When OCSP is enabled, you can set the renewal interval in hours.
 
 3. Click **Create** to create the repository.
 
@@ -52,7 +52,7 @@ In the repository list, you can click the menu button (⋮) to the right of each
 - **Delete**: delete the repository.
     - When you delete a repository, all resources that belong to it (issuers, certificate templates, certificates, and ACME tokens) are deleted along with it.
 
-!!! DANGER "Caution"
+!!! danger "Caution"
     The delete operation is irreversible, so use caution.
 
 ### Repository details
@@ -103,7 +103,7 @@ At the bottom of the ACME information, you'll see the repository details.
 - **OCSP renewal cycle**: how often OCSP information is updated (in hours)
 
 !!! tip "Notice"
-CRLs and OCSPs are ways to verify a certificate's revocation status. The CRL provides a list of revoked certificates, and OCSPs can quickly look up the status of individual certificates to the status at the time of the request.
+    CRLs and OCSPs are ways to verify a certificate's revocation status. The CRL provides a list of revoked certificates, and OCSPs can quickly look up the status of individual certificates to the status at the time of the request.
 
 ## Issuer
 
@@ -141,40 +141,40 @@ Each issuer entry has **Revoke** button so that you can revoke the issuer when n
 2. On the Create Issuer page, enter the following information:
 ![issuer_create](https://static.toastoven.net/prod_privateca/2025-12-23_ko/issuer_create.png)
     - Basic Info
-     - **Issuer type**: select Root or Intermediate as the issuer's type
-        - **Root**: a top-level certificate authority, which is a self-signed certificate.
-        - **Intermediate**: an intermediate certificate authority, signed by the Root CA.
-          - **Parent certificate ID**: if you selected the Intermediate type, select a parent issuer.
-           ![issuer_create_intermediate](https://static.toastoven.net/prod_privateca/2025-12-23_ko/issuer_create_intermediate.png)
-      - **Issuer name** (required): A name to identify the issuer
-      - **Issuer description** (optional): Description of the issuer
-      - **Common name** (required): Certificate common name
-      - **Expiration setting** (required): Enter an expiration date, choose TTL or specific date
-        - **TTL**: Valid for a specified period of time from the time of issuance (for example: 365d, 8760h, 60m, 30s)
-        - **Specific date**: Specify a specific expiration date (not after)
+        - **Issuer type**: select Root or Intermediate as the issuer's type
+            - **Root**: a top-level certificate authority, which is a self-signed certificate.
+            - **Intermediate**: an intermediate certificate authority, signed by the Root CA.
+                - **Parent certificate ID**: if you selected the Intermediate type, select a parent issuer.
+                  ![issuer_create_intermediate](https://static.toastoven.net/prod_privateca/2025-12-23_ko/issuer_create_intermediate.png)
+        - **Issuer name** (required): A name to identify the issuer
+        - **Issuer description** (optional): Description of the issuer
+        - **Common name** (required): Certificate common name
+        - **Expiration setting** (required): Enter an expiration date, choose TTL or specific date
+            - **TTL**: Valid for a specified period of time from the time of issuance (for example: 365d, 8760h, 60m, 30s)
+            - **Specific date**: Specify a specific expiration date (not after)
         - **Backdate Validity**: This period allows the certificate's validity start time to be set earlier than the current time. Used to prevent time synchronization issues (default: 30s / e.g. 1d, 24h, 60m, and 30s)
         - **Maximum path length**: specify the maximum number of intermediate CAs allowed under this issuer in the certificate chain. A value of 0 means that no more subordinate CAs can be created (e.g: 0)
 
     - Key Info
-      - **Key algorithm**: Choose among RSA, EC, and ED25519
-      - **Key bit**: algorithmic key bit selection
+        - **Key algorithm**: Choose among RSA, EC, and ED25519
+        - **Key bit**: algorithmic key bit selection
 
     - Subject alternative name (SAN) configuration
-      - **Exclude common names from SANs**: select whether to automatically exclude common names (CNs) from the SAN list.
-      - **Subject serial number**: enter the subject's unique serial number.
-      - **Subject alternate names (SAN**): Additional distinguished name in domain format (e.g., example.com, sub.example.com)
-      - **IP subject alternate names (IP SANs**): an additional identifying name in the form of an IP address (e.g. 192.168.1.1, 10.0.0.1)
-      - **URI subject alternate names (URI SANs**): additional identifying name in URI format (e.g., https://example.com, spiffe://example.org)
-      - **Other SANs**: other types of SANs (e.g: 1.2.3.4;UTF8:test@example.com
+        - **Exclude common names from SANs**: select whether to automatically exclude common names (CNs) from the SAN list.
+        - **Subject serial number**: enter the subject's unique serial number.
+        - **Subject alternate names (SAN**): Additional distinguished name in domain format (e.g., example.com, sub.example.com)
+        - **IP subject alternate names (IP SANs**): an additional identifying name in the form of an IP address (e.g. 192.168.1.1, 10.0.0.1)
+        - **URI subject alternate names (URI SANs**): additional identifying name in URI format (e.g., https://example.com, spiffe://example.org)
+        - **Other SANs**: other types of SANs (e.g: 1.2.3.4;UTF8:test@example.com
 
     - Subject information (Subject)
-      - **Country (C)**: country code
-      - **State/Town (ST)**: state or province
-      - **State, county, or district (L)**: city name
-      - **Road name address**: road name address
-      - **Postal code**: postal code
-      - **Organization (O)**: Organization name
-      - **Department (organizational unit) (OU**): department name
+        - **Country (C)**: country code
+        - **State/Town (ST)**: state or province
+        - **State, county, or district (L)**: city name
+        - **Road name address**: road name address
+        - **Postal code**: postal code
+        - **Organization (O)**: Organization name
+        - **Department (organizational unit) (OU**): department name
 
 3. Click **Add** to add the issuer.
 
@@ -238,15 +238,14 @@ Each certificate template entry has **Modify** and **Delete** buttons to help yo
 ![template_create](https://static.toastoven.net/prod_privateca/2025-12-23_ko/template_create.png)
 
     - Basic Info
-      - **Certificate template name** (required): a name to identify the certificate template
-      - **Description** (optional): description of certificate templates
-      - **Select issuer**: Select an issuer to sign the certificate created with this certificate template.
+        - **Certificate template name** (required): a name to identify the certificate template
+        - **Description** (optional): description of certificate templates
+        - **Select issuer**: Select an issuer to sign the certificate created with this certificate template.
 
     - Limit settings
-      - Expiration settings
-        - **Expiration input method**: select between TTL or a specific date
-          - **TTL**: set a maximum validity period (e.g: 365d, 8760h, 60m, 30s)
-          - **Specific date**: specify a fixed expiration date (not after)
+        - **Expiration settings** (required)
+            - **TTL**: set a maximum validity period (e.g: 365d, 8760h, 60m, 30s)
+            - **Specific date**: specify a fixed expiration date (not after)
         - **Backdate Validity**: This period allows the certificate's validity start time to be set earlier than the current time. Used to prevent time synchronization issues (default: 30s / e.g. 1d, 24h, 60m, and 30s)
 
     - SAN option
@@ -255,31 +254,31 @@ Each certificate template entry has **Modify** and **Delete** buttons to help yo
         - **Other SANs**: enter other types of SANs (e.g. 1.2.3.4;UTF8:test@example.com
 
     - Common applied settings
-      - Settings
-        - **Server-side storage option**: select whether you want to store the created certificate on the server.
-        - **Enable basic constraints for non-CA**: Select whether to specify in the certificate that you are not a CA.
+        - Settings
+            - **Server-side storage option**: select whether you want to store the created certificate on the server.
+            - **Enable basic constraints for non-CA**: Select whether to specify in the certificate that you are not a CA.
 
-      - Key parameters
-        - **Key algorithm**: Choose among RSA, EC, and ED25519
-        - **Key bit**: algorithmic key bit selection
-        - **Signature bit**: Select the number of bits in the hash algorithm to use for signing the certificate
+        - Key parameters
+            - **Key algorithm**: Choose among RSA, EC, and ED25519
+            - **Key bit**: algorithmic key bit selection
+            - **Signature bit**: Select the number of bits in the hash algorithm to use for signing the certificate
 
-        !!! danger "Caution"
-            Signature bits can only be set when using the RSA algorithm. Otherwise, it is ignored by the algorithm.
+            !!! danger "Caution"
+                Signature bits can only be set when using the RSA algorithm. Otherwise, it is ignored by the algorithm.
 
-      - Key usage
-        - Select the purpose of the certificate: `digitalSignature`, `keyEncipherment`, `keyCertSign`, or certificate signing.
+        - Key usage
+            - Select the purpose of the certificate: `digitalSignature`, `keyEncipherment`, `keyCertSign`, or certificate signing.
 
-      - Extended key usage
-        - Select what you want to use the extended key for: `serverAuth`(TLS server authentication), `clientAuth`(TLS client authentication), `codeSigning, or codeSigning`.
-        - **Extended key usage OIDs**: you can manually enter an OID for additional extended key purposes (e.g. 1.3.6.1.5.5.7.3.1, 1.3.6.1.5.5.7.3.2)
+        - Extended key usage
+            - Select what you want to use the extended key for: `serverAuth`(TLS server authentication), `clientAuth`(TLS client authentication), `codeSigning, or codeSigning`.
+            - **Extended key usage OIDs**: you can manually enter an OID for additional extended key purposes (e.g. 1.3.6.1.5.5.7.3.1, 1.3.6.1.5.5.7.3.2)
 
-      - Certificate policies
-        - **List of policies**: enter an OID that represents the policy the certificate complies with. you can enter multiple OIDs.
-          - Example: 2.5.29.32.0 (anyPolicy), 1.2.3.4.5 (organization-specific policies)
-        - The Certificate Policy field specifies under which policy the certificate was issued, and is used to verify compliance with the policy during certificate validation.
+        - Certificate policies
+            - **List of policies**: enter an OID that represents the policy the certificate complies with. you can enter multiple OIDs.
+                - Example: 2.5.29.32.0 (anyPolicy), 1.2.3.4.5 (organization-specific policies)
+            - The Certificate Policy field specifies under which policy the certificate was issued, and is used to verify compliance with the policy during certificate validation.
 
-      - Additional subject fields
+    - Additional subject fields
         - **Use the CSR common name**: Select whether to use the CN from the CSR as is for the certificate.
         - **Use CSR SANs**: select whether to include the SAN of the CSR in the certificate.
         - **Country (C)**: country code
@@ -313,8 +312,8 @@ At the top of the details page are the **+ Create New Certificate**, Modify**, a
 1. In the list of certificate templates, click **Delete** for the certificate template you want to delete, or on the details page, click **Delete**.
 2. In the confirmation dialog box, click **Delete** to confirm the deletion.
 
-!!! TIP "Notice"
-Deleting a certificate template does not affect certificates that have already been generated with that certificate template.
+!!! tip "Notice"
+    Deleting a certificate template does not affect certificates that have already been generated with that certificate template.
 
 ### Create certificates with certificate templates
 
@@ -385,7 +384,7 @@ Revoked certificates are considered no longer trusted, and you can check their r
 - **Online certificate status protocol (OCSP)**: you can look up the status of individual certificates via the OCSP URL of the repository.
 
 !!! danger "Caution"
-Certificate revocation is an irreversible action. You can't reactivate a revoked certificate, so you'll need to issue a new one.
+    Certificate revocation is an irreversible action. You can't reactivate a revoked certificate, so you'll need to issue a new one.
 
 ## ACME management
 
@@ -449,7 +448,7 @@ Use the [Certificate Renewal with ACME](./acme-guide.md) page as a guide to comp
 2. In the confirmation dialog box, click **Delete** to confirm the deletion.
 
 !!! tip "Notice"
-Deleting an ACME token does not affect certificates already issued with that token. However, automatic renewal using that token will no longer work, so you'll need to update your ACME client settings to generate a new token.
+    Deleting an ACME token does not affect certificates already issued with that token. However, automatic renewal using that token will no longer work, so you'll need to update your ACME client settings to generate a new token.
 
 ## Certificate history
 

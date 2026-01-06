@@ -115,11 +115,11 @@ If you're new to Private CA, you can refer to the following guide:
 * [API v2.0 Guide](./api-guide-v2.0.md): Guide to downloading certificates and retrieving CRLs and OCSPs via the API.
 
 !!! tip "Notice"
-   - Private CAs are optimized for issuing certificates for internal use within an organization. If you need a public certificate, you must use an authorized certificate authority.
-   - To use the issued certificate, you must enroll the CA chain as a trusted certificate on the client system.
-   - The ACME protocol allows you to fully automate certificate issuance and renewal, which can significantly reduce your operational burden.
+    - Private CAs are optimized for issuing certificates for internal use within an organization. If you need a public certificate, you must use an authorized certificate authority.
+    - To use the issued certificate, you must enroll the CA chain as a trusted certificate on the client system.
+    - The ACME protocol allows you to fully automate certificate issuance and renewal, which can significantly reduce your operational burden.
 
 !!! danger "Caution"
     - Certificate revocation is an irreversible action. You need to decide carefully.
-   - You should enable CRLs and OCSP to allow clients to verify revoked certificates.
+    - You should enable CRLs and OCSP to allow clients to verify revoked certificates.
 

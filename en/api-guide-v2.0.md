@@ -33,9 +33,9 @@ All API requests require the following authentication headers:
 X-NHN-Authorization: Bearer {access_token}
 ```
 
-!!! TIP "Notice"
-- You can read more about the authentication token required in the authorization header [here](https://docs.nhncloud.com/en/nhncloud/en/public-api/api-authentication/).
-- The appkey can be found in the console and must be included in all API paths.
+!!! tip "Notice"
+    - You can read more about the authentication token required in the authorization header [here](https://docs.nhncloud.com/en/nhncloud/en/public-api/api-authentication/).
+    - The appkey can be found in the console and must be included in all API paths.
 
 ### Manage permissions
 
@@ -264,7 +264,7 @@ GET /v2.0/appkeys/{appkey}/cas/{caId}/ocsp/{ocspRequestBase64}
 | ocspRequestBase64 | String | Y | Base64-encoded OCSP request |
 
 !!! danger "Caution"
-When encoding OCSP requests to Base64, they must be converted to a URL-safe form.
+    When encoding OCSP requests to Base64, they must be converted to a URL-safe form.
 
     - Convert the following characters after standard Base64 encoding:
         - `+` → `-` (plus as hyphen)
@@ -379,5 +379,5 @@ OCSP response (DER format)
 - After you enable CRL/OCSP in your repository settings, you must reissue the certificate.
 
 !!! danger "Caution"
-- The CRL/OCSP URL is included when the certificate is issued, so the certificate must be reissued after changing the settings.
-- You can't change the CRL/OCSP URL of an already issued certificate.
+    - The CRL/OCSP URL is included when the certificate is issued, so the certificate must be reissued after changing the settings.
+    - You can't change the CRL/OCSP URL of an already issued certificate.
