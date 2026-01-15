@@ -47,7 +47,7 @@ Kubernetes 클러스터에 cert-manager를 설치합니다.
 kubectl apply -f https://github.com/cert-manager/cert-manager/releases/download/v1.19.1/cert-manager.yaml
 ```
 
-설치 확인
+**설치 확인**
 
 ```bash
 kubectl get pods -n cert-manager
@@ -65,7 +65,7 @@ helm upgrade --install ingress-nginx ingress-nginx \
   --namespace ingress-nginx --create-namespace
 ```
 
-설치 확인
+**설치 확인**
 
 ```bash
 kubectl get pods -n ingress-nginx
@@ -137,7 +137,7 @@ kubectl apply -f "https://github.com/kubernetes-sigs/gateway-api/releases/downlo
 
 2. **cert-manager에 Gateway API 기능 활성화**
 
-Helm으로 설치한 경우
+**Helm으로 설치한 경우**
 
 ```bash
 helm upgrade --install cert-manager jetstack/cert-manager \
@@ -145,7 +145,7 @@ helm upgrade --install cert-manager jetstack/cert-manager \
   --set "extraArgs={--enable-gateway-api}"
 ```
 
-Manifest로 설치한 경우
+**Manifest로 설치한 경우**
 
 ```bash
 kubectl edit deployment cert-manager -n cert-manager

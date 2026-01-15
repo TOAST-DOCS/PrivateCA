@@ -266,7 +266,7 @@ GET /v2.0/appkeys/{appkey}/cas/{caId}/ocsp/{ocspRequestBase64}
 !!! danger "주의"
     OCSP 요청을 Base64로 인코딩할 때는 URL-safe 형태로 변환해야 합니다.
 
-    - 표준 Base64 인코딩 후 다음 문자들을 변환합니다
+    - 표준 Base64 인코딩 후 다음 문자들을 변환합니다.
         - `+` → `-`(plus를 hyphen으로)
         - `/` → `_`(slash를 underscore로)
     - Padding 문자(`=`)는 제거합니다.
