@@ -270,7 +270,7 @@ GET /v2.0/appkeys/{appkey}/cas/{caId}/ocsp/{ocspRequestBase64}
         - `+` → `-` (plus as hyphen)
         - `/` → `_` (slash to underscore)
     - Remove the padding character (`=`).
-    - Example:
+    - Example
         - Before conversion: `MEow/SDAwL+oGCC+sGAQUF/BzAh==`
         - After conversion: `MEow_SDAwL-oGCC-sGAQUF_BzAh` (`+` → `-`, `/` → `_`, `=` removed)
 

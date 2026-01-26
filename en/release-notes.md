@@ -2,6 +2,17 @@
 
 **Management > Private CA > Release Notes**
 
+## January 27, 2026
+
+### Feature Updates
+- Limited the maximum backdate period to 30 days.
+- Updated the label "Expiration Settings" to "Certificate Lifetime" within Templates > Expiration Settings.
+- Improved the clarity of error messages triggered by unauthorized user actions.
+
+### Bug Fixes
+- Fixed an issue where the expiration method was incorrectly displayed as "TTL" when set to a "Specific Date" in templates.
+- Fixed a bug where "TTL" appeared instead of the selected "Specific Date" in Template expiration settings.
+
 ## December 23, 2025
 
 ### New service launch
