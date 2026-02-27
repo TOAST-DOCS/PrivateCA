@@ -34,7 +34,7 @@ X-NHN-Authorization: Bearer {access_token}
 ```
 
 !!! tip "Notice"
-    - You can read more about the authentication token required in the authorization header [here](https://docs.nhncloud.com/en/nhncloud/en/public-api/api-authentication/).
+    - You can read more about the authentication token required in the authorization header [here](https://docs.nhncloud.com/en/nhncloud/en/public-api/user-access-key-token/).
     - The appkey can be found in the console and must be included in all API paths.
 
 ### Manage permissions
