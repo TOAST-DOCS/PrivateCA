@@ -34,7 +34,7 @@ X-NHN-Authorization: Bearer {access_token}
 ```
 
 !!! tip "알아두기"
-    - 인증 헤더에 필요한 인증 토큰에 대한 자세한 사항은 [여기](https://docs.nhncloud.com/ko/nhncloud/ko/public-api/api-authentication/)에서 자세히 확인하실 수 있습니다.
+    - 인증 헤더에 필요한 인증 토큰에 대한 자세한 사항은 [여기](https://docs.nhncloud.com/ko/nhncloud/ko/public-api/user-access-key-token/)에서 자세히 확인하실 수 있습니다.
     - 앱키(appkey)는 콘솔에서 확인할 수 있으며, 모든 API 경로에 포함되어야 합니다.
 
 ### 권한 관리
