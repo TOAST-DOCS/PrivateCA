@@ -160,9 +160,9 @@ POST /v2.0/appkeys/{appkey}/ca-stores
 | name | String | Y | 저장소 이름 | 최대 64자 |
 | description | String | N | 저장소 설명 | 최대 256자 |
 | crlActive | Boolean | N | CRL 활성화 여부 | 기본값: `false` |
-| crlRefreshPeriod | Number | N | CRL 갱신 주기(일) | 기본값: 7 |
+| crlRefreshPeriod | Number | N | CRL 갱신 주기(일) | 1~30, 기본값: 7 |
 | ocspActive | Boolean | N | OCSP 활성화 여부 | 기본값: `false` |
-| ocspRefreshPeriod | Number | N | OCSP 갱신 주기(일) | 기본값: 1 |
+| ocspRefreshPeriod | Number | N | OCSP 갱신 주기(시간) | 1~12, 기본값: 1 |
 
 **필요 권한**
 
