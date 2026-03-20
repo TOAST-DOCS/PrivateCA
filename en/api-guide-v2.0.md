@@ -161,9 +161,9 @@ POST /v2.0/appkeys/{appkey}/ca-stores
 | name | String | Y | Store name | Maximum 64 characters |
 | description | String | N | Store description | Maximum 256 characters |
 | crlActive | Boolean | N | CRL enabled | Default: `false` |
-| crlRefreshPeriod | Number | N | CRL renewal cycle (days) | 1–30, default: 7 |
+| crlRefreshPeriod | Number | N | CRL renewal cycle (days) | 1–30<br>Default: 7 |
 | ocspActive | Boolean | N | OCSP enabled | Default: `false` |
-| ocspRefreshPeriod | Number | N | OCSP renewal cycle (hours) | 1–12, default: 1 |
+| ocspRefreshPeriod | Number | N | OCSP renewal cycle (hours) | 1–12<br>Default: 1 |
 
 **Required Permissions**
 
@@ -304,8 +304,8 @@ POST /v2.0/appkeys/{appkey}/ca-stores/{caStoreId}/certs
 | subjectInfo | Object | Y | Subject information | `commonName` required |
 | ttlValue | Number | Conditional | Validity period (seconds) | Either `ttlValue` or `specificDate`, 0~315,360,000 (max 10 years) |
 | specificDate | String | Conditional | Expiration date and time | Either `specificDate` or `ttlValue`, format: `2025-12-31T23:59:59`, `1970-01-01T00:00:00`~`2999-12-31T23:59:59` |
-| backDateValidation | Number | N | Back-date validation (seconds) | Default: `30` |
-| maxDepth | Number | N | Maximum depth for sub-CA creation | Default: `0` |
+| backDateValidation | Number | N | Back-date validation (seconds) | 0~2,592,000 (max 30 days)<br>Default: `30` |
+| maxDepth | Number | N | Maximum depth for sub-CA creation | -1~3<br>Default: `0` |
 | keyInfo | Object | Y | Key information | See below |
 | signatureAlgorithm | String | Y | Signature algorithm | See below<br>Must match the selected key (SHA256 format recommended) |
 | excludeCommonNameFromSans | Boolean | N | Exclude CN from SAN | Default: `false` |
@@ -475,7 +475,7 @@ POST /v2.0/appkeys/{appkey}/ca-stores/{caStoreId}/templates
 | parentCertId | Number | Y | Parent certificate ID | |
 | maxTTL | Number | Conditional | Maximum validity period (seconds) | Either `maxTTL` or `maxSpecificDate`, 0~315,360,000 (max 10 years) |
 | maxSpecificDate | String | Conditional | Maximum expiration date limit | Either `maxSpecificDate` or `maxTTL`, format: `2025-12-31T23:59:59`, `1970-01-01T00:00:00`~`2999-12-31T23:59:59` |
-| backDateValidation | Number | N | Back-date validation (seconds) | |
+| backDateValidation | Number | N | Back-date validation (seconds) | 0~2,592,000 (max 30 days)<br>Default: `30` |
 | allowIpSans | Boolean | N | IP SAN enabled | Default: `false` |
 | urlSansWhitelist | String[] | N | URL SAN whitelist | |
 | otherSansWhitelist | OidInfo[] | N | Other SAN whitelist | |
@@ -484,7 +484,7 @@ POST /v2.0/appkeys/{appkey}/ca-stores/{caStoreId}/templates
 | useCsrCommonName | Boolean | N | CSR CN enabled | Default: `false` |
 | useCsrSans | Boolean | N | CSR SAN enabled | Default: `false` |
 | keyInfo | Object | Y | Key information | See below |
-| signatureBits | Number | N | Signature bit length | `256`, `384`, `512`, default: `256`<br>Ignored for ED25519 |
+| signatureBits | Number | N | Signature bit length | `256`, `384`, `512`<br>Default: `256`<br>Ignored for ED25519 |
 | keyUsage | String[] | N | Key usage | See below |
 | extendedKeyUsage | String[] | N | Extended key usage | See below |
 | extendedKeyUsageOids | String[] | N | Extended key usage custom OID | |
@@ -623,8 +623,8 @@ POST /v2.0/appkeys/{appkey}/ca-stores/{caStoreId}/templates/{templateId}/certifi
 | ttlValue | Number | Conditional | Validity period (seconds) | Either `ttlValue` or `specificDate`, 0~315,360,000 (max 10 years) |
 | specificDate | String | Conditional | Specific expiration date | Either `specificDate` or `ttlValue`, format: `2025-12-31T23:59:59`, `1970-01-01T00:00:00`~`2999-12-31T23:59:59` |
 | csr | String | Conditional | CSR | Required for SIGN mode |
-| format | String | N | Certificate format | `PEM`, `DER`, `PEM_BUNDLE`, default: `PEM`<br>Invalid values will use default |
-| privateKeyFormat | String | N | Private key format | `PEM`, `DER`, `PKCS8`, default: `PEM`<br>Invalid values will use default<br>Available in GENERATE mode only |
+| format | String | N | Certificate format | `PEM`, `DER`, `PEM_BUNDLE`<br>Default: `PEM`<br>Invalid values will use default |
+| privateKeyFormat | String | N | Private key format | `PEM`, `DER`, `PKCS8`<br>Default: `PEM`<br>Invalid values will use default<br>Available in GENERATE mode only |
 | removeRootsFromChain | Boolean | N | Remove root from chain | Available in SIGN mode only |
 | excludeCommonNameFromSans | Boolean | N | Exclude CN from SAN | |
 | serialNumber | String | N | Serial Number | Maximum 64 characters |
