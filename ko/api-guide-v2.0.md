@@ -375,7 +375,7 @@ POST /v2.0/appkeys/{appkey}/ca-stores/{caStoreId}/certs
     "organization": "NHN Cloud",
     "country": "KR"
   },
-  "ttlValue": 315,360,000,
+  "ttlValue": 315360000,
   "signatureAlgorithm": "SHA256_WITH_RSA",
   "maxDepth": 2
 }
