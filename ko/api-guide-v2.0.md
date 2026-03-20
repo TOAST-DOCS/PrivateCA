@@ -301,12 +301,12 @@ POST /v2.0/appkeys/{appkey}/ca-stores/{caStoreId}/certs
 | name | String | Y | 인증서 이름 | 최대 64자 |
 | description | String | N | 인증서 설명 | 최대 256자 |
 | subjectInfo | Object | Y | 주체 정보 | `commonName` 필수 |
-| ttlValue | Number | 조건부 | 유효 기간(초) | `specificDate`와 택 1 |
-| specificDate | String | 조건부 | 만료 일시 | `ttlValue`와 택 1, 형식: `2025-12-31T23:59:59` |
+| ttlValue | Number | 조건부 | 유효 기간(초) | `specificDate`와 택 1, 0~315,360,000(최대 10년) |
+| specificDate | String | 조건부 | 만료 일시 | `ttlValue`와 택 1, 형식: `2025-12-31T23:59:59`, `1970-01-01T00:00:00`~`2999-12-31T23:59:59` |
 | backDateValidation | Number | N | 백데이트 유효성(초) | 기본값: `30` |
 | maxDepth | Number | N | 하위 CA 생성 가능 깊이 | 기본값: `0` |
 | keyInfo | Object | Y | 키 정보 | 하단 참조 |
-| signatureAlgorithm | String | Y | 서명 알고리즘 | 하단 참조, 선택한 Key에 맞는 서명 알고리즘 필수(보통 SHA256 형태 선택) |
+| signatureAlgorithm | String | Y | 서명 알고리즘 | 하단 참조<br>선택한 Key에 맞는 서명 알고리즘 필수(보통 SHA256 형태 선택) |
 | excludeCommonNameFromSans | Boolean | N | CN을 SAN에서 제외 | 기본값: `false` |
 | sans | String[] | N | DNS SAN 목록 | |
 | ipSans | String[] | N | IP SAN 목록 | |
@@ -319,7 +319,7 @@ POST /v2.0/appkeys/{appkey}/ca-stores/{caStoreId}/certs
 |-----------|---------|
 | RSA | 2048, 3072, 4096 |
 | EC 또는 ECDSA | 224, 256, 384, 521 |
-| ED25519 | 256(고정) |
+| ED25519 | 256(고정, 값을 입력해도 무시됨) |
 
 **SignatureAlgorithm**
 
@@ -472,8 +472,8 @@ POST /v2.0/appkeys/{appkey}/ca-stores/{caStoreId}/templates
 | name | String | Y | 템플릿 이름 | 최대 64자 |
 | description | String | N | 템플릿 설명 | 최대 256자 |
 | parentCertId | Number | Y | 상위 인증서 ID | |
-| maxTTL | Number | 조건부 | 최대 유효 기간(초) | `maxSpecificDate`와 택 1 |
-| maxSpecificDate | String | 조건부 | 최대 만료일 제한 | `maxTTL`과 택 1, 형식: `2025-12-31T23:59:59` |
+| maxTTL | Number | 조건부 | 최대 유효 기간(초) | `maxSpecificDate`와 택 1, 0~315,360,000(최대 10년) |
+| maxSpecificDate | String | 조건부 | 최대 만료일 제한 | `maxTTL`과 택 1, 형식: `2025-12-31T23:59:59`, `1970-01-01T00:00:00`~`2999-12-31T23:59:59` |
 | backDateValidation | Number | N | 백데이트 유효성(초) | |
 | allowIpSans | Boolean | N | IP SAN 허용 여부 | 기본값: `false` |
 | urlSansWhitelist | String[] | N | URL SAN 화이트리스트 | |
@@ -483,7 +483,7 @@ POST /v2.0/appkeys/{appkey}/ca-stores/{caStoreId}/templates
 | useCsrCommonName | Boolean | N | CSR의 CN 사용 여부 | 기본값: `false` |
 | useCsrSans | Boolean | N | CSR의 SAN 사용 여부 | 기본값: `false` |
 | keyInfo | Object | Y | 키 정보 | 하단 참조 |
-| signatureBits | Number | N | 서명 비트 수 | `256`, `384`, `512`, 기본값: `256`, ED25519의 경우 무시됨 |
+| signatureBits | Number | N | 서명 비트 수 | `256`, `384`, `512`, 기본값: `256`<br>ED25519의 경우 무시됨 |
 | keyUsage | String[] | N | 키 사용 용도 | 하단 참조 |
 | extendedKeyUsage | String[] | N | 확장 키 사용 용도 | 하단 참조 |
 | extendedKeyUsageOids | String[] | N | 확장 키 사용 커스텀 OID | |
@@ -498,7 +498,7 @@ POST /v2.0/appkeys/{appkey}/ca-stores/{caStoreId}/templates
 |-----------|---------|
 | RSA | 2048, 3072, 4096 |
 | EC 또는 ECDSA | 224, 256, 384, 521 |
-| ED25519 | 256(고정) |
+| ED25519 | 256(고정, 값을 입력해도 무시됨) |
 
 **Key Usage 값**
 
@@ -619,11 +619,11 @@ POST /v2.0/appkeys/{appkey}/ca-stores/{caStoreId}/templates/{templateId}/certifi
 |------|------|------|------|-----------|
 | mode | String | Y | 인증서 발급 모드 | `GENERATE` 또는 `SIGN` |
 | commonName | String | Y | Common Name | 최대 64자 |
-| ttlValue | Number | 조건부 | 유효 기간(초) | `specificDate`와 택 1 |
-| specificDate | String | 조건부 | 특정 만료 날짜 | `ttlValue`와 택 1, 형식: `2025-12-31T23:59:59` |
+| ttlValue | Number | 조건부 | 유효 기간(초) | `specificDate`와 택 1, 0~315,360,000(최대 10년) |
+| specificDate | String | 조건부 | 특정 만료 날짜 | `ttlValue`와 택 1, 형식: `2025-12-31T23:59:59`, `1970-01-01T00:00:00`~`2999-12-31T23:59:59` |
 | csr | String | 조건부 | CSR | SIGN 모드 시 필수 |
-| format | String | N | 인증서 형식 | `PEM`, `DER`, `PEM_BUNDLE`, 기본값: `PEM` |
-| privateKeyFormat | String | N | 개인 키 형식 | `PEM`, `DER`, `PKCS8`, GENERATE 모드 시에만 사용, 기본값: `PEM` |
+| format | String | N | 인증서 형식 | `PEM`, `DER`, `PEM_BUNDLE`, 기본값: `PEM`<br>잘못된 값 입력 시 기본값으로 적용 |
+| privateKeyFormat | String | N | 개인 키 형식 | `PEM`, `DER`, `PKCS8`, 기본값: `PEM`<br>잘못된 값 입력 시 기본값으로 적용<br>GENERATE 모드 시에만 사용 |
 | removeRootsFromChain | Boolean | N | 체인에서 루트 제거 | SIGN 모드 시에만 사용 |
 | excludeCommonNameFromSans | Boolean | N | CN을 SAN에서 제외 | |
 | serialNumber | String | N | Serial Number | 최대 64자 |
