@@ -83,8 +83,8 @@ X-NHN-Authorization: Bearer {access_token}
 
 The Private CA API uses role-based access control (RBAC), which is categorized as follows:
 
-- **VIEWER**: You can only perform read operations, such as 저장소/인증서/템플릿 조회, downloading certificates and looking up CRLs.
-- **ADMIN**: You can perform all administrative tasks, including 저장소/인증서/템플릿 생성·수정·삭제, manually renewing CRLs.
+- **VIEWER**: You can only perform read operations, such as viewing stores/certificates/templates, downloading certificates and looking up CRLs.
+- **ADMIN**: You can perform all administrative tasks, including creating·modifying·deleting stores/certificates/templates, manually renewing CRLs.
 - **Public endpoints**: The CRL download (DER/PEM) and OCSP APIs are accessible without authentication for certificate validation.
 
 ### Certificate formats
@@ -161,9 +161,9 @@ POST /v2.0/appkeys/{appkey}/ca-stores
 | name | String | Y | Store name | Maximum 64 characters |
 | description | String | N | Store description | Maximum 256 characters |
 | crlActive | Boolean | N | CRL enabled | Default: `false` |
-| crlRefreshPeriod | Number | N | CRL renewal cycle (days) | 1–30<br>Default: 7 |
+| crlRefreshPeriod | Number | N | CRL renewal cycle (days) | 1 ~ 30<br>Default: `7` |
 | ocspActive | Boolean | N | OCSP enabled | Default: `false` |
-| ocspRefreshPeriod | Number | N | OCSP renewal cycle (hours) | 1–12<br>Default: 1 |
+| ocspRefreshPeriod | Number | N | OCSP renewal cycle (hours) | 1 ~ 12<br>Default: `1` |
 
 **Required Permissions**
 
@@ -302,10 +302,10 @@ POST /v2.0/appkeys/{appkey}/ca-stores/{caStoreId}/certs
 | name | String | Y | Certificate name | Maximum 64 characters |
 | description | String | N | Certificate description | Maximum 256 characters |
 | subjectInfo | Object | Y | Subject information | `commonName` required |
-| ttlValue | Number | Conditional | Validity period (seconds) | Either `ttlValue` or `specificDate`, 0~315,360,000 (max 10 years) |
-| specificDate | String | Conditional | Expiration date and time | Either `specificDate` or `ttlValue`, format: `2025-12-31T23:59:59`, `1970-01-01T00:00:00`~`2999-12-31T23:59:59` |
-| backDateValidation | Number | N | Back-date validation (seconds) | 0~2,592,000 (max 30 days)<br>Default: `30` |
-| maxDepth | Number | N | Maximum depth for sub-CA creation | -1~3<br>Default: `0` |
+| ttlValue | Number | Conditional | Validity period (seconds) | 0 ~ 315,360,000 (max 10 years)<br>Either `ttlValue` or `specificDate` |
+| specificDate | String | Conditional | Expiration date and time | 1970-01-01T00:00:00 ~ 2999-12-31T23:59:59<br>Format: `2025-12-31T23:59:59`<br>Either `specificDate` or `ttlValue` |
+| backDateValidation | Number | N | Back-date validation (seconds) | 0 ~ 2,592,000 (max 30 days)<br>Default: `30` |
+| maxDepth | Number | N | Maximum depth for sub-CA creation | -1 ~ 3<br>Default: `0` |
 | keyInfo | Object | Y | Key information | See below |
 | signatureAlgorithm | String | Y | Signature algorithm | See below<br>Must match the selected key (SHA256 format recommended) |
 | excludeCommonNameFromSans | Boolean | N | Exclude CN from SAN | Default: `false` |
@@ -473,9 +473,9 @@ POST /v2.0/appkeys/{appkey}/ca-stores/{caStoreId}/templates
 | name | String | Y | Template name | Maximum 64 characters |
 | description | String | N | Template description | Maximum 256 characters |
 | parentCertId | Number | Y | Parent certificate ID | |
-| maxTTL | Number | Conditional | Maximum validity period (seconds) | Either `maxTTL` or `maxSpecificDate`, 0~315,360,000 (max 10 years) |
-| maxSpecificDate | String | Conditional | Maximum expiration date limit | Either `maxSpecificDate` or `maxTTL`, format: `2025-12-31T23:59:59`, `1970-01-01T00:00:00`~`2999-12-31T23:59:59` |
-| backDateValidation | Number | N | Back-date validation (seconds) | 0~2,592,000 (max 30 days)<br>Default: `30` |
+| maxTTL | Number | Conditional | Maximum validity period (seconds) | 0 ~ 315,360,000 (max 10 years)<br>Either `maxTTL` or `maxSpecificDate` |
+| maxSpecificDate | String | Conditional | Maximum expiration date limit | 1970-01-01T00:00:00 ~ 2999-12-31T23:59:59<br>Format: `2025-12-31T23:59:59`<br>Either `maxSpecificDate` or `maxTTL` |
+| backDateValidation | Number | N | Back-date validation (seconds) | 0 ~ 2,592,000 (max 30 days)<br>Default: `30` |
 | allowIpSans | Boolean | N | IP SAN enabled | Default: `false` |
 | urlSansWhitelist | String[] | N | URL SAN whitelist | |
 | otherSansWhitelist | OidInfo[] | N | Other SAN whitelist | |
@@ -620,11 +620,11 @@ POST /v2.0/appkeys/{appkey}/ca-stores/{caStoreId}/templates/{templateId}/certifi
 |------|------|------|------|-----------|
 | mode | String | Y | Certificate issuance mode | `GENERATE` or `SIGN` |
 | commonName | String | Y | Common Name | Maximum 64 characters |
-| ttlValue | Number | Conditional | Validity period (seconds) | Either `ttlValue` or `specificDate`, 0~315,360,000 (max 10 years) |
-| specificDate | String | Conditional | Specific expiration date | Either `specificDate` or `ttlValue`, format: `2025-12-31T23:59:59`, `1970-01-01T00:00:00`~`2999-12-31T23:59:59` |
+| ttlValue | Number | Conditional | Validity period (seconds) | 0 ~ 315,360,000 (max 10 years)<br>Either `ttlValue` or `specificDate` |
+| specificDate | String | Conditional | Specific expiration date | 1970-01-01T00:00:00 ~ 2999-12-31T23:59:59<br>Format: `2025-12-31T23:59:59`<br>Either `specificDate` or `ttlValue` |
 | csr | String | Conditional | CSR | Required for SIGN mode |
-| format | String | N | Certificate format | `PEM`, `DER`, `PEM_BUNDLE`<br>Default: `PEM`<br>Invalid values will use default |
-| privateKeyFormat | String | N | Private key format | `PEM`, `DER`, `PKCS8`<br>Default: `PEM`<br>Invalid values will use default<br>Available in GENERATE mode only |
+| format | String | N | Certificate format | PEM, DER, PEM_BUNDLE<br>Default: `PEM`<br>Invalid values will use default |
+| privateKeyFormat | String | N | Private key format | PEM, DER, PKCS8<br>Default: `PEM`<br>Invalid values will use default<br>Available in GENERATE mode only |
 | removeRootsFromChain | Boolean | N | Remove root from chain | Available in SIGN mode only |
 | excludeCommonNameFromSans | Boolean | N | Exclude CN from SAN | |
 | serialNumber | String | N | Serial Number | Maximum 64 characters |
