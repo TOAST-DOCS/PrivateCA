@@ -301,12 +301,12 @@ ROOT、INTERMEDIATE証明書のみ発行可能です。LEAF証明書はテンプ
 | name | String | Y | 証明書名 | 最大64文字 |
 | description | String | N | 証明書説明 | 最大256文字 |
 | subjectInfo | Object | Y | 主体情報 | `commonName`必須 |
-| ttlValue | Number | 条件付き | 有効期間(秒) | specificDateと排他 |
-| specificDate | String | 条件付き | 有効期限 | ttlValueと排他、形式: 2025-12-31T23:59:59 |
+| ttlValue | Number | 条件付き | 有効期間(秒) | specificDateと排他、0~315,360,000(最大10年) |
+| specificDate | String | 条件付き | 有効期限 | ttlValueと排他、形式: `2025-12-31T23:59:59`、`1970-01-01T00:00:00`~`2999-12-31T23:59:59` |
 | backDateValidation | Number | N | バックデート有効性(秒) | デフォルト値: `30` |
 | maxDepth | Number | N | 下位CA作成可能深度 | デフォルト値: `0` |
 | keyInfo | Object | Y | キー情報 | 下記参照 |
-| signatureAlgorithm | String | Y | 署名アルゴリズム | 下記参照、選択したKeyに合う署名アルゴリズムが必須(通常はSHA256形式を選択) |
+| signatureAlgorithm | String | Y | 署名アルゴリズム | 下記参照<br>選択したKeyに合う署名アルゴリズムが必須(通常はSHA256形式を選択) |
 | excludeCommonNameFromSans | Boolean | N | CNをSANから除外 | デフォルト値: `false` |
 | sans | String[] | N | DNS SAN一覧 | |
 | ipSans | String[] | N | IP SAN一覧 | |
@@ -319,7 +319,7 @@ ROOT、INTERMEDIATE証明書のみ発行可能です。LEAF証明書はテンプ
 |-----------|---------|
 | RSA | 2048, 3072, 4096 |
 | ECまたはECDSA | 224、256、384、521 |
-| ED25519 | 256(固定) |
+| ED25519 | 256(固定、値を入力しても無視される) |
 
 **SignatureAlgorithm**
 
@@ -472,8 +472,8 @@ POST /v2.0/appkeys/{appkey}/ca-stores/{caStoreId}/templates
 | name | String | Y | テンプレート名 | 最大64文字 |
 | description | String | N | テンプレート説明 | 最大256文字 |
 | parentCertId | Number | Y | 上位証明書ID | |
-| maxTTL | Number | 条件付き | 最大有効期間(秒) | maxSpecificDateと排他 |
-| maxSpecificDate | String | 条件付き | 最大有効期限制限 | maxTTLと排他、形式: 2025-12-31T23:59:59 |
+| maxTTL | Number | 条件付き | 最大有効期間(秒) | maxSpecificDateと排他、0~315,360,000(最大10年) |
+| maxSpecificDate | String | 条件付き | 最大有効期限制限 | maxTTLと排他、形式: `2025-12-31T23:59:59`、`1970-01-01T00:00:00`~`2999-12-31T23:59:59` |
 | backDateValidation | Number | N | バックデート有効性(秒) | |
 | allowIpSans | Boolean | N | IP SAN許可の有無 | デフォルト値: `false` |
 | urlSansWhitelist | String[] | N | URL SANホワイトリスト | |
@@ -483,7 +483,7 @@ POST /v2.0/appkeys/{appkey}/ca-stores/{caStoreId}/templates
 | useCsrCommonName | Boolean | N | CSRのCN使用の有無 | デフォルト値: `false` |
 | useCsrSans | Boolean | N | CSRのSAN使用の有無 | デフォルト値: `false` |
 | keyInfo | Object | Y | キー情報 | 下記参照 |
-| signatureBits | Number | N | 署名ビット数 | `256`、`384`、`512`、デフォルト値: `256`、ED25519の場合は無視される |
+| signatureBits | Number | N | 署名ビット数 | `256`、`384`、`512`、デフォルト値: `256`<br>ED25519の場合は無視される |
 | keyUsage | String[] | N | キー使用用途 | 下記参照 |
 | extendedKeyUsage | String[] | N | 拡張キー使用用途 | 下記参照 |
 | extendedKeyUsageOids | String[] | N | 拡張キー使用カスタムOID | |
@@ -498,7 +498,7 @@ POST /v2.0/appkeys/{appkey}/ca-stores/{caStoreId}/templates
 |-----------|---------|
 | RSA | 2048, 3072, 4096 |
 | ECまたはECDSA | 224、256、384、521 |
-| ED25519 | 256(固定) |
+| ED25519 | 256(固定、値を入力しても無視される) |
 
 **Key Usage値**
 
@@ -619,11 +619,11 @@ POST /v2.0/appkeys/{appkey}/ca-stores/{caStoreId}/templates/{templateId}/certifi
 |------|------|------|------|-----------|
 | mode | String | Y | 証明書発行モード | `GENERATE`または`SIGN` |
 | commonName | String | Y | Common Name | 最大64文字 |
-| ttlValue | Number | 条件付き | 有効期間(秒) | specificDateと排他 |
-| specificDate | String | 条件付き | 特定の有効期限 | ttlValueと排他、形式: 2025-12-31T23:59:59 |
+| ttlValue | Number | 条件付き | 有効期間(秒) | specificDateと排他、0~315,360,000(最大10年) |
+| specificDate | String | 条件付き | 特定の有効期限 | ttlValueと排他、形式: `2025-12-31T23:59:59`、`1970-01-01T00:00:00`~`2999-12-31T23:59:59` |
 | csr | String | 条件付き | CSR | SIGNモード時は必須 |
-| format | String | N | 証明書形式 | `PEM`、`DER`、`PEM_BUNDLE`、デフォルト値: `PEM` |
-| privateKeyFormat | String | N | 秘密鍵形式 | `PEM`、`DER`、`PKCS8`、GENERATEモード時のみ使用、デフォルト値: `PEM` |
+| format | String | N | 証明書形式 | `PEM`、`DER`、`PEM_BUNDLE`、デフォルト値: `PEM`<br>無効な値を入力するとデフォルト値が適用される |
+| privateKeyFormat | String | N | 秘密鍵形式 | `PEM`、`DER`、`PKCS8`、デフォルト値: `PEM`<br>無効な値を入力するとデフォルト値が適用される<br>GENERATEモード時のみ使用 |
 | removeRootsFromChain | Boolean | N | チェーンからルートを削除 | SIGNモード時のみ使用 |
 | excludeCommonNameFromSans | Boolean | N | CNをSANから除外 | |
 | serialNumber | String | N | Serial Number | 最大64文字 |
