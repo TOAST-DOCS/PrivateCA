@@ -302,12 +302,12 @@ POST /v2.0/appkeys/{appkey}/ca-stores/{caStoreId}/certs
 | name | String | Y | Certificate name | Maximum 64 characters |
 | description | String | N | Certificate description | Maximum 256 characters |
 | subjectInfo | Object | Y | Subject information | `commonName` required |
-| ttlValue | Number | Conditional | Validity period (seconds) | Either `ttlValue` or `specificDate` |
-| specificDate | String | Conditional | Expiration date and time | Either `specificDate` or `ttlValue`, format: `2025-12-31T23:59:59` |
+| ttlValue | Number | Conditional | Validity period (seconds) | Either `ttlValue` or `specificDate`, 0~315,360,000 (max 10 years) |
+| specificDate | String | Conditional | Expiration date and time | Either `specificDate` or `ttlValue`, format: `2025-12-31T23:59:59`, `1970-01-01T00:00:00`~`2999-12-31T23:59:59` |
 | backDateValidation | Number | N | Back-date validation (seconds) | Default: `30` |
 | maxDepth | Number | N | Maximum depth for sub-CA creation | Default: `0` |
 | keyInfo | Object | Y | Key information | See below |
-| signatureAlgorithm | String | Y | Signature algorithm | See below. Must match the selected key (SHA256 format recommended) |
+| signatureAlgorithm | String | Y | Signature algorithm | See below<br>Must match the selected key (SHA256 format recommended) |
 | excludeCommonNameFromSans | Boolean | N | Exclude CN from SAN | Default: `false` |
 | sans | String[] | N | DNS SAN list | |
 | ipSans | String[] | N | IP SAN list | |
@@ -320,7 +320,7 @@ POST /v2.0/appkeys/{appkey}/ca-stores/{caStoreId}/certs
 |-----------|---------|
 | RSA | 2048, 3072, 4096 |
 | EC or ECDSA | 224, 256, 384, 521 |
-| ED25519 | 256 (fixed) |
+| ED25519 | 256 (fixed, value is ignored even if entered) |
 
 **SignatureAlgorithm**
 
@@ -473,8 +473,8 @@ POST /v2.0/appkeys/{appkey}/ca-stores/{caStoreId}/templates
 | name | String | Y | Template name | Maximum 64 characters |
 | description | String | N | Template description | Maximum 256 characters |
 | parentCertId | Number | Y | Parent certificate ID | |
-| maxTTL | Number | Conditional | Maximum validity period (seconds) | Either `maxTTL` or `maxSpecificDate` |
-| maxSpecificDate | String | Conditional | Maximum expiration date limit | Either `maxSpecificDate` or `maxTTL`, format: `2025-12-31T23:59:59` |
+| maxTTL | Number | Conditional | Maximum validity period (seconds) | Either `maxTTL` or `maxSpecificDate`, 0~315,360,000 (max 10 years) |
+| maxSpecificDate | String | Conditional | Maximum expiration date limit | Either `maxSpecificDate` or `maxTTL`, format: `2025-12-31T23:59:59`, `1970-01-01T00:00:00`~`2999-12-31T23:59:59` |
 | backDateValidation | Number | N | Back-date validation (seconds) | |
 | allowIpSans | Boolean | N | IP SAN enabled | Default: `false` |
 | urlSansWhitelist | String[] | N | URL SAN whitelist | |
@@ -484,7 +484,7 @@ POST /v2.0/appkeys/{appkey}/ca-stores/{caStoreId}/templates
 | useCsrCommonName | Boolean | N | CSR CN enabled | Default: `false` |
 | useCsrSans | Boolean | N | CSR SAN enabled | Default: `false` |
 | keyInfo | Object | Y | Key information | See below |
-| signatureBits | Number | N | Signature bit length | `256`, `384`, `512`, default: `256`. Ignored for ED25519 |
+| signatureBits | Number | N | Signature bit length | `256`, `384`, `512`, default: `256`<br>Ignored for ED25519 |
 | keyUsage | String[] | N | Key usage | See below |
 | extendedKeyUsage | String[] | N | Extended key usage | See below |
 | extendedKeyUsageOids | String[] | N | Extended key usage custom OID | |
@@ -499,7 +499,7 @@ POST /v2.0/appkeys/{appkey}/ca-stores/{caStoreId}/templates
 |-----------|---------|
 | RSA | 2048, 3072, 4096 |
 | EC or ECDSA | 224, 256, 384, 521 |
-| ED25519 | 256 (fixed) |
+| ED25519 | 256 (fixed, value is ignored even if entered) |
 
 **Key Usage value**
 
@@ -620,11 +620,11 @@ POST /v2.0/appkeys/{appkey}/ca-stores/{caStoreId}/templates/{templateId}/certifi
 |------|------|------|------|-----------|
 | mode | String | Y | Certificate issuance mode | `GENERATE` or `SIGN` |
 | commonName | String | Y | Common Name | Maximum 64 characters |
-| ttlValue | Number | Conditional | Validity period (seconds) | Either `ttlValue` or `specificDate` |
-| specificDate | String | Conditional | Specific expiration date | Either `specificDate` or `ttlValue`, format: `2025-12-31T23:59:59` |
+| ttlValue | Number | Conditional | Validity period (seconds) | Either `ttlValue` or `specificDate`, 0~315,360,000 (max 10 years) |
+| specificDate | String | Conditional | Specific expiration date | Either `specificDate` or `ttlValue`, format: `2025-12-31T23:59:59`, `1970-01-01T00:00:00`~`2999-12-31T23:59:59` |
 | csr | String | Conditional | CSR | Required for SIGN mode |
-| format | String | N | Certificate format | `PEM`, `DER`, `PEM_BUNDLE`, default: `PEM` |
-| privateKeyFormat | String | N | Private key format | `PEM`, `DER`, `PKCS8`. Available in GENERATE mode only, default: `PEM` |
+| format | String | N | Certificate format | `PEM`, `DER`, `PEM_BUNDLE`, default: `PEM`<br>Invalid values will use default |
+| privateKeyFormat | String | N | Private key format | `PEM`, `DER`, `PKCS8`, default: `PEM`<br>Invalid values will use default<br>Available in GENERATE mode only |
 | removeRootsFromChain | Boolean | N | Remove root from chain | Available in SIGN mode only |
 | excludeCommonNameFromSans | Boolean | N | Exclude CN from SAN | |
 | serialNumber | String | N | Serial Number | Maximum 64 characters |
