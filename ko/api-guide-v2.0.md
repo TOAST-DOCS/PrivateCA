@@ -112,6 +112,14 @@ GET /v2.0/appkeys/{appkey}/ca-stores
 |------|------|------|------|
 | appkey | String | Y | 앱키 |
 
+**Query Parameters**
+
+| 이름 | 타입 | 필수 | 설명 | 제약 조건 |
+|------|------|------|------|-----------|
+| page | Number | N | 페이지 번호 | 0부터 시작<br>기본값: `0` |
+| size | Number | N | 페이지 크기 | 기본값: `10` |
+| search | String | N | 검색어 | 저장소 이름 또는 설명 |
+
 **필요 권한**
 
 - `VIEWER` 이상
@@ -245,6 +253,15 @@ GET /v2.0/appkeys/{appkey}/ca-stores/{caStoreId}/certs
 |------|------|------|------|
 | appkey | String | Y | 앱키 |
 | caStoreId | Long | Y | 저장소 ID |
+
+**Query Parameters**
+
+| 이름 | 타입 | 필수 | 설명 | 제약 조건 |
+|------|------|------|------|-----------|
+| type | String | N | 인증서 타입 필터 | `all`, `issuer`, `leaf`<br>기본값: `all` |
+| page | Number | N | 페이지 번호 | 0부터 시작<br>기본값: `0` |
+| size | Number | N | 페이지 크기 | 기본값: `10` |
+| search | String | N | 검색어 | Common Name 기준 |
 
 **필요 권한**
 
@@ -421,6 +438,14 @@ GET /v2.0/appkeys/{appkey}/ca-stores/{caStoreId}/templates
 |------|------|------|------|
 | appkey | String | Y | 앱키 |
 | caStoreId | Long | Y | 저장소 ID |
+
+**Query Parameters**
+
+| 이름 | 타입 | 필수 | 설명 | 제약 조건 |
+|------|------|------|------|-----------|
+| page | Number | N | 페이지 번호 | 0부터 시작<br>기본값: `0` |
+| size | Number | N | 페이지 크기 | 기본값: `10` |
+| search | String | N | 검색어 | 템플릿 이름 |
 
 **필요 권한**
 
