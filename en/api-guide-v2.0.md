@@ -1,4 +1,4 @@
-# API v2.0 Guide
+## API v2.0 Guide
 **Management > Private CA > API v2.0 Guide**
 
 You can use the NHN Cloud Private CA API to manage certificates programmatically.
@@ -13,15 +13,57 @@ You can use the NHN Cloud Private CA API to manage certificates programmatically
 
 ### API List
 
+#### Store
+
 | Method | URI | Description |
 |--------|-----|------|
-| GET | /v2.0/appkeys/{appkey}/cas/{caId}/certs/{certId}/download | Download a certificate in PEM format. |
-| GET | /v2.0/appkeys/{appkey}/cas/{caId}/certs/{issuerCertId}/crl | Retrieve CRL information (PEM, issue/renew time). |
-| GET | /v2.0/appkeys/{appkey}/cas/{caId}/certs/{issuerCertId}/crl/der | Download a CRL in DER format. |
-| GET | /v2.0/appkeys/{appkey}/cas/{caId}/certs/{issuerCertId}/crl/pem | Download a CRL in PEM format. |
-| POST | /v2.0/appkeys/{appkey}/cas/{caId}/certs/{issuerCertId}/crl | Manually renew a CRL. |
-| GET | /v2.0/appkeys/{appkey}/cas/{caId}/ocsp/{ocspRequestBase64} | Retrieve certificate status with a Base64-encoded OCSP request. |
-| POST | /v2.0/appkeys/{appkey}/cas/{caId}/ocsp | Retrieve certificate status with an OCSP request in DER format. |
+| GET | /v2.0/appkeys/{appkey}/ca-stores | Retrieves a list of stores |
+| POST | /v2.0/appkeys/{appkey}/ca-stores | Creates a store |
+| GET | /v2.0/appkeys/{appkey}/ca-stores/{caStoreId} | Retrieves detailed information of a store |
+| PUT | /v2.0/appkeys/{appkey}/ca-stores/{caStoreId} | Modifies a store |
+| DELETE | /v2.0/appkeys/{appkey}/ca-stores/{caStoreId} | Deletes a store |
+
+#### Certificate (Issuer)
+
+| Method | URI | Description |
+|--------|-----|------|
+| GET | /v2.0/appkeys/{appkey}/ca-stores/{caStoreId}/certs | Retrieves a list of certificates |
+| POST | /v2.0/appkeys/{appkey}/ca-stores/{caStoreId}/certs | Issues a certificate (issuer) (ROOT and INTERMEDIATE only) |
+| GET | /v2.0/appkeys/{appkey}/ca-stores/{caStoreId}/certs/{certId} | Retrieves detailed information of a certificate |
+| POST | /v2.0/appkeys/{appkey}/ca-stores/{caStoreId}/certs/{certId}/revoke | Revokes a certificate |
+
+#### Template
+
+| Method | URI | Description |
+|--------|-----|------|
+| GET | /v2.0/appkeys/{appkey}/ca-stores/{caStoreId}/templates | Retrieves a list of templates |
+| POST | /v2.0/appkeys/{appkey}/ca-stores/{caStoreId}/templates | Creates a template |
+| GET | /v2.0/appkeys/{appkey}/ca-stores/{caStoreId}/templates/{templateId} | Retrieves detailed information of a template |
+| PUT | /v2.0/appkeys/{appkey}/ca-stores/{caStoreId}/templates/{templateId} | Modifies a template |
+| DELETE | /v2.0/appkeys/{appkey}/ca-stores/{caStoreId}/templates/{templateId} | Deletes a template |
+| POST | /v2.0/appkeys/{appkey}/ca-stores/{caStoreId}/templates/{templateId}/certificates | Issues a certificate using a template |
+
+#### Certificate Download
+
+| Method | URI | Description |
+|--------|-----|------|
+| GET | /v2.0/appkeys/{appkey}/ca-stores/{caStoreId}/certs/{certId}/download | Downloads a certificate in PEM format |
+
+#### CRL
+
+| Method | URI | Description |
+|--------|-----|------|
+| GET | /v2.0/appkeys/{appkey}/ca-stores/{caStoreId}/certs/{issuerCertId}/crl | Retrieves CRL information (PEM, issuance/renewal time) |
+| GET | /v2.0/appkeys/{appkey}/ca-stores/{caStoreId}/certs/{issuerCertId}/crl/der | Downloads a CRL in DER format |
+| GET | /v2.0/appkeys/{appkey}/ca-stores/{caStoreId}/certs/{issuerCertId}/crl/pem | Downloads a CRL in PEM format |
+| POST | /v2.0/appkeys/{appkey}/ca-stores/{caStoreId}/certs/{issuerCertId}/crl | Manually renews a CRL |
+
+#### OCSP
+
+| Method | URI | Description |
+|--------|-----|------|
+| GET | /v2.0/appkeys/{appkey}/ca-stores/{caStoreId}/ocsp/{ocspRequestBase64} | Retrieves certificate status using a Base64-encoded OCSP request |
+| POST | /v2.0/appkeys/{appkey}/ca-stores/{caStoreId}/ocsp | Retrieves certificate status using a DER format OCSP request |
 
 ## Prepare in advance
 
@@ -34,15 +76,15 @@ X-NHN-Authorization: Bearer {access_token}
 ```
 
 !!! tip "Notice"
-    - You can read more about the authentication token required in the authorization header [here](https://docs.nhncloud.com/en/nhncloud/en/public-api/api-authentication/).
+    - You can read more about the authentication token required in the authorization header [here](https://docs.nhncloud.com/ko/nhncloud/ko/public-api/user-access-key-token/).
     - The appkey can be found in the console and must be included in all API paths.
 
 ### Manage permissions
 
 The Private CA API uses role-based access control (RBAC), which is categorized as follows:
 
-- **VIEWER**: You can only perform read operations, such as downloading certificates and looking up CRLs.
-- **ADMIN**: You can perform all administrative tasks, including manually renewing CRLs.
+- **VIEWER**: You can only perform read operations, such as viewing stores/certificates/templates, downloading certificates and looking up CRLs.
+- **ADMIN**: You can perform all administrative tasks, including creating·modifying·deleting stores/certificates/templates, manually renewing CRLs.
 - **Public endpoints**: The CRL download (DER/PEM) and OCSP APIs are accessible without authentication for certificate validation.
 
 ### Certificate formats
@@ -51,6 +93,582 @@ The main certificate formats used by the Private CA API are as follows:
 
 - **Privacy enhanced mail (PEM)**: A text-based certificate format, encoded in Base64 and starting ` with -----BEGIN CERTIFICATE-----`. Human-readable and easy to edit.
 - **Distinguished encoding rules (DER)**: A certificate in binary format, which is smaller and more efficient than PEM. It is primarily used in Java applications.
+
+
+## Store API
+
+### List Stores
+
+Retrieves a list of stores.
+
+#### Request
+
+```
+GET /v2.0/appkeys/{appkey}/ca-stores
+```
+
+**Path Parameters**
+
+| Name | Type | Required | Description |
+|------|------|------|------|
+| appkey | String | Y | App key |
+
+**Required Permissions**
+
+- `VIEWER` or higher
+
+### Get Store Details
+
+Retrieves detailed information of a store.
+
+#### Request
+
+```
+GET /v2.0/appkeys/{appkey}/ca-stores/{caStoreId}
+```
+
+**Path Parameters**
+
+| Name | Type | Required | Description |
+|------|------|------|------|
+| appkey | String | Y | App key |
+| caStoreId | Long | Y | Store ID |
+
+**Required Permissions**
+
+- `VIEWER` or higher
+
+### Create Store
+
+Creates a store.
+
+#### Request
+
+```
+POST /v2.0/appkeys/{appkey}/ca-stores
+```
+
+**Path Parameters**
+
+| Name | Type | Required | Description |
+|------|------|------|------|
+| appkey | String | Y | App key |
+
+**Request Body**
+
+| Name | Type | Required | Description | Constraints |
+|------|------|------|------|-----------|
+| name | String | Y | Store name | Maximum 64 characters |
+| description | String | N | Store description | Maximum 256 characters |
+| crlActive | Boolean | N | CRL enabled | Default: `false` |
+| crlRefreshPeriod | Number | N | CRL renewal cycle (days) | 1 ~ 30<br>Default: `7` |
+| ocspActive | Boolean | N | OCSP enabled | Default: `false` |
+| ocspRefreshPeriod | Number | N | OCSP renewal cycle (hours) | 1 ~ 12<br>Default: `1` |
+
+**Required Permissions**
+
+- `ADMIN`
+
+**Request Example**
+
+```json
+{
+  "name": "Production CA Store",
+  "description": "Production environment CA storage",
+  "crlActive": true,
+  "crlRefreshPeriod": 7,
+  "ocspActive": true,
+  "ocspRefreshPeriod": 1
+}
+```
+
+### Modify Store
+
+Modifies a store.
+
+#### Request
+
+```
+PUT /v2.0/appkeys/{appkey}/ca-stores/{caStoreId}
+```
+
+**Path Parameters**
+
+| Name | Type | Required | Description |
+|------|------|------|------|
+| appkey | String | Y | App key |
+| caStoreId | Long | Y | Store ID |
+
+**Request Body**
+
+Same as Create Store.
+
+**Required Permissions**
+
+- `ADMIN`
+
+### Delete Store
+
+Deletes a store.
+
+#### Request
+
+```
+DELETE /v2.0/appkeys/{appkey}/ca-stores/{caStoreId}
+```
+
+**Path Parameters**
+
+| Name | Type | Required | Description |
+|------|------|------|------|
+| appkey | String | Y | App key |
+| caStoreId | Long | Y | Store ID |
+
+**Required Permissions**
+
+- `ADMIN`
+
+## Certificate (Issuer) API
+
+### List Certificates
+
+Retrieves a list of certificates included in a store.
+
+#### Request
+
+```
+GET /v2.0/appkeys/{appkey}/ca-stores/{caStoreId}/certs
+```
+
+**Path Parameters**
+
+| Name | Type | Required | Description |
+|------|------|------|------|
+| appkey | String | Y | App key |
+| caStoreId | Long | Y | Store ID |
+
+**Required Permissions**
+
+- `VIEWER` or higher
+
+### Get Certificate Details
+
+Retrieves detailed information of a certificate.
+
+#### Request
+
+```
+GET /v2.0/appkeys/{appkey}/ca-stores/{caStoreId}/certs/{certId}
+```
+
+**Path Parameters**
+
+| Name | Type | Required | Description |
+|------|------|------|------|
+| appkey | String | Y | App key |
+| caStoreId | Long | Y | Store ID |
+| certId | Long | Y | Certificate ID |
+
+**Required Permissions**
+
+- `VIEWER` or higher
+
+### Issue Certificate (Issuer)
+
+Issues a ROOT or INTERMEDIATE certificate (issuer).
+
+#### Request
+
+```
+POST /v2.0/appkeys/{appkey}/ca-stores/{caStoreId}/certs
+```
+
+**Path Parameters**
+
+| Name | Type | Required | Description |
+|------|------|------|------|
+| appkey | String | Y | App key |
+| caStoreId | Long | Y | Store ID |
+
+!!! danger "Caution"
+    Only ROOT and INTERMEDIATE certificates can be issued. LEAF certificates must be issued using a template.
+
+**Request Body**
+
+| Name | Type | Required | Description | Constraints |
+|------|------|------|------|-----------|
+| certificateType | String | Y | Certificate type | `ROOT` or `INTERMEDIATE` |
+| parentCertId | Number | Conditional | Parent certificate ID | Required if `certificateType` is `INTERMEDIATE` |
+| name | String | Y | Certificate name | Maximum 64 characters |
+| description | String | N | Certificate description | Maximum 256 characters |
+| subjectInfo | Object | Y | Subject information | `commonName` required |
+| ttlValue | Number | Conditional | Validity period (seconds) | 0 ~ 315,360,000 (max 10 years)<br>Either `ttlValue` or `specificDate` |
+| specificDate | String | Conditional | Expiration date and time | 1970-01-01T00:00:00 ~ 2999-12-31T23:59:59<br>Format: `2025-12-31T23:59:59`<br>Either `specificDate` or `ttlValue` |
+| backDateValidation | Number | N | Back-date validation (seconds) | 0 ~ 2,592,000 (max 30 days)<br>Default: `30` |
+| maxDepth | Number | N | Maximum depth for sub-CA creation | -1 ~ 3<br>Default: `0` |
+| keyInfo | Object | Y | Key information | See below |
+| signatureAlgorithm | String | Y | Signature algorithm | See below<br>Must match the selected key (SHA256 format recommended) |
+| excludeCommonNameFromSans | Boolean | N | Exclude CN from SAN | Default: `false` |
+| sans | String[] | N | DNS SAN list | |
+| ipSans | String[] | N | IP SAN list | |
+| urlSans | String[] | N | URL SAN list | |
+| otherSans | OidInfo[] | N | Other SAN list | See OidInfo below |
+
+**KeyInfo**
+
+| algorithm | keySize |
+|-----------|---------|
+| RSA | 2048, 3072, 4096 |
+| EC or ECDSA | 224, 256, 384, 521 |
+| ED25519 | 256 (fixed, value is ignored even if entered) |
+
+**SignatureAlgorithm**
+
+| Algorithm | Compatible Key |
+|----------|---------|
+| SHA256_WITH_RSA | RSA |
+| SHA384_WITH_RSA | RSA |
+| SHA512_WITH_RSA | RSA |
+| SHA256_WITH_ECDSA | EC or ECDSA |
+| SHA384_WITH_ECDSA | EC or ECDSA |
+| SHA512_WITH_ECDSA | EC or ECDSA |
+| ED25519 | ED25519 |
+
+**SubjectInfo**
+
+| Name | Type | Description | Constraints |
+|------|------|------|-----------|
+| commonName | String | Common Name (CN) | Maximum 64 characters |
+| serialNumber | String | Serial number | Maximum 64 characters |
+| country | String | Country code (C) | ISO 3166, 2 characters |
+| stateOrProvince | String | State/province (ST) | Maximum 128 characters |
+| locality | String | City/region (L) | Maximum 128 characters |
+| streetAddress | String | Street address (STREET) | Maximum 128 characters |
+| postalCode | String | Postal code | Maximum 40 characters |
+| organization | String | Organization name (O) | Maximum 64 characters |
+| organizationalUnit | String | Department name (OU) | Maximum 64 characters |
+
+**OidInfo (Other SAN)**
+
+| Name | Type | Required | Description |
+|------|------|------|------|
+| oid | String | Y | OID (e.g., `1.2.840.113549.1.9.1`) |
+| type | String | Y | `UTF8String`, `IA5String`, `PrintableString`, `BMPString`, `UniversalString` |
+| value | String | Y | Value (maximum 255 characters) |
+
+**Required Permissions**
+
+- `ADMIN`
+
+**Request Example**
+
+```json
+{
+  "name": "Root CA",
+  "description": "Production Root CA",
+  "certificateType": "ROOT",
+  "keyInfo": {
+    "algorithm": "RSA",
+    "keySize": 2048
+  },
+  "subjectInfo": {
+    "commonName": "NHN Cloud Root CA",
+    "organization": "NHN Cloud",
+    "country": "KR"
+  },
+  "ttlValue": 315360000,
+  "signatureAlgorithm": "SHA256_WITH_RSA",
+  "maxDepth": 2
+}
+```
+
+### Revoke Certificate
+
+Revokes a certificate.
+
+#### Request
+
+```
+POST /v2.0/appkeys/{appkey}/ca-stores/{caStoreId}/certs/{certId}/revoke
+```
+
+**Path Parameters**
+
+| Name | Type | Required | Description |
+|------|------|------|------|
+| appkey | String | Y | App key |
+| caStoreId | Long | Y | Store ID |
+| certId | Long | Y | Certificate ID |
+
+**Required Permissions**
+
+- `ADMIN`
+
+## Template API
+
+### List Templates
+
+Retrieves a list of templates.
+
+#### Request
+
+```
+GET /v2.0/appkeys/{appkey}/ca-stores/{caStoreId}/templates
+```
+
+**Path Parameters**
+
+| Name | Type | Required | Description |
+|------|------|------|------|
+| appkey | String | Y | App key |
+| caStoreId | Long | Y | Store ID |
+
+**Required Permissions**
+
+- `VIEWER` or higher
+
+### Get Template Details
+
+Retrieves detailed information of a template.
+
+#### Request
+
+```
+GET /v2.0/appkeys/{appkey}/ca-stores/{caStoreId}/templates/{templateId}
+```
+
+**Path Parameters**
+
+| Name | Type | Required | Description |
+|------|------|------|------|
+| appkey | String | Y | App key |
+| caStoreId | Long | Y | Store ID |
+| templateId | Long | Y | Template ID |
+
+**Required Permissions**
+
+- `VIEWER` or higher
+
+### Create Template
+
+Creates a template.
+
+#### Request
+
+```
+POST /v2.0/appkeys/{appkey}/ca-stores/{caStoreId}/templates
+```
+
+**Path Parameters**
+
+| Name | Type | Required | Description |
+|------|------|------|------|
+| appkey | String | Y | App key |
+| caStoreId | Long | Y | Store ID |
+
+**Request Body**
+
+| Name | Type | Required | Description | Constraints |
+|------|------|------|------|-----------|
+| name | String | Y | Template name | Maximum 64 characters |
+| description | String | N | Template description | Maximum 256 characters |
+| parentCertId | Number | Y | Parent certificate ID | |
+| maxTTL | Number | Conditional | Maximum validity period (seconds) | 0 ~ 315,360,000 (max 10 years)<br>Either `maxTTL` or `maxSpecificDate` |
+| maxSpecificDate | String | Conditional | Maximum expiration date limit | 1970-01-01T00:00:00 ~ 2999-12-31T23:59:59<br>Format: `2025-12-31T23:59:59`<br>Either `maxSpecificDate` or `maxTTL` |
+| backDateValidation | Number | N | Back-date validation (seconds) | 0 ~ 2,592,000 (max 30 days)<br>Default: `30` |
+| allowIpSans | Boolean | N | IP SAN enabled | Default: `false` |
+| urlSansWhitelist | String[] | N | URL SAN whitelist | |
+| otherSansWhitelist | OidInfo[] | N | Other SAN whitelist | |
+| storeInServer | Boolean | N | Certificate storage on server enabled | Default: `true` |
+| basicConstraintsValidForNonCa | Boolean | N | Basic Constraints validation for non-CA | Default: `false` |
+| useCsrCommonName | Boolean | N | CSR CN enabled | Default: `false` |
+| useCsrSans | Boolean | N | CSR SAN enabled | Default: `false` |
+| keyInfo | Object | Y | Key information | See below |
+| signatureBits | Number | N | Signature bit length | `256`, `384`, `512`<br>Default: `256`<br>Ignored for ED25519 |
+| keyUsage | String[] | N | Key usage | See below |
+| extendedKeyUsage | String[] | N | Extended key usage | See below |
+| extendedKeyUsageOids | String[] | N | Extended key usage custom OID | |
+| policies | String[] | N | Policy OID list | |
+| subjectInfo | Object | N | Subject information | See below |
+| useCsrOtherFields | Boolean | N | CSR other fields enabled | Default: `false` |
+| otherFields | OidInfo[] | N | Other fields | See below |
+
+**KeyInfo**
+
+| algorithm | keySize |
+|-----------|---------|
+| RSA | 2048, 3072, 4096 |
+| EC or ECDSA | 224, 256, 384, 521 |
+| ED25519 | 256 (fixed, value is ignored even if entered) |
+
+**Key Usage value**
+
+- `DIGITAL_SIGNATURE`
+- `NON_REPUDIATION`
+- `KEY_ENCIPHERMENT`
+- `DATA_ENCIPHERMENT`
+- `KEY_AGREEMENT`
+- `KEY_CERT_SIGN`
+- `CRL_SIGN`
+- `ENCIPHER_ONLY`
+- `DECIPHER_ONLY`
+
+**Extended Key Usage value**
+
+- `SERVER_AUTHENTICATION`
+- `CLIENT_AUTHENTICATION`
+- `CODE_SIGNING`
+- `EMAIL_PROTECTION`
+- `TIME_STAMPING`
+- `OCSP_SIGNING`
+- `ANY_EXTENDED_KEY_USAGE`
+
+**SubjectInfo**
+
+| Name | Type | Description | Constraints |
+|------|------|------|-----------|
+| serialNumber | String | Serial number | Maximum 64 characters |
+| country | String | Country code (C) | ISO 3166, 2 characters |
+| stateOrProvince | String | State/province (ST) | Maximum 128 characters |
+| locality | String | City/region (L) | Maximum 128 characters |
+| streetAddress | String | Street address (STREET) | Maximum 128 characters |
+| postalCode | String | Postal code | Maximum 40 characters |
+| organization | String | Organization name (O) | Maximum 64 characters |
+| organizationalUnit | String | Department name (OU) | Maximum 64 characters |
+
+**OidInfo (Other Fields)**
+
+| Name | Type | Required | Description |
+|------|------|------|------|
+| oid | String | Y | OID (e.g., `1.2.840.113549.1.9.1`) |
+| type | String | Y | `UTF8String`, `IA5String`, `PrintableString`, `BMPString`, `UniversalString` |
+| value | String | Y | Value (maximum 255 characters) |
+
+**Required Permissions**
+
+- `ADMIN`
+
+### Modify Template
+
+Modifies a template.
+
+#### Request
+
+```
+PUT /v2.0/appkeys/{appkey}/ca-stores/{caStoreId}/templates/{templateId}
+```
+
+**Path Parameters**
+
+| Name | Type | Required | Description |
+|------|------|------|------|
+| appkey | String | Y | App key |
+| caStoreId | Long | Y | Store ID |
+| templateId | Long | Y | Template ID |
+
+**Request Body**
+
+Same as Create Template.
+
+**Required Permissions**
+
+- `ADMIN`
+
+### Delete Template
+
+Deletes a template.
+
+#### Request
+
+```
+DELETE /v2.0/appkeys/{appkey}/ca-stores/{caStoreId}/templates/{templateId}
+```
+
+**Path Parameters**
+
+| Name | Type | Required | Description |
+|------|------|------|------|
+| appkey | String | Y | App key |
+| caStoreId | Long | Y | Store ID |
+| templateId | Long | Y | Template ID |
+
+**Required Permissions**
+
+- `ADMIN`
+
+### Issue Certificate Using Template
+
+Issues a certificate using a template.
+
+#### Request
+
+```
+POST /v2.0/appkeys/{appkey}/ca-stores/{caStoreId}/templates/{templateId}/certificates
+```
+
+**Path Parameters**
+
+| Name | Type | Required | Description |
+|------|------|------|------|
+| appkey | String | Y | App key |
+| caStoreId | Long | Y | Store ID |
+| templateId | Long | Y | Template ID |
+
+**Request Body**
+
+| Name | Type | Required | Description | Constraints |
+|------|------|------|------|-----------|
+| mode | String | Y | Certificate issuance mode | `GENERATE` or `SIGN` |
+| commonName | String | Y | Common Name | Maximum 64 characters |
+| ttlValue | Number | Conditional | Validity period (seconds) | 0 ~ 315,360,000 (max 10 years)<br>Either `ttlValue` or `specificDate` |
+| specificDate | String | Conditional | Specific expiration date | 1970-01-01T00:00:00 ~ 2999-12-31T23:59:59<br>Format: `2025-12-31T23:59:59`<br>Either `specificDate` or `ttlValue` |
+| csr | String | Conditional | CSR | Required for SIGN mode |
+| format | String | N | Certificate format | PEM, DER, PEM_BUNDLE<br>Default: `PEM`<br>Invalid values will use default |
+| privateKeyFormat | String | N | Private key format | PEM, DER, PKCS8<br>Default: `PEM`<br>Invalid values will use default<br>Available in GENERATE mode only |
+| removeRootsFromChain | Boolean | N | Remove root from chain | Available in SIGN mode only |
+| excludeCommonNameFromSans | Boolean | N | Exclude CN from SAN | |
+| serialNumber | String | N | Serial Number | Maximum 64 characters |
+| sans | String[] | N | DNS SAN list | |
+| ipSans | String[] | N | IP SAN list | |
+| urlSans | String[] | N | URL SAN list | |
+| otherSans | OidInfo[] | N | Other SAN list | See below |
+
+**OidInfo (Other SAN)**
+
+| Name | Type | Required | Description |
+|------|------|------|------|
+| oid | String | Y | OID (e.g., `1.2.840.113549.1.9.1`) |
+| type | String | Y | `UTF8String`, `IA5String`, `PrintableString`, `BMPString`, `UniversalString` |
+| value | String | Y | Value (maximum 255 characters) |
+
+**Required Permissions**
+
+- `ADMIN`
+
+**Request Example (GENERATE mode)**
+
+```json
+{
+  "mode": "GENERATE",
+  "commonName": "api.example.com",
+  "ttlValue": 31536000,
+  "sans": ["api.example.com", "www.example.com"],
+  "format": "PEM",
+  "privateKeyFormat": "PKCS8"
+}
+```
+
+**Request Example (SIGN mode)**
+
+```json
+{
+  "mode": "SIGN",
+  "csr": "-----BEGIN CERTIFICATE REQUEST-----\nMIIC...\n-----END CERTIFICATE REQUEST-----",
+  "ttlValue": 31536000,
+  "format": "PEM",
+  "removeRootsFromChain": false
+}
+```
 
 ## Certificate download API
 
@@ -61,7 +679,7 @@ Download the issued certificate in PEM format.
 #### Request
 
 ```
-GET /v2.0/appkeys/{appkey}/cas/{caId}/certs/{certId}/download
+GET /v2.0/appkeys/{appkey}/ca-stores/{caStoreId}/certs/{certId}/download
 ```
 
 **Path Parameters**
@@ -69,7 +687,7 @@ GET /v2.0/appkeys/{appkey}/cas/{caId}/certs/{certId}/download
 | Name | Type | Required | Description |
 |------|------|------|------|
 | appkey | String | Y | Appkey |
-| caId | Long | Y | Repository ID |
+| caStoreId | Long | Y | Repository ID |
 | certId | Long | Y | Certificate ID |
 
 **Required Permission**
@@ -98,7 +716,7 @@ Retrieve CRL information for a specific issuer.
 #### Request
 
 ```
-GET /v2.0/appkeys/{appkey}/cas/{caId}/certs/{issuerCertId}/crl
+GET /v2.0/appkeys/{appkey}/ca-stores/{caStoreId}/certs/{issuerCertId}/crl
 ```
 
 **Path Parameters**
@@ -106,7 +724,7 @@ GET /v2.0/appkeys/{appkey}/cas/{caId}/certs/{issuerCertId}/crl
 | Name | Type | Required | Description |
 |------|------|------|------|
 | appkey | String | Y | Appkey |
-| caId | Long | Y | Repository ID |
+| caStoreId | Long | Y | Repository ID |
 | issuerCertId | Long | Y | Issuer certificate ID |
 
 **Required Permission**
@@ -145,7 +763,7 @@ Download the CRL in DER (binary) format.
 #### Request
 
 ```
-GET /v2.0/appkeys/{appkey}/cas/{caId}/certs/{issuerCertId}/crl/der
+GET /v2.0/appkeys/{appkey}/ca-stores/{caStoreId}/certs/{issuerCertId}/crl/der
 ```
 
 **Path Parameters**
@@ -153,7 +771,7 @@ GET /v2.0/appkeys/{appkey}/cas/{caId}/certs/{issuerCertId}/crl/der
 | Name | Type | Required | Description |
 |------|------|------|------|
 | appkey | String | Y | Appkey |
-| caId | Long | Y | Repository ID |
+| caStoreId | Long | Y | Repository ID |
 | issuerCertId | Long | Y | Issuer certificate ID |
 
 **Required Permission**
@@ -178,7 +796,7 @@ Download the CRL in PEM format.
 #### Request
 
 ```
-GET /v2.0/appkeys/{appkey}/cas/{caId}/certs/{issuerCertId}/crl/pem
+GET /v2.0/appkeys/{appkey}/ca-stores/{caStoreId}/certs/{issuerCertId}/crl/pem
 ```
 
 **Path Parameters**
@@ -186,7 +804,7 @@ GET /v2.0/appkeys/{appkey}/cas/{caId}/certs/{issuerCertId}/crl/pem
 | Name | Type | Required | Description |
 |------|------|------|------|
 | appkey | String | Y | Appkey |
-| caId | Long | Y | Repository ID |
+| caStoreId | Long | Y | Repository ID |
 | issuerCertId | Long | Y | Issuer certificate ID |
 
 **Required Permission**
@@ -211,7 +829,7 @@ Renew the CRL manually.
 #### Request
 
 ```
-POST /v2.0/appkeys/{appkey}/cas/{caId}/certs/{issuerCertId}/crl
+POST /v2.0/appkeys/{appkey}/ca-stores/{caStoreId}/certs/{issuerCertId}/crl
 ```
 
 **Path Parameters**
@@ -219,7 +837,7 @@ POST /v2.0/appkeys/{appkey}/cas/{caId}/certs/{issuerCertId}/crl
 | Name | Type | Required | Description |
 |------|------|------|------|
 | appkey | String | Y | Appkey |
-| caId | Long | Y | Repository ID |
+| caStoreId | Long | Y | Repository ID |
 | issuerCertId | Long | Y | Issuer certificate ID |
 
 **Required Permission**
@@ -252,7 +870,7 @@ Processes Base64-encoded OCSP requests.
 #### Request
 
 ```
-GET /v2.0/appkeys/{appkey}/cas/{caId}/ocsp/{ocspRequestBase64}
+GET /v2.0/appkeys/{appkey}/ca-stores/{caStoreId}/ocsp/{ocspRequestBase64}
 ```
 
 **Path Parameters**
@@ -260,7 +878,7 @@ GET /v2.0/appkeys/{appkey}/cas/{caId}/ocsp/{ocspRequestBase64}
 | Name | Type | Required | Description |
 |------|------|------|------|
 | appkey | String | Y | App Key |
-| caId | Long | Y | Store ID |
+| caStoreId | Long | Y | Store ID |
 | ocspRequestBase64 | String | Y | Base64-encoded OCSP request |
 
 !!! danger "Caution"
@@ -285,7 +903,7 @@ GET /v2.0/appkeys/{appkey}/cas/{caId}/ocsp/{ocspRequestBase64}
 OCSP_REQUEST=$(openssl ocsp -issuer ca.pem -cert cert.pem -reqout - | base64 -w 0)
 
 # Send URL-encoded requests
-curl -X GET "https://kr1-pca.api.nhncloudservice.com/v2.0/appkeys/my-appkey/cas/1/ocsp/${OCSP_REQUEST}"
+curl -X GET "https://kr1-pca.api.nhncloudservice.com/v2.0/appkeys/my-appkey/ca-stores/1/ocsp/${OCSP_REQUEST}"
 ```
 
 #### Response
@@ -305,7 +923,7 @@ Process OCSP requests in DER format.
 #### Request
 
 ```
-POST /v2.0/appkeys/{appkey}/cas/{caId}/ocsp
+POST /v2.0/appkeys/{appkey}/ca-stores/{caStoreId}/ocsp
 ```
 
 **Path Parameters**
@@ -313,7 +931,7 @@ POST /v2.0/appkeys/{appkey}/cas/{caId}/ocsp
 | Name | Type | Required | Description |
 |------|------|------|------|
 | appkey | String | Y | App Key |
-| caId | Long | Y | Repository ID |
+| caStoreId | Long | Y | Repository ID |
 
 **Required Permission**
 
@@ -334,7 +952,7 @@ OCSP requests (DER format)
 openssl ocsp -issuer ca.pem -cert cert.pem -reqout ocsp-request.der
 
 # Send OCSP requests
-curl -X POST "https://kr1-pca.api.nhncloudservice.com/v2.0/appkeys/my-appkey/cas/1/ocsp" \
+curl -X POST "https://kr1-pca.api.nhncloudservice.com/v2.0/appkeys/my-appkey/ca-stores/1/ocsp" \
     -H "Content-Type: application/ocsp-request" \
     --data-binary @ocsp-request.der \
     -o ocsp-response.der
