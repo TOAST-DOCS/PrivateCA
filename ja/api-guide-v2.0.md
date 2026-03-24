@@ -112,6 +112,14 @@ GET /v2.0/appkeys/{appkey}/ca-stores
 |------|------|------|------|
 | appkey | String | Y | Appkey |
 
+**Query Parameters**
+
+| 名前 | タイプ | 必須 | 説明 | 制約条件 |
+|------|------|------|------|-----------|
+| page | Number | N | ページ番号 | 0から開始<br>デフォルト値: `0` |
+| size | Number | N | ページサイズ | デフォルト値: `10` |
+| search | String | N | 検索キーワード | ストア名または説明 |
+
 **必要権限**
 
 - `VIEWER`以上
@@ -245,6 +253,15 @@ GET /v2.0/appkeys/{appkey}/ca-stores/{caStoreId}/certs
 |------|------|------|------|
 | appkey | String | Y | Appkey |
 | caStoreId | Long | Y | ストアID |
+
+**Query Parameters**
+
+| 名前 | タイプ | 必須 | 説明 | 制約条件 |
+|------|------|------|------|-----------|
+| type | String | N | 証明書タイプフィルター | `all`, `issuer`, `leaf`<br>デフォルト値: `all` |
+| page | Number | N | ページ番号 | 0から開始<br>デフォルト値: `0` |
+| size | Number | N | ページサイズ | デフォルト値: `10` |
+| search | String | N | 検索キーワード | Common Name基準 |
 
 **必要権限**
 
@@ -421,6 +438,14 @@ GET /v2.0/appkeys/{appkey}/ca-stores/{caStoreId}/templates
 |------|------|------|------|
 | appkey | String | Y | Appkey |
 | caStoreId | Long | Y | ストアID |
+
+**Query Parameters**
+
+| 名前 | タイプ | 必須 | 説明 | 制約条件 |
+|------|------|------|------|-----------|
+| page | Number | N | ページ番号 | 0から開始<br>デフォルト値: `0` |
+| size | Number | N | ページサイズ | デフォルト値: `10` |
+| search | String | N | 検索キーワード | テンプレート名 |
 
 **必要権限**
 
