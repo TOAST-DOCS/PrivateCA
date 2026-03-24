@@ -113,6 +113,14 @@ GET /v2.0/appkeys/{appkey}/ca-stores
 |------|------|------|------|
 | appkey | String | Y | App key |
 
+**Query Parameters**
+
+| Name | Type | Required | Description | Constraints |
+|------|------|------|------|-----------|
+| page | Number | N | Page number | Starts from 0<br>Default: `0` |
+| size | Number | N | Page size | Default: `10` |
+| search | String | N | Search keyword | Store name or description |
+
 **Required Permissions**
 
 - `VIEWER` or higher
@@ -246,6 +254,15 @@ GET /v2.0/appkeys/{appkey}/ca-stores/{caStoreId}/certs
 |------|------|------|------|
 | appkey | String | Y | App key |
 | caStoreId | Long | Y | Store ID |
+
+**Query Parameters**
+
+| Name | Type | Required | Description | Constraints |
+|------|------|------|------|-----------|
+| type | String | N | Certificate type filter | `all`, `issuer`, `leaf`<br>Default: `all` |
+| page | Number | N | Page number | Starts from 0<br>Default: `0` |
+| size | Number | N | Page size | Default: `10` |
+| search | String | N | Search keyword | Based on Common Name |
 
 **Required Permissions**
 
@@ -422,6 +439,14 @@ GET /v2.0/appkeys/{appkey}/ca-stores/{caStoreId}/templates
 |------|------|------|------|
 | appkey | String | Y | App key |
 | caStoreId | Long | Y | Store ID |
+
+**Query Parameters**
+
+| Name | Type | Required | Description | Constraints |
+|------|------|------|------|-----------|
+| page | Number | N | Page number | Starts from 0<br>Default: `0` |
+| size | Number | N | Page size | Default: `10` |
+| search | String | N | Search keyword | Template name |
 
 **Required Permissions**
 
