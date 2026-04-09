@@ -22,7 +22,7 @@
 
 ### Bug Fixes
 - Fixed an issue where the expiration method was incorrectly displayed as "TTL" when set to a "Specific Date" in templates.
-- Fixed a bug where "TTL" appeared instead of the selected "Specific Date" in Template expiration settings.
+- Fixed an issue where an error modal appeared during screen transitions in the **ACME Details** tab under certain conditions.
 
 ## December 23, 2025
 
