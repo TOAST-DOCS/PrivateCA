@@ -3,13 +3,22 @@
 
 You can use the NHN Cloud Private CA API to manage certificates programmatically.
 
-## Basic Info
+## Private CA API Common Information
 
 ### API Endpoint
 
 | Region | Endpoint |
 | --- | --- |
 | KR1 | https://kr1-pca.api.nhncloudservice.com |
+
+### Authentication and Authorization
+
+Private CA API v2.0 supports Appkey and User Access Key token as authentication methods for API calls.
+
+Appkey is included in the request URL when calling the API to identify and point to a specific resource.
+A User Access Key token is a temporary, Bearer-type access token issued from a User Access Key, used for authentication and authorization when calling the API.
+
+For more information on how to check and use each authentication method, see [Appkey](/nhncloud/en/public-api/appkey/) and [User Access Key Token](/nhncloud/en/public-api/user-access-key-token/).
 
 ### API List
 
@@ -66,18 +75,6 @@ You can use the NHN Cloud Private CA API to manage certificates programmatically
 | POST | /v2.0/appkeys/{appkey}/ca-stores/{caStoreId}/ocsp | Retrieves certificate status using a DER format OCSP request |
 
 ## Prepare in advance
-
-### Authentication
-
-All API requests require the following authentication headers:
-
-```
-X-NHN-Authorization: Bearer {access_token}
-```
-
-!!! tip "Notice"
-    - You can read more about the authentication token required in the authorization header [here](https://docs.nhncloud.com/ko/nhncloud/ko/public-api/user-access-key-token/).
-    - The appkey can be found in the console and must be included in all API paths.
 
 ### Manage permissions
 
