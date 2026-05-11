@@ -494,7 +494,7 @@ POST /v2.0/appkeys/{appkey}/ca-stores/{caStoreId}/templates
 |------|------|------|------|-----------|
 | name | String | Y | Template name | Maximum 64 characters |
 | description | String | N | Template description | Maximum 256 characters |
-| parentCertId | Number | Y | Parent certificate ID | |
+| parentCertId | Number | Y | Parent certificate ID | Only issuer certificates allowed |
 | maxTTL | Number | Conditional | Maximum validity period (seconds) | 0 ~ 315,360,000 (max 10 years)<br>Either `maxTTL` or `maxSpecificDate` |
 | maxSpecificDate | String | Conditional | Maximum expiration date limit | 1970-01-01T00:00:00 ~ 2999-12-31T23:59:59<br>Format: `2025-12-31T23:59:59`<br>Either `maxSpecificDate` or `maxTTL` |
 | backDateValidation | Number | N | Back-date validation (seconds) | 0 ~ 2,592,000 (max 30 days)<br>Default: `30` |
