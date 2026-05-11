@@ -493,7 +493,7 @@ POST /v2.0/appkeys/{appkey}/ca-stores/{caStoreId}/templates
 |------|------|------|------|-----------|
 | name | String | Y | テンプレート名 | 最大64文字 |
 | description | String | N | テンプレート説明 | 最大256文字 |
-| parentCertId | Number | Y | 上位証明書ID | |
+| parentCertId | Number | Y | 上位証明書ID | 発行者証明書のみ指定可能 |
 | maxTTL | Number | 条件付き | 最大有効期間(秒) | 0 ～ 315,360,000(最大10年)<br>maxSpecificDateと排他 |
 | maxSpecificDate | String | 条件付き | 最大有効期限制限 | 1970-01-01T00:00:00 ～ 2999-12-31T23:59:59<br>形式: `2025-12-31T23:59:59`<br>maxTTLと排他 |
 | backDateValidation | Number | N | バックデート有効性(秒) | 0 ～ 2,592,000(最大30日)<br>デフォルト値: `30` |
