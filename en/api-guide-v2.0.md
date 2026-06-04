@@ -22,15 +22,15 @@ For more information on how to check and use each authentication method, see [Ap
 
 ### API List
 
-#### Store
+#### Repository
 
 | Method | URI | Description |
 |--------|-----|------|
-| GET | /v2.0/appkeys/{appkey}/ca-stores | Retrieves a list of stores |
-| POST | /v2.0/appkeys/{appkey}/ca-stores | Creates a store |
-| GET | /v2.0/appkeys/{appkey}/ca-stores/{caStoreId} | Retrieves detailed information of a store |
-| PUT | /v2.0/appkeys/{appkey}/ca-stores/{caStoreId} | Modifies a store |
-| DELETE | /v2.0/appkeys/{appkey}/ca-stores/{caStoreId} | Deletes a store |
+| GET | /v2.0/appkeys/{appkey}/ca-stores | Retrieves a list of repositories |
+| POST | /v2.0/appkeys/{appkey}/ca-stores | Creates a repository |
+| GET | /v2.0/appkeys/{appkey}/ca-stores/{caStoreId} | Retrieves detailed information of a repository |
+| PUT | /v2.0/appkeys/{appkey}/ca-stores/{caStoreId} | Modifies a repository |
+| DELETE | /v2.0/appkeys/{appkey}/ca-stores/{caStoreId} | Deletes a repository |
 
 #### Certificate (Issuer)
 
@@ -80,23 +80,22 @@ For more information on how to check and use each authentication method, see [Ap
 
 The Private CA API uses role-based access control (RBAC), which is categorized as follows:
 
-- **VIEWER**: You can only perform read operations, such as viewing stores/certificates/templates, downloading certificates and looking up CRLs.
-- **ADMIN**: You can perform all administrative tasks, including creating·modifying·deleting stores/certificates/templates, manually renewing CRLs.
+- **VIEWER**: You can only perform read operations, such as viewing repositories/certificates/templates, downloading certificates and looking up CRLs.
+- **ADMIN**: You can perform all administrative tasks, including creating·modifying·deleting repositories/certificates/templates, manually renewing CRLs.
 - **Public endpoints**: The CRL download (DER/PEM) and OCSP APIs are accessible without authentication for certificate validation.
 
 ### Certificate formats
 
 The main certificate formats used by the Private CA API are as follows:
 
-- **Privacy enhanced mail (PEM)**: A text-based certificate format, encoded in Base64 and starting ` with -----BEGIN CERTIFICATE-----`. Human-readable and easy to edit.
+- **Privacy enhanced mail (PEM)**: A text-based certificate format, encoded in Base64 and starting with `-----BEGIN CERTIFICATE-----`. Human-readable and easy to edit.
 - **Distinguished encoding rules (DER)**: A certificate in binary format, which is smaller and more efficient than PEM. It is primarily used in Java applications.
 
+## Repository API
 
-## Store API
+### List Repositories
 
-### List Stores
-
-Retrieves a list of stores.
+Retrieves a list of repositories.
 
 #### Request
 
@@ -116,15 +115,78 @@ GET /v2.0/appkeys/{appkey}/ca-stores
 |------|------|------|------|-----------|
 | page | Number | N | Page number | Starts from 0<br>Default: `0` |
 | size | Number | N | Page size | Default: `10` |
-| search | String | N | Search keyword | Store name or description |
+| search | String | N | Search keyword | Repository name or description |
 
 **Required Permissions**
 
 - `VIEWER` or higher
 
-### Get Store Details
+#### Response
 
-Retrieves detailed information of a store.
+**Response Body**
+
+```json
+{
+  "header": {
+    "resultCode": 0,
+    "resultMessage": "SUCCESS",
+    "isSuccessful": true
+  },
+  "body": {
+    "caInfoList": [
+      {
+        "id": 1,
+        "name": "Production CA Store",
+        "description": "Production environment CA storage",
+        "toastProjectId": 12345,
+        "templateCnt": 3,
+        "issuerCnt": 2,
+        "certificateCnt": 25,
+        "totalEabCnt": 0,
+        "activeEabCnt": 0,
+        "deletedEabCnt": 0,
+        "status": "ACTIVE",
+        "crlActive": true,
+        "crlRefreshPeriod": 7,
+        "ocspActive": true,
+        "ocspRefreshPeriod": 1,
+        "ocspUrl": "https://kr1-pca.api.nhncloudservice.com/v2.0/appkeys/my-appkey/ca-stores/1/ocsp",
+        "creationDatetime": "2024-01-15T10:00:00",
+        "creationUser": "admin@example.com",
+        "lastChangeDatetime": "2024-01-20T14:30:00",
+        "lastChangeUser": "admin@example.com"
+      }
+    ],
+    "totalCnt": 1,
+    "totalPageNo": 1,
+    "currentPageNo": 0
+  }
+}
+```
+
+| Field | Type | Description |
+|------|------|------|
+| caInfoList | Array | List of repository information |
+| caInfoList[].id | Long | Repository ID |
+| caInfoList[].name | String | Repository name |
+| caInfoList[].description | String | Repository description |
+| caInfoList[].toastProjectId | Long | NHN Cloud project ID |
+| caInfoList[].templateCnt | Long | Number of templates |
+| caInfoList[].issuerCnt | Long | Number of issuer certificates |
+| caInfoList[].certificateCnt | Long | Total number of certificates |
+| caInfoList[].status | String | Repository status (`ACTIVE`, `INACTIVE`, `DELETED`) |
+| caInfoList[].crlActive | Boolean | Whether CRL is enabled |
+| caInfoList[].crlRefreshPeriod | Number | CRL renewal cycle (days) |
+| caInfoList[].ocspActive | Boolean | Whether OCSP is enabled |
+| caInfoList[].ocspRefreshPeriod | Number | OCSP renewal cycle (hours) |
+| caInfoList[].ocspUrl | String | OCSP server URL |
+| totalCnt | Long | Total number of repositories |
+| totalPageNo | Long | Total number of pages |
+| currentPageNo | Long | Current page number (starts from 0) |
+
+### Get Repository Details
+
+Retrieves detailed information of a repository.
 
 #### Request
 
@@ -137,15 +199,71 @@ GET /v2.0/appkeys/{appkey}/ca-stores/{caStoreId}
 | Name | Type | Required | Description |
 |------|------|------|------|
 | appkey | String | Y | App key |
-| caStoreId | Long | Y | Store ID |
+| caStoreId | Long | Y | Repository ID |
 
 **Required Permissions**
 
 - `VIEWER` or higher
 
-### Create Store
+#### Response
 
-Creates a store.
+**Response Body**
+
+```json
+{
+  "header": {
+    "resultCode": 0,
+    "resultMessage": "SUCCESS",
+    "isSuccessful": true
+  },
+  "body": {
+    "id": 1,
+    "name": "Production CA Store",
+    "description": "Production environment CA storage",
+    "toastProjectId": 12345,
+    "templateCnt": 3,
+    "issuerCnt": 2,
+    "certificateCnt": 25,
+    "totalEabCnt": 0,
+    "activeEabCnt": 0,
+    "deletedEabCnt": 0,
+    "status": "ACTIVE",
+    "crlActive": true,
+    "crlRefreshPeriod": 7,
+    "ocspActive": true,
+    "ocspRefreshPeriod": 1,
+    "ocspUrl": "https://kr1-pca.api.nhncloudservice.com/v2.0/appkeys/my-appkey/ca-stores/1/ocsp",
+    "creationDatetime": "2024-01-15T10:00:00",
+    "creationUser": "admin@example.com",
+    "lastChangeDatetime": "2024-01-20T14:30:00",
+    "lastChangeUser": "admin@example.com"
+  }
+}
+```
+
+| Field | Type | Description |
+|------|------|------|
+| id | Long | Repository ID |
+| name | String | Repository name |
+| description | String | Repository description |
+| toastProjectId | Long | NHN Cloud project ID |
+| templateCnt | Long | Number of templates |
+| issuerCnt | Long | Number of issuer certificates |
+| certificateCnt | Long | Total number of certificates |
+| status | String | Repository status (`ACTIVE`, `INACTIVE`, `DELETED`) |
+| crlActive | Boolean | Whether CRL is enabled |
+| crlRefreshPeriod | Number | CRL renewal cycle (days) |
+| ocspActive | Boolean | Whether OCSP is enabled |
+| ocspRefreshPeriod | Number | OCSP renewal cycle (hours) |
+| ocspUrl | String | OCSP server URL |
+| creationDatetime | LocalDateTime | Creation date |
+| creationUser | String | Creator |
+| lastChangeDatetime | LocalDateTime | Last modified date |
+| lastChangeUser | String | Last modified by |
+
+### Create Repository
+
+Creates a repository.
 
 #### Request
 
@@ -163,8 +281,8 @@ POST /v2.0/appkeys/{appkey}/ca-stores
 
 | Name | Type | Required | Description | Constraints |
 |------|------|------|------|-----------|
-| name | String | Y | Store name | Maximum 64 characters |
-| description | String | N | Store description | Maximum 256 characters |
+| name | String | Y | Repository name | Maximum 64 characters |
+| description | String | N | Repository description | Maximum 256 characters |
 | crlActive | Boolean | N | CRL enabled | Default: `false` |
 | crlRefreshPeriod | Number | N | CRL renewal cycle (days) | 1 ~ 30<br>Default: `7` |
 | ocspActive | Boolean | N | OCSP enabled | Default: `false` |
@@ -187,9 +305,44 @@ POST /v2.0/appkeys/{appkey}/ca-stores
 }
 ```
 
-### Modify Store
+#### Response
 
-Modifies a store.
+**Response Body**
+
+```json
+{
+  "header": {
+    "resultCode": 0,
+    "resultMessage": "SUCCESS",
+    "isSuccessful": true
+  },
+  "body": {
+    "id": 1,
+    "name": "Production CA Store",
+    "toastProjectId": 12345,
+    "status": "ACTIVE",
+    "creationDatetime": "2024-01-15T10:00:00",
+    "creationUser": "admin@example.com",
+    "lastChangeDatetime": "2024-01-15T10:00:00",
+    "lastChangeUser": "admin@example.com"
+  }
+}
+```
+
+| Field | Type | Description |
+|------|------|------|
+| id | Long | Created repository ID |
+| name | String | Repository name |
+| toastProjectId | Long | NHN Cloud project ID |
+| status | String | Repository status |
+| creationDatetime | LocalDateTime | Creation date |
+| creationUser | String | Creator |
+| lastChangeDatetime | LocalDateTime | Last modified date |
+| lastChangeUser | String | Last modified by |
+
+### Modify Repository
+
+Modifies a repository.
 
 #### Request
 
@@ -202,19 +355,46 @@ PUT /v2.0/appkeys/{appkey}/ca-stores/{caStoreId}
 | Name | Type | Required | Description |
 |------|------|------|------|
 | appkey | String | Y | App key |
-| caStoreId | Long | Y | Store ID |
+| caStoreId | Long | Y | Repository ID |
 
 **Request Body**
 
-Same as Create Store.
+Same as Create Repository.
 
 **Required Permissions**
 
 - `ADMIN`
 
-### Delete Store
+#### Response
 
-Deletes a store.
+**Response Body**
+
+```json
+{
+  "header": {
+    "resultCode": 0,
+    "resultMessage": "SUCCESS",
+    "isSuccessful": true
+  },
+  "body": {
+    "id": 1,
+    "name": "Production CA Store (Updated)",
+    "toastProjectId": 12345,
+    "status": "ACTIVE"
+  }
+}
+```
+
+| Field | Type | Description |
+|------|------|------|
+| id | Long | Repository ID |
+| name | String | Repository name |
+| toastProjectId | Long | NHN Cloud project ID |
+| status | String | Repository status |
+
+### Delete Repository
+
+Deletes a repository.
 
 #### Request
 
@@ -227,17 +407,44 @@ DELETE /v2.0/appkeys/{appkey}/ca-stores/{caStoreId}
 | Name | Type | Required | Description |
 |------|------|------|------|
 | appkey | String | Y | App key |
-| caStoreId | Long | Y | Store ID |
+| caStoreId | Long | Y | Repository ID |
 
 **Required Permissions**
 
 - `ADMIN`
 
+#### Response
+
+**Response Body**
+
+```json
+{
+  "header": {
+    "resultCode": 0,
+    "resultMessage": "SUCCESS",
+    "isSuccessful": true
+  },
+  "body": {
+    "id": 1,
+    "name": "Production CA Store",
+    "toastProjectId": 12345,
+    "status": "DELETED"
+  }
+}
+```
+
+| Field | Type | Description |
+|------|------|------|
+| id | Long | Deleted repository ID |
+| name | String | Repository name |
+| toastProjectId | Long | NHN Cloud project ID |
+| status | String | Repository status (`DELETED`) |
+
 ## Certificate (Issuer) API
 
 ### List Certificates
 
-Retrieves a list of certificates included in a store.
+Retrieves a list of certificates included in a repository.
 
 #### Request
 
@@ -250,7 +457,7 @@ GET /v2.0/appkeys/{appkey}/ca-stores/{caStoreId}/certs
 | Name | Type | Required | Description |
 |------|------|------|------|
 | appkey | String | Y | App key |
-| caStoreId | Long | Y | Store ID |
+| caStoreId | Long | Y | Repository ID |
 
 **Query Parameters**
 
@@ -264,6 +471,71 @@ GET /v2.0/appkeys/{appkey}/ca-stores/{caStoreId}/certs
 **Required Permissions**
 
 - `VIEWER` or higher
+
+#### Response
+
+**Response Body**
+
+```json
+{
+  "header": {
+    "resultCode": 0,
+    "resultMessage": "SUCCESS",
+    "isSuccessful": true
+  },
+  "body": {
+    "listCerts": [
+      {
+        "id": 10,
+        "name": "Root CA",
+        "type": "ROOT",
+        "commonName": "NHN Cloud Root CA",
+        "serialNumber": "12:34:56:78:90:AB:CD:EF",
+        "status": "ACTIVE",
+        "notBefore": "2024-01-15T10:00:00",
+        "notAfter": "2034-01-15T10:00:00",
+        "isLeaf": false,
+        "creationDatetime": "2024-01-15T10:00:00",
+        "creationUser": "admin@example.com"
+      },
+      {
+        "id": 11,
+        "name": "Intermediate CA",
+        "type": "INTERMEDIATE",
+        "commonName": "NHN Cloud Intermediate CA",
+        "serialNumber": "AB:CD:EF:01:23:45:67:89",
+        "status": "ACTIVE",
+        "notBefore": "2024-01-15T10:30:00",
+        "notAfter": "2029-01-15T10:30:00",
+        "isLeaf": false,
+        "creationDatetime": "2024-01-15T10:30:00",
+        "creationUser": "admin@example.com"
+      }
+    ],
+    "totalCnt": 2,
+    "totalPageNo": 1,
+    "currentPageNo": 0
+  }
+}
+```
+
+| Field | Type | Description |
+|------|------|------|
+| listCerts | Array | List of certificate information |
+| listCerts[].id | Long | Certificate ID |
+| listCerts[].name | String | Certificate name |
+| listCerts[].type | String | Certificate type (`ROOT`, `INTERMEDIATE`, `LEAF`) |
+| listCerts[].commonName | String | Common Name |
+| listCerts[].serialNumber | String | Serial number (hexadecimal, colon-separated) |
+| listCerts[].status | String | Certificate status (`ACTIVE`, `INACTIVE`, `REVOKED`, `EXPIRED`, `DELETED`) |
+| listCerts[].notBefore | LocalDateTime | Validity start date |
+| listCerts[].notAfter | LocalDateTime | Validity end date |
+| listCerts[].isLeaf | Boolean | Whether it is a Leaf certificate |
+| listCerts[].creationDatetime | LocalDateTime | Creation date |
+| listCerts[].creationUser | String | Creator |
+| totalCnt | Long | Total count |
+| totalPageNo | Long | Total number of pages |
+| currentPageNo | Long | Current page number |
 
 ### Get Certificate Details
 
@@ -280,12 +552,88 @@ GET /v2.0/appkeys/{appkey}/ca-stores/{caStoreId}/certs/{certId}
 | Name | Type | Required | Description |
 |------|------|------|------|
 | appkey | String | Y | App key |
-| caStoreId | Long | Y | Store ID |
+| caStoreId | Long | Y | Repository ID |
 | certId | Long | Y | Certificate ID |
 
 **Required Permissions**
 
 - `VIEWER` or higher
+
+#### Response
+
+**Response Body**
+
+```json
+{
+  "header": {
+    "resultCode": 0,
+    "resultMessage": "SUCCESS",
+    "isSuccessful": true
+  },
+  "body": {
+    "certificateId": 10,
+    "name": "Root CA",
+    "description": "Production Root CA",
+    "type": "ROOT",
+    "status": "ACTIVE",
+    "commonName": "NHN Cloud Root CA",
+    "serialNumber": "12:34:56:78:90:AB:CD:EF",
+    "subjectInfo": {
+      "country": "KR",
+      "organization": "NHN Cloud",
+      "commonName": "NHN Cloud Root CA"
+    },
+    "notAfterDateTime": "2034-01-15 10:00:00",
+    "notBeforeDateTime": "2024-01-15 10:00:00",
+    "keyAlgorithm": "RSA",
+    "keyLength": 2048,
+    "keyUsage": ["KEY_CERT_SIGN", "CRL_SIGN"],
+    "extendedKeyUsage": [],
+    "certificatePem": "-----BEGIN CERTIFICATE-----\nMIIDazCC...\n-----END CERTIFICATE-----",
+    "chainCertificatePem": "-----BEGIN CERTIFICATE-----\nMIIDazCC...\n-----END CERTIFICATE-----",
+    "signatureAlgorithm": "SHA256_WITH_RSA",
+    "isLeaf": false,
+    "childCertificateList": [
+      {
+        "certificateId": 11,
+        "name": "Intermediate CA",
+        "description": "Production Intermediate CA",
+        "cn": "NHN Cloud Intermediate CA",
+        "serialNumber": "AB:CD:EF:01:23:45:67:89",
+        "isLeaf": false
+      }
+    ],
+    "crlUrl": "https://kr1-pca.api.nhncloudservice.com/v2.0/appkeys/my-appkey/ca-stores/1/certs/10/crl/der",
+    "ocspUrl": "https://kr1-pca.api.nhncloudservice.com/v2.0/appkeys/my-appkey/ca-stores/1/ocsp",
+    "policies": []
+  }
+}
+```
+
+| Field | Type | Description |
+|------|------|------|
+| certificateId | Long | Certificate ID |
+| name | String | Certificate name |
+| description | String | Certificate description |
+| type | String | Certificate type (`ROOT`, `INTERMEDIATE`, `LEAF`) |
+| status | String | Certificate status |
+| commonName | String | Common Name |
+| serialNumber | String | Serial number |
+| subjectInfo | Object | Subject information |
+| notAfterDateTime | LocalDateTime | Validity end date |
+| notBeforeDateTime | LocalDateTime | Validity start date |
+| keyAlgorithm | String | Key algorithm (`RSA`, `EC`, `ED25519`) |
+| keyLength | Number | Key length |
+| keyUsage | String[] | Key Usage list |
+| extendedKeyUsage | String[] | Extended Key Usage list |
+| certificatePem | String | Certificate PEM |
+| chainCertificatePem | String | Certificate chain PEM |
+| signatureAlgorithm | String | Signature algorithm |
+| isLeaf | Boolean | Whether it is a Leaf certificate |
+| childCertificateList | Array | List of child certificates |
+| crlUrl | String | CRL download URL |
+| ocspUrl | String | OCSP server URL |
+| policies | String[] | Certificate Policies OID list |
 
 ### Issue Certificate (Issuer)
 
@@ -302,7 +650,7 @@ POST /v2.0/appkeys/{appkey}/ca-stores/{caStoreId}/certs
 | Name | Type | Required | Description |
 |------|------|------|------|
 | appkey | String | Y | App key |
-| caStoreId | Long | Y | Store ID |
+| caStoreId | Long | Y | Repository ID |
 
 !!! danger "Caution"
     Only ROOT and INTERMEDIATE certificates can be issued. LEAF certificates must be issued using a template.
@@ -396,6 +744,66 @@ POST /v2.0/appkeys/{appkey}/ca-stores/{caStoreId}/certs
 }
 ```
 
+#### Response
+
+**Response Body**
+
+```json
+{
+  "header": {
+    "resultCode": 0,
+    "resultMessage": "SUCCESS",
+    "isSuccessful": true
+  },
+  "body": {
+    "certificateId": 10,
+    "name": "Root CA",
+    "description": "Production Root CA",
+    "type": "ROOT",
+    "status": "ACTIVE",
+    "commonName": "NHN Cloud Root CA",
+    "serialNumber": "12:34:56:78:90:AB:CD:EF",
+    "subjectInfo": {
+      "country": "KR",
+      "organization": "NHN Cloud",
+      "commonName": "NHN Cloud Root CA"
+    },
+    "notAfterDateTime": "2034-01-15 10:00:00",
+    "notBeforeDateTime": "2024-01-15 10:00:00",
+    "keyAlgorithm": "RSA",
+    "keyLength": 2048,
+    "keyUsage": ["KEY_CERT_SIGN", "CRL_SIGN"],
+    "certificatePem": "-----BEGIN CERTIFICATE-----\nMIIDazCC...\n-----END CERTIFICATE-----",
+    "chainCertificatePem": "-----BEGIN CERTIFICATE-----\nMIIDazCC...\n-----END CERTIFICATE-----",
+    "signatureAlgorithm": "SHA256_WITH_RSA",
+    "isLeaf": false,
+    "crlUrl": "https://kr1-pca.api.nhncloudservice.com/v2.0/appkeys/my-appkey/ca-stores/1/certs/10/crl/der",
+    "ocspUrl": "https://kr1-pca.api.nhncloudservice.com/v2.0/appkeys/my-appkey/ca-stores/1/ocsp"
+  }
+}
+```
+
+| Field | Type | Description |
+|------|------|------|
+| certificateId | Long | Issued certificate ID |
+| name | String | Certificate name |
+| type | String | Certificate type (`ROOT`, `INTERMEDIATE`) |
+| status | String | Certificate status |
+| commonName | String | Common Name |
+| serialNumber | String | Serial number |
+| notAfterDateTime | LocalDateTime | Validity end date |
+| notBeforeDateTime | LocalDateTime | Validity start date |
+| keyAlgorithm | String | Key algorithm |
+| keyLength | Number | Key length |
+| certificatePem | String | Issued certificate PEM |
+| chainCertificatePem | String | Certificate chain PEM |
+| signatureAlgorithm | String | Signature algorithm |
+| crlUrl | String | CRL download URL |
+| ocspUrl | String | OCSP server URL |
+
+!!! note "Note"
+    The issuer certificate issuance API does not include `privateKey` in the response. The issuer's private key is stored securely on the server.
+
 ### Revoke Certificate
 
 Revokes a certificate.
@@ -411,12 +819,37 @@ POST /v2.0/appkeys/{appkey}/ca-stores/{caStoreId}/certs/{certId}/revoke
 | Name | Type | Required | Description |
 |------|------|------|------|
 | appkey | String | Y | App key |
-| caStoreId | Long | Y | Store ID |
+| caStoreId | Long | Y | Repository ID |
 | certId | Long | Y | Certificate ID |
 
 **Required Permissions**
 
 - `ADMIN`
+
+#### Response
+
+**Response Body**
+
+```json
+{
+  "header": {
+    "resultCode": 0,
+    "resultMessage": "SUCCESS",
+    "isSuccessful": true
+  },
+  "body": {
+    "result": true,
+    "serialNumber": "12:34:56:78:90:AB:CD:EF",
+    "revocationDatetime": "2024-06-01T15:30:00"
+  }
+}
+```
+
+| Field | Type | Description |
+|------|------|------|
+| result | Boolean | Whether the revocation was successful |
+| serialNumber | String | Serial number of the revoked certificate |
+| revocationDatetime | LocalDateTime | Revocation date |
 
 ## Template API
 
@@ -435,7 +868,7 @@ GET /v2.0/appkeys/{appkey}/ca-stores/{caStoreId}/templates
 | Name | Type | Required | Description |
 |------|------|------|------|
 | appkey | String | Y | App key |
-| caStoreId | Long | Y | Store ID |
+| caStoreId | Long | Y | Repository ID |
 
 **Query Parameters**
 
@@ -448,6 +881,47 @@ GET /v2.0/appkeys/{appkey}/ca-stores/{caStoreId}/templates
 **Required Permissions**
 
 - `VIEWER` or higher
+
+#### Response
+
+**Response Body**
+
+```json
+{
+  "header": {
+    "resultCode": 0,
+    "resultMessage": "SUCCESS",
+    "isSuccessful": true
+  },
+  "body": {
+    "templates": [
+      {
+        "id": 100,
+        "name": "Web Server Template",
+        "description": "Server certificate template for web servers"
+      },
+      {
+        "id": 101,
+        "name": "Client Auth Template",
+        "description": "Client authentication certificate template"
+      }
+    ],
+    "totalCnt": 2,
+    "totalPageNo": 1,
+    "currentPageNo": 0
+  }
+}
+```
+
+| Field | Type | Description |
+|------|------|------|
+| templates | Array | List of template information |
+| templates[].id | Long | Template ID |
+| templates[].name | String | Template name |
+| templates[].description | String | Template description |
+| totalCnt | Long | Total number of templates |
+| totalPageNo | Number | Total number of pages |
+| currentPageNo | Number | Current page number (starts from 0) |
 
 ### Get Template Details
 
@@ -464,12 +938,98 @@ GET /v2.0/appkeys/{appkey}/ca-stores/{caStoreId}/templates/{templateId}
 | Name | Type | Required | Description |
 |------|------|------|------|
 | appkey | String | Y | App key |
-| caStoreId | Long | Y | Store ID |
+| caStoreId | Long | Y | Repository ID |
 | templateId | Long | Y | Template ID |
 
 **Required Permissions**
 
 - `VIEWER` or higher
+
+#### Response
+
+**Response Body**
+
+```json
+{
+  "header": {
+    "resultCode": 0,
+    "resultMessage": "SUCCESS",
+    "isSuccessful": true
+  },
+  "body": {
+    "id": 100,
+    "name": "Web Server Template",
+    "description": "Server certificate template for web servers",
+    "subjectInfo": {
+      "country": "KR",
+      "organization": "NHN Cloud"
+    },
+    "keyAlgorithm": "RSA",
+    "keyLength": 2048,
+    "keyInfo": {
+      "algorithm": "RSA",
+      "keySize": 2048
+    },
+    "keyUsage": ["DIGITAL_SIGNATURE", "KEY_ENCIPHERMENT"],
+    "extendedKeyUsage": ["SERVER_AUTHENTICATION"],
+    "extendedKeyUsageOids": [],
+    "signatureAlgorithm": "SHA256_WITH_RSA",
+    "isLeaf": true,
+    "signingCertificateId": 11,
+    "signingCertificateName": "Intermediate CA",
+    "creationUser": "admin@example.com",
+    "creationDatetime": "2024-01-15 11:00:00",
+    "lastChangeUser": "admin@example.com",
+    "lastChangeDatetime": "2024-01-15 11:00:00",
+    "basicConstraintsValidForNonCa": false,
+    "storeInServer": true,
+    "allowIpSans": false,
+    "useCsrCommonName": false,
+    "useCsrSans": false,
+    "useCsrOtherFields": false,
+    "maxTTL": "31536000",
+    "signatureBits": 256,
+    "backDateValidation": 30,
+    "urlSansWhitelist": [],
+    "otherSansWhitelist": [],
+    "policies": [],
+    "otherFields": []
+  }
+}
+```
+
+| Field | Type | Description |
+|------|------|------|
+| id | Long | Template ID |
+| name | String | Template name |
+| description | String | Template description |
+| subjectInfo | Object | Subject information (template fixed value) |
+| keyAlgorithm | String | Key algorithm |
+| keyLength | Number | Key length |
+| keyInfo | Object | Key information |
+| keyUsage | String[] | Key Usage list |
+| extendedKeyUsage | String[] | Extended Key Usage list |
+| extendedKeyUsageOids | String[] | Extended Key Usage custom OID list |
+| signatureAlgorithm | String | Signature algorithm |
+| signingCertificateId | Long | ID of the issuer certificate used for signing |
+| signingCertificateName | String | Name of the issuer certificate used for signing |
+| basicConstraintsValidForNonCa | Boolean | Whether Basic Constraints validation applies for non-CA |
+| storeInServer | Boolean | Whether to store on the server |
+| allowIpSans | Boolean | Whether IP SAN is allowed |
+| useCsrCommonName | Boolean | Whether to use the CN of the CSR |
+| useCsrSans | Boolean | Whether to use the SAN of the CSR |
+| useCsrOtherFields | Boolean | Whether to use other fields of the CSR |
+| maxTTL | String | Maximum TTL (string in seconds) |
+| signatureBits | Number | Signature bit length |
+| backDateValidation | Long | Back-date validation value (seconds) |
+| urlSansWhitelist | String[] | URL SAN whitelist |
+| otherSansWhitelist | OidInfo[] | Other SAN whitelist |
+| policies | String[] | Policy OID list |
+| otherFields | OidInfo[] | Other fields |
+| creationDatetime | LocalDateTime | Creation date |
+| creationUser | String | Creator |
+| lastChangeDatetime | LocalDateTime | Last modified date |
+| lastChangeUser | String | Last modified by |
 
 ### Create Template
 
@@ -486,7 +1046,7 @@ POST /v2.0/appkeys/{appkey}/ca-stores/{caStoreId}/templates
 | Name | Type | Required | Description |
 |------|------|------|------|
 | appkey | String | Y | App key |
-| caStoreId | Long | Y | Store ID |
+| caStoreId | Long | Y | Repository ID |
 
 **Request Body**
 
@@ -570,6 +1130,35 @@ POST /v2.0/appkeys/{appkey}/ca-stores/{caStoreId}/templates
 
 - `ADMIN`
 
+#### Response
+
+**Response Body**
+
+```json
+{
+  "header": {
+    "resultCode": 0,
+    "resultMessage": "SUCCESS",
+    "isSuccessful": true
+  },
+  "body": {
+    "templateId": 100,
+    "name": "Web Server Template",
+    "description": "Server certificate template for web servers",
+    "signingCertificateId": 11,
+    "signingCertificateName": "Intermediate CA"
+  }
+}
+```
+
+| Field | Type | Description |
+|------|------|------|
+| templateId | Long | Created template ID |
+| name | String | Template name |
+| description | String | Template description |
+| signingCertificateId | Long | ID of the issuer certificate used for signing |
+| signingCertificateName | String | Name of the issuer certificate used for signing |
+
 ### Modify Template
 
 Modifies a template.
@@ -585,7 +1174,7 @@ PUT /v2.0/appkeys/{appkey}/ca-stores/{caStoreId}/templates/{templateId}
 | Name | Type | Required | Description |
 |------|------|------|------|
 | appkey | String | Y | App key |
-| caStoreId | Long | Y | Store ID |
+| caStoreId | Long | Y | Repository ID |
 | templateId | Long | Y | Template ID |
 
 **Request Body**
@@ -595,6 +1184,25 @@ Same as Create Template.
 **Required Permissions**
 
 - `ADMIN`
+
+#### Response
+
+**Response Body**
+
+```json
+{
+  "header": {
+    "resultCode": 0,
+    "resultMessage": "SUCCESS",
+    "isSuccessful": true
+  },
+  "body": true
+}
+```
+
+| Field | Type | Description |
+|------|------|------|
+| body | Boolean | Whether the modification was successful |
 
 ### Delete Template
 
@@ -611,12 +1219,31 @@ DELETE /v2.0/appkeys/{appkey}/ca-stores/{caStoreId}/templates/{templateId}
 | Name | Type | Required | Description |
 |------|------|------|------|
 | appkey | String | Y | App key |
-| caStoreId | Long | Y | Store ID |
+| caStoreId | Long | Y | Repository ID |
 | templateId | Long | Y | Template ID |
 
 **Required Permissions**
 
 - `ADMIN`
+
+#### Response
+
+**Response Body**
+
+```json
+{
+  "header": {
+    "resultCode": 0,
+    "resultMessage": "SUCCESS",
+    "isSuccessful": true
+  },
+  "body": true
+}
+```
+
+| Field | Type | Description |
+|------|------|------|
+| body | Boolean | Whether the deletion was successful |
 
 ### Issue Certificate Using Template
 
@@ -633,7 +1260,7 @@ POST /v2.0/appkeys/{appkey}/ca-stores/{caStoreId}/templates/{templateId}/certifi
 | Name | Type | Required | Description |
 |------|------|------|------|
 | appkey | String | Y | App key |
-| caStoreId | Long | Y | Store ID |
+| caStoreId | Long | Y | Repository ID |
 | templateId | Long | Y | Template ID |
 
 **Request Body**
@@ -691,6 +1318,105 @@ POST /v2.0/appkeys/{appkey}/ca-stores/{caStoreId}/templates/{templateId}/certifi
   "removeRootsFromChain": false
 }
 ```
+
+#### Response
+
+**Response Body** (GENERATE mode)
+
+```json
+{
+  "header": {
+    "resultCode": 0,
+    "resultMessage": "SUCCESS",
+    "isSuccessful": true
+  },
+  "body": {
+    "certificateId": 200,
+    "name": "api.example.com",
+    "type": "LEAF",
+    "status": "ACTIVE",
+    "commonName": "api.example.com",
+    "serialNumber": "AB:CD:EF:11:22:33:44:55",
+    "subjectInfo": {
+      "country": "KR",
+      "organization": "NHN Cloud",
+      "commonName": "api.example.com"
+    },
+    "notAfterDateTime": "2025-06-01 15:30:00",
+    "notBeforeDateTime": "2024-06-01 15:30:00",
+    "keyAlgorithm": "RSA",
+    "keyLength": 2048,
+    "keyUsage": ["DIGITAL_SIGNATURE", "KEY_ENCIPHERMENT"],
+    "extendedKeyUsage": ["SERVER_AUTHENTICATION"],
+    "certificatePem": "-----BEGIN CERTIFICATE-----\nMIIDazCC...\n-----END CERTIFICATE-----",
+    "chainCertificatePem": "-----BEGIN CERTIFICATE-----\nMIIDazCC...\n-----END CERTIFICATE-----",
+    "signatureAlgorithm": "SHA256_WITH_RSA",
+    "isLeaf": true,
+    "crlUrl": "https://kr1-pca.api.nhncloudservice.com/v2.0/appkeys/my-appkey/ca-stores/1/certs/11/crl/der",
+    "ocspUrl": "https://kr1-pca.api.nhncloudservice.com/v2.0/appkeys/my-appkey/ca-stores/1/ocsp",
+    "privateKey": "-----BEGIN PRIVATE KEY-----\nMIIEvQIBADANBgkqhkiG9w0...\n-----END PRIVATE KEY-----"
+  }
+}
+```
+
+**Response Body** (SIGN mode)
+
+```json
+{
+  "header": {
+    "resultCode": 0,
+    "resultMessage": "SUCCESS",
+    "isSuccessful": true
+  },
+  "body": {
+    "certificateId": 201,
+    "name": "api.example.com",
+    "type": "LEAF",
+    "status": "ACTIVE",
+    "commonName": "api.example.com",
+    "serialNumber": "AB:CD:EF:11:22:33:44:66",
+    "subjectInfo": {
+      "country": "KR",
+      "organization": "NHN Cloud",
+      "commonName": "api.example.com"
+    },
+    "notAfterDateTime": "2025-06-01 15:30:00",
+    "notBeforeDateTime": "2024-06-01 15:30:00",
+    "keyAlgorithm": "RSA",
+    "keyLength": 2048,
+    "keyUsage": ["DIGITAL_SIGNATURE", "KEY_ENCIPHERMENT"],
+    "extendedKeyUsage": ["SERVER_AUTHENTICATION"],
+    "certificatePem": "-----BEGIN CERTIFICATE-----\nMIIDazCC...\n-----END CERTIFICATE-----",
+    "chainCertificatePem": "-----BEGIN CERTIFICATE-----\nMIIDazCC...\n-----END CERTIFICATE-----",
+    "signatureAlgorithm": "SHA256_WITH_RSA",
+    "isLeaf": true,
+    "crlUrl": "https://kr1-pca.api.nhncloudservice.com/v2.0/appkeys/my-appkey/ca-stores/1/certs/11/crl/der",
+    "ocspUrl": "https://kr1-pca.api.nhncloudservice.com/v2.0/appkeys/my-appkey/ca-stores/1/ocsp"
+  }
+}
+```
+
+| Field | Type | Description |
+|------|------|------|
+| certificateId | Long | Issued certificate ID |
+| name | String | Certificate name |
+| type | String | Certificate type (`LEAF`) |
+| status | String | Certificate status |
+| commonName | String | Common Name |
+| serialNumber | String | Serial number |
+| notAfterDateTime | LocalDateTime | Validity end date |
+| notBeforeDateTime | LocalDateTime | Validity start date |
+| keyAlgorithm | String | Key algorithm |
+| keyLength | Number | Key length |
+| certificatePem | String | Issued certificate PEM |
+| chainCertificatePem | String | Certificate chain PEM |
+| signatureAlgorithm | String | Signature algorithm |
+| crlUrl | String | CRL download URL |
+| ocspUrl | String | OCSP server URL |
+| privateKey | String | Private key (returned only in GENERATE mode) |
+
+!!! danger "Caution"
+    When issuing in GENERATE mode, the `privateKey` included in the response is **the only time it is returned**. It is not stored on the server, so save it immediately to a secure location. In SIGN mode, the client holds the private key, so `privateKey` is not included in the response.
 
 ## Certificate download API
 
@@ -900,7 +1626,7 @@ GET /v2.0/appkeys/{appkey}/ca-stores/{caStoreId}/ocsp/{ocspRequestBase64}
 | Name | Type | Required | Description |
 |------|------|------|------|
 | appkey | String | Y | App Key |
-| caStoreId | Long | Y | Store ID |
+| caStoreId | Long | Y | Repository ID |
 | ocspRequestBase64 | String | Y | Base64-encoded OCSP request |
 
 !!! danger "Caution"
@@ -999,7 +1725,7 @@ OCSP response (DER format)
 
 1. In the console, under Repository details, verify that CRLs are enabled.
 2. Call the manual renewal API to renew immediately.
-3. Check and adjust the CRL refresh`period (crlRefreshPeriod`).
+3. Check and adjust the CRL refresh period (`crlRefreshPeriod`).
 
 ### If there is no OCSP response
 
