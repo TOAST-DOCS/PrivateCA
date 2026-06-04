@@ -22,15 +22,15 @@ User Access Keyトークンは、User Access Keyをもとに発行されるBeare
 
 ### API一覧
 
-#### ストア
+#### リポジトリ
 
 | Method | URI | 説明 |
 |--------|-----|------|
-| GET | /v2.0/appkeys/{appkey}/ca-stores | ストア一覧を照会 |
-| POST | /v2.0/appkeys/{appkey}/ca-stores | ストアを作成 |
-| GET | /v2.0/appkeys/{appkey}/ca-stores/{caStoreId} | ストア詳細情報を照会 |
-| PUT | /v2.0/appkeys/{appkey}/ca-stores/{caStoreId} | ストアを修正 |
-| DELETE | /v2.0/appkeys/{appkey}/ca-stores/{caStoreId} | ストアを削除 |
+| GET | /v2.0/appkeys/{appkey}/ca-stores | リポジトリ一覧を照会 |
+| POST | /v2.0/appkeys/{appkey}/ca-stores | リポジトリを作成 |
+| GET | /v2.0/appkeys/{appkey}/ca-stores/{caStoreId} | リポジトリ詳細情報を照会 |
+| PUT | /v2.0/appkeys/{appkey}/ca-stores/{caStoreId} | リポジトリを修正 |
+| DELETE | /v2.0/appkeys/{appkey}/ca-stores/{caStoreId} | リポジトリを削除 |
 
 #### 証明書(発行者)
 
@@ -80,8 +80,8 @@ User Access Keyトークンは、User Access Keyをもとに発行されるBeare
 
 Private CA APIはロールベースアクセス制御(RBAC)を使用し、次のように区分されます。
 
-- **VIEWER**: ストア/証明書/テンプレートの照会、証明書ダウンロード、CRL照会などの読み取り操作のみ実行できます。
-- **ADMIN**: ストア/証明書/テンプレートの作成・修正・削除、CRL手動更新など、すべての管理操作を実行できます。
+- **VIEWER**: リポジトリ/証明書/テンプレートの照会、証明書ダウンロード、CRL照会などの読み取り操作のみ実行できます。
+- **ADMIN**: リポジトリ/証明書/テンプレートの作成・修正・削除、CRL手動更新など、すべての管理操作を実行できます。
 - **パブリックエンドポイント**: CRLダウンロード(DER/PEM)とOCSP APIは、証明書検証用として認証なしでアクセス可能です。
 
 ### 証明書形式
@@ -91,11 +91,11 @@ Private CA APIで使用する主な証明書形式は次のとおりです。
 - **PEM(privacy enhanced mail)**：テキストベースの証明書形式で、Base64でエンコードされており、`-----BEGIN CERTIFICATE-----`で始まります。人間が読むことができ、編集が容易です。
 - **DER(distinguished encoding rules)**：バイナリ形式の証明書で、PEMよりファイルサイズが小さく効率的です。主にJavaアプリケーションで使用されます。
 
-## ストアAPI
+## リポジトリAPI
 
-### ストア一覧照会
+### リポジトリ一覧照会
 
-ストア一覧を照会します。
+リポジトリ一覧を照会します。
 
 #### リクエスト
 
@@ -115,15 +115,78 @@ GET /v2.0/appkeys/{appkey}/ca-stores
 |------|------|------|------|-----------|
 | page | Number | N | ページ番号 | 0から開始<br>デフォルト値: `0` |
 | size | Number | N | ページサイズ | デフォルト値: `10` |
-| search | String | N | 検索キーワード | ストア名または説明 |
+| search | String | N | 検索キーワード | リポジトリ名または説明 |
 
 **必要権限**
 
 - `VIEWER`以上
 
-### ストア詳細照会
+#### レスポンス
 
-ストア詳細情報を照会します。
+**Response Body**
+
+```json
+{
+  "header": {
+    "resultCode": 0,
+    "resultMessage": "SUCCESS",
+    "isSuccessful": true
+  },
+  "body": {
+    "caInfoList": [
+      {
+        "id": 1,
+        "name": "Production CA Store",
+        "description": "Production environment CA storage",
+        "toastProjectId": 12345,
+        "templateCnt": 3,
+        "issuerCnt": 2,
+        "certificateCnt": 25,
+        "totalEabCnt": 0,
+        "activeEabCnt": 0,
+        "deletedEabCnt": 0,
+        "status": "ACTIVE",
+        "crlActive": true,
+        "crlRefreshPeriod": 7,
+        "ocspActive": true,
+        "ocspRefreshPeriod": 1,
+        "ocspUrl": "https://kr1-pca.api.nhncloudservice.com/v2.0/appkeys/my-appkey/ca-stores/1/ocsp",
+        "creationDatetime": "2024-01-15T10:00:00",
+        "creationUser": "admin@example.com",
+        "lastChangeDatetime": "2024-01-20T14:30:00",
+        "lastChangeUser": "admin@example.com"
+      }
+    ],
+    "totalCnt": 1,
+    "totalPageNo": 1,
+    "currentPageNo": 0
+  }
+}
+```
+
+| フィールド | タイプ | 説明 |
+|------|------|------|
+| caInfoList | Array | リポジトリ情報一覧 |
+| caInfoList[].id | Long | リポジトリID |
+| caInfoList[].name | String | リポジトリ名 |
+| caInfoList[].description | String | リポジトリ説明 |
+| caInfoList[].toastProjectId | Long | NHN CloudプロジェクトID |
+| caInfoList[].templateCnt | Long | テンプレート数 |
+| caInfoList[].issuerCnt | Long | 発行者証明書数 |
+| caInfoList[].certificateCnt | Long | 全証明書数 |
+| caInfoList[].status | String | リポジトリ状態(`ACTIVE`, `INACTIVE`, `DELETED`) |
+| caInfoList[].crlActive | Boolean | CRL有効化の有無 |
+| caInfoList[].crlRefreshPeriod | Number | CRL更新周期(日) |
+| caInfoList[].ocspActive | Boolean | OCSP有効化の有無 |
+| caInfoList[].ocspRefreshPeriod | Number | OCSP更新周期(時間) |
+| caInfoList[].ocspUrl | String | OCSPサーバーURL |
+| totalCnt | Long | 全リポジトリ数 |
+| totalPageNo | Long | 全ページ数 |
+| currentPageNo | Long | 現在のページ番号(0から開始) |
+
+### リポジトリ詳細照会
+
+リポジトリ詳細情報を照会します。
 
 #### リクエスト
 
@@ -136,15 +199,71 @@ GET /v2.0/appkeys/{appkey}/ca-stores/{caStoreId}
 | 名前 | タイプ | 必須 | 説明 |
 |------|------|------|------|
 | appkey | String | Y | Appkey |
-| caStoreId | Long | Y | ストアID |
+| caStoreId | Long | Y | リポジトリID |
 
 **必要権限**
 
 - `VIEWER`以上
 
-### ストア作成
+#### レスポンス
 
-ストアを作成します。
+**Response Body**
+
+```json
+{
+  "header": {
+    "resultCode": 0,
+    "resultMessage": "SUCCESS",
+    "isSuccessful": true
+  },
+  "body": {
+    "id": 1,
+    "name": "Production CA Store",
+    "description": "Production environment CA storage",
+    "toastProjectId": 12345,
+    "templateCnt": 3,
+    "issuerCnt": 2,
+    "certificateCnt": 25,
+    "totalEabCnt": 0,
+    "activeEabCnt": 0,
+    "deletedEabCnt": 0,
+    "status": "ACTIVE",
+    "crlActive": true,
+    "crlRefreshPeriod": 7,
+    "ocspActive": true,
+    "ocspRefreshPeriod": 1,
+    "ocspUrl": "https://kr1-pca.api.nhncloudservice.com/v2.0/appkeys/my-appkey/ca-stores/1/ocsp",
+    "creationDatetime": "2024-01-15T10:00:00",
+    "creationUser": "admin@example.com",
+    "lastChangeDatetime": "2024-01-20T14:30:00",
+    "lastChangeUser": "admin@example.com"
+  }
+}
+```
+
+| フィールド | タイプ | 説明 |
+|------|------|------|
+| id | Long | リポジトリID |
+| name | String | リポジトリ名 |
+| description | String | リポジトリ説明 |
+| toastProjectId | Long | NHN CloudプロジェクトID |
+| templateCnt | Long | テンプレート数 |
+| issuerCnt | Long | 発行者証明書数 |
+| certificateCnt | Long | 全証明書数 |
+| status | String | リポジトリ状態(`ACTIVE`, `INACTIVE`, `DELETED`) |
+| crlActive | Boolean | CRL有効化の有無 |
+| crlRefreshPeriod | Number | CRL更新周期(日) |
+| ocspActive | Boolean | OCSP有効化の有無 |
+| ocspRefreshPeriod | Number | OCSP更新周期(時間) |
+| ocspUrl | String | OCSPサーバーURL |
+| creationDatetime | LocalDateTime | 作成日時 |
+| creationUser | String | 作成者 |
+| lastChangeDatetime | LocalDateTime | 最終変更日時 |
+| lastChangeUser | String | 最終変更者 |
+
+### リポジトリ作成
+
+リポジトリを作成します。
 
 #### リクエスト
 
@@ -162,8 +281,8 @@ POST /v2.0/appkeys/{appkey}/ca-stores
 
 | 名前 | タイプ | 必須 | 説明 | 制約条件 |
 |------|------|------|------|-----------|
-| name | String | Y | ストア名 | 最大64文字 |
-| description | String | N | ストア説明 | 最大256文字 |
+| name | String | Y | リポジトリ名 | 最大64文字 |
+| description | String | N | リポジトリ説明 | 最大256文字 |
 | crlActive | Boolean | N | CRL有効化の有無 | デフォルト値: `false` |
 | crlRefreshPeriod | Number | N | CRL更新周期(日) | 1 ～ 30<br>デフォルト値: `7` |
 | ocspActive | Boolean | N | OCSP有効化の有無 | デフォルト値: `false` |
@@ -186,9 +305,44 @@ POST /v2.0/appkeys/{appkey}/ca-stores
 }
 ```
 
-### ストア修正
+#### レスポンス
 
-ストアを修正します。
+**Response Body**
+
+```json
+{
+  "header": {
+    "resultCode": 0,
+    "resultMessage": "SUCCESS",
+    "isSuccessful": true
+  },
+  "body": {
+    "id": 1,
+    "name": "Production CA Store",
+    "toastProjectId": 12345,
+    "status": "ACTIVE",
+    "creationDatetime": "2024-01-15T10:00:00",
+    "creationUser": "admin@example.com",
+    "lastChangeDatetime": "2024-01-15T10:00:00",
+    "lastChangeUser": "admin@example.com"
+  }
+}
+```
+
+| フィールド | タイプ | 説明 |
+|------|------|------|
+| id | Long | 作成されたリポジトリID |
+| name | String | リポジトリ名 |
+| toastProjectId | Long | NHN CloudプロジェクトID |
+| status | String | リポジトリ状態 |
+| creationDatetime | LocalDateTime | 作成日時 |
+| creationUser | String | 作成者 |
+| lastChangeDatetime | LocalDateTime | 最終変更日時 |
+| lastChangeUser | String | 最終変更者 |
+
+### リポジトリ修正
+
+リポジトリを修正します。
 
 #### リクエスト
 
@@ -201,19 +355,46 @@ PUT /v2.0/appkeys/{appkey}/ca-stores/{caStoreId}
 | 名前 | タイプ | 必須 | 説明 |
 |------|------|------|------|
 | appkey | String | Y | Appkey |
-| caStoreId | Long | Y | ストアID |
+| caStoreId | Long | Y | リポジトリID |
 
 **Request Body**
 
-ストア作成と同じです。
+リポジトリ作成と同じです。
 
 **必要権限**
 
 - `ADMIN`
 
-### ストア削除
+#### レスポンス
 
-ストアを削除します。
+**Response Body**
+
+```json
+{
+  "header": {
+    "resultCode": 0,
+    "resultMessage": "SUCCESS",
+    "isSuccessful": true
+  },
+  "body": {
+    "id": 1,
+    "name": "Production CA Store (Updated)",
+    "toastProjectId": 12345,
+    "status": "ACTIVE"
+  }
+}
+```
+
+| フィールド | タイプ | 説明 |
+|------|------|------|
+| id | Long | リポジトリID |
+| name | String | リポジトリ名 |
+| toastProjectId | Long | NHN CloudプロジェクトID |
+| status | String | リポジトリ状態 |
+
+### リポジトリ削除
+
+リポジトリを削除します。
 
 #### リクエスト
 
@@ -226,17 +407,44 @@ DELETE /v2.0/appkeys/{appkey}/ca-stores/{caStoreId}
 | 名前 | タイプ | 必須 | 説明 |
 |------|------|------|------|
 | appkey | String | Y | Appkey |
-| caStoreId | Long | Y | ストアID |
+| caStoreId | Long | Y | リポジトリID |
 
 **必要権限**
 
 - `ADMIN`
 
+#### レスポンス
+
+**Response Body**
+
+```json
+{
+  "header": {
+    "resultCode": 0,
+    "resultMessage": "SUCCESS",
+    "isSuccessful": true
+  },
+  "body": {
+    "id": 1,
+    "name": "Production CA Store",
+    "toastProjectId": 12345,
+    "status": "DELETED"
+  }
+}
+```
+
+| フィールド | タイプ | 説明 |
+|------|------|------|
+| id | Long | 削除されたリポジトリID |
+| name | String | リポジトリ名 |
+| toastProjectId | Long | NHN CloudプロジェクトID |
+| status | String | リポジトリ状態(`DELETED`) |
+
 ## 証明書(発行者)API
 
 ### 証明書一覧照会
 
-ストアに含まれる証明書一覧を照会します。
+リポジトリに含まれる証明書一覧を照会します。
 
 #### リクエスト
 
@@ -249,7 +457,7 @@ GET /v2.0/appkeys/{appkey}/ca-stores/{caStoreId}/certs
 | 名前 | タイプ | 必須 | 説明 |
 |------|------|------|------|
 | appkey | String | Y | Appkey |
-| caStoreId | Long | Y | ストアID |
+| caStoreId | Long | Y | リポジトリID |
 
 **Query Parameters**
 
@@ -263,6 +471,71 @@ GET /v2.0/appkeys/{appkey}/ca-stores/{caStoreId}/certs
 **必要権限**
 
 - `VIEWER`以上
+
+#### レスポンス
+
+**Response Body**
+
+```json
+{
+  "header": {
+    "resultCode": 0,
+    "resultMessage": "SUCCESS",
+    "isSuccessful": true
+  },
+  "body": {
+    "listCerts": [
+      {
+        "id": 10,
+        "name": "Root CA",
+        "type": "ROOT",
+        "commonName": "NHN Cloud Root CA",
+        "serialNumber": "12:34:56:78:90:AB:CD:EF",
+        "status": "ACTIVE",
+        "notBefore": "2024-01-15T10:00:00",
+        "notAfter": "2034-01-15T10:00:00",
+        "isLeaf": false,
+        "creationDatetime": "2024-01-15T10:00:00",
+        "creationUser": "admin@example.com"
+      },
+      {
+        "id": 11,
+        "name": "Intermediate CA",
+        "type": "INTERMEDIATE",
+        "commonName": "NHN Cloud Intermediate CA",
+        "serialNumber": "AB:CD:EF:01:23:45:67:89",
+        "status": "ACTIVE",
+        "notBefore": "2024-01-15T10:30:00",
+        "notAfter": "2029-01-15T10:30:00",
+        "isLeaf": false,
+        "creationDatetime": "2024-01-15T10:30:00",
+        "creationUser": "admin@example.com"
+      }
+    ],
+    "totalCnt": 2,
+    "totalPageNo": 1,
+    "currentPageNo": 0
+  }
+}
+```
+
+| フィールド | タイプ | 説明 |
+|------|------|------|
+| listCerts | Array | 証明書情報一覧 |
+| listCerts[].id | Long | 証明書ID |
+| listCerts[].name | String | 証明書名 |
+| listCerts[].type | String | 証明書タイプ(`ROOT`, `INTERMEDIATE`, `LEAF`) |
+| listCerts[].commonName | String | Common Name |
+| listCerts[].serialNumber | String | シリアル番号(16進数、コロン区切り) |
+| listCerts[].status | String | 証明書状態(`ACTIVE`, `INACTIVE`, `REVOKED`, `EXPIRED`, `DELETED`) |
+| listCerts[].notBefore | LocalDateTime | 有効開始日 |
+| listCerts[].notAfter | LocalDateTime | 有効期限 |
+| listCerts[].isLeaf | Boolean | Leaf証明書かどうか |
+| listCerts[].creationDatetime | LocalDateTime | 作成日時 |
+| listCerts[].creationUser | String | 作成者 |
+| totalCnt | Long | 全体数 |
+| totalPageNo | Long | 全ページ数 |
+| currentPageNo | Long | 現在のページ番号 |
 
 ### 証明書詳細照会
 
@@ -279,12 +552,88 @@ GET /v2.0/appkeys/{appkey}/ca-stores/{caStoreId}/certs/{certId}
 | 名前 | タイプ | 必須 | 説明 |
 |------|------|------|------|
 | appkey | String | Y | Appkey |
-| caStoreId | Long | Y | ストアID |
+| caStoreId | Long | Y | リポジトリID |
 | certId | Long | Y | 証明書ID |
 
 **必要権限**
 
 - `VIEWER`以上
+
+#### レスポンス
+
+**Response Body**
+
+```json
+{
+  "header": {
+    "resultCode": 0,
+    "resultMessage": "SUCCESS",
+    "isSuccessful": true
+  },
+  "body": {
+    "certificateId": 10,
+    "name": "Root CA",
+    "description": "Production Root CA",
+    "type": "ROOT",
+    "status": "ACTIVE",
+    "commonName": "NHN Cloud Root CA",
+    "serialNumber": "12:34:56:78:90:AB:CD:EF",
+    "subjectInfo": {
+      "country": "KR",
+      "organization": "NHN Cloud",
+      "commonName": "NHN Cloud Root CA"
+    },
+    "notAfterDateTime": "2034-01-15 10:00:00",
+    "notBeforeDateTime": "2024-01-15 10:00:00",
+    "keyAlgorithm": "RSA",
+    "keyLength": 2048,
+    "keyUsage": ["KEY_CERT_SIGN", "CRL_SIGN"],
+    "extendedKeyUsage": [],
+    "certificatePem": "-----BEGIN CERTIFICATE-----\nMIIDazCC...\n-----END CERTIFICATE-----",
+    "chainCertificatePem": "-----BEGIN CERTIFICATE-----\nMIIDazCC...\n-----END CERTIFICATE-----",
+    "signatureAlgorithm": "SHA256_WITH_RSA",
+    "isLeaf": false,
+    "childCertificateList": [
+      {
+        "certificateId": 11,
+        "name": "Intermediate CA",
+        "description": "Production Intermediate CA",
+        "cn": "NHN Cloud Intermediate CA",
+        "serialNumber": "AB:CD:EF:01:23:45:67:89",
+        "isLeaf": false
+      }
+    ],
+    "crlUrl": "https://kr1-pca.api.nhncloudservice.com/v2.0/appkeys/my-appkey/ca-stores/1/certs/10/crl/der",
+    "ocspUrl": "https://kr1-pca.api.nhncloudservice.com/v2.0/appkeys/my-appkey/ca-stores/1/ocsp",
+    "policies": []
+  }
+}
+```
+
+| フィールド | タイプ | 説明 |
+|------|------|------|
+| certificateId | Long | 証明書ID |
+| name | String | 証明書名 |
+| description | String | 証明書説明 |
+| type | String | 証明書タイプ(`ROOT`, `INTERMEDIATE`, `LEAF`) |
+| status | String | 証明書状態 |
+| commonName | String | Common Name |
+| serialNumber | String | シリアル番号 |
+| subjectInfo | Object | 主体情報 |
+| notAfterDateTime | LocalDateTime | 有効期限 |
+| notBeforeDateTime | LocalDateTime | 有効開始日 |
+| keyAlgorithm | String | キーアルゴリズム(`RSA`, `EC`, `ED25519`) |
+| keyLength | Number | キー長 |
+| keyUsage | String[] | Key Usage一覧 |
+| extendedKeyUsage | String[] | Extended Key Usage一覧 |
+| certificatePem | String | 証明書PEM |
+| chainCertificatePem | String | 証明書チェーンPEM |
+| signatureAlgorithm | String | 署名アルゴリズム |
+| isLeaf | Boolean | Leaf証明書かどうか |
+| childCertificateList | Array | 下位証明書一覧 |
+| crlUrl | String | CRLダウンロードURL |
+| ocspUrl | String | OCSPサーバーURL |
+| policies | String[] | Certificate Policies OID一覧 |
 
 ### 証明書(発行者)発行
 
@@ -301,10 +650,10 @@ POST /v2.0/appkeys/{appkey}/ca-stores/{caStoreId}/certs
 | 名前 | タイプ | 必須 | 説明 |
 |------|------|------|------|
 | appkey | String | Y | Appkey |
-| caStoreId | Long | Y | ストアID |
+| caStoreId | Long | Y | リポジトリID |
 
 !!! danger "注意"
-ROOT、INTERMEDIATE証明書のみ発行可能です。LEAF証明書はテンプレートで発行する必要があります。
+    ROOT、INTERMEDIATE証明書のみ発行可能です。LEAF証明書はテンプレートで発行する必要があります。
 
 **Request Body**
 
@@ -395,6 +744,66 @@ ROOT、INTERMEDIATE証明書のみ発行可能です。LEAF証明書はテンプ
 }
 ```
 
+#### レスポンス
+
+**Response Body**
+
+```json
+{
+  "header": {
+    "resultCode": 0,
+    "resultMessage": "SUCCESS",
+    "isSuccessful": true
+  },
+  "body": {
+    "certificateId": 10,
+    "name": "Root CA",
+    "description": "Production Root CA",
+    "type": "ROOT",
+    "status": "ACTIVE",
+    "commonName": "NHN Cloud Root CA",
+    "serialNumber": "12:34:56:78:90:AB:CD:EF",
+    "subjectInfo": {
+      "country": "KR",
+      "organization": "NHN Cloud",
+      "commonName": "NHN Cloud Root CA"
+    },
+    "notAfterDateTime": "2034-01-15 10:00:00",
+    "notBeforeDateTime": "2024-01-15 10:00:00",
+    "keyAlgorithm": "RSA",
+    "keyLength": 2048,
+    "keyUsage": ["KEY_CERT_SIGN", "CRL_SIGN"],
+    "certificatePem": "-----BEGIN CERTIFICATE-----\nMIIDazCC...\n-----END CERTIFICATE-----",
+    "chainCertificatePem": "-----BEGIN CERTIFICATE-----\nMIIDazCC...\n-----END CERTIFICATE-----",
+    "signatureAlgorithm": "SHA256_WITH_RSA",
+    "isLeaf": false,
+    "crlUrl": "https://kr1-pca.api.nhncloudservice.com/v2.0/appkeys/my-appkey/ca-stores/1/certs/10/crl/der",
+    "ocspUrl": "https://kr1-pca.api.nhncloudservice.com/v2.0/appkeys/my-appkey/ca-stores/1/ocsp"
+  }
+}
+```
+
+| フィールド | タイプ | 説明 |
+|------|------|------|
+| certificateId | Long | 発行された証明書ID |
+| name | String | 証明書名 |
+| type | String | 証明書タイプ(`ROOT`, `INTERMEDIATE`) |
+| status | String | 証明書状態 |
+| commonName | String | Common Name |
+| serialNumber | String | シリアル番号 |
+| notAfterDateTime | LocalDateTime | 有効期限 |
+| notBeforeDateTime | LocalDateTime | 有効開始日 |
+| keyAlgorithm | String | キーアルゴリズム |
+| keyLength | Number | キー長 |
+| certificatePem | String | 発行された証明書PEM |
+| chainCertificatePem | String | 証明書チェーンPEM |
+| signatureAlgorithm | String | 署名アルゴリズム |
+| crlUrl | String | CRLダウンロードURL |
+| ocspUrl | String | OCSPサーバーURL |
+
+!!! note "参考"
+    発行者証明書発行APIは、`privateKey`をレスポンスに含めません。発行者の秘密鍵はサーバーに安全に保存されます。
+
 ### 証明書失効
 
 証明書を失効させます。
@@ -410,12 +819,37 @@ POST /v2.0/appkeys/{appkey}/ca-stores/{caStoreId}/certs/{certId}/revoke
 | 名前 | タイプ | 必須 | 説明 |
 |------|------|------|------|
 | appkey | String | Y | Appkey |
-| caStoreId | Long | Y | ストアID |
+| caStoreId | Long | Y | リポジトリID |
 | certId | Long | Y | 証明書ID |
 
 **必要権限**
 
 - `ADMIN`
+
+#### レスポンス
+
+**Response Body**
+
+```json
+{
+  "header": {
+    "resultCode": 0,
+    "resultMessage": "SUCCESS",
+    "isSuccessful": true
+  },
+  "body": {
+    "result": true,
+    "serialNumber": "12:34:56:78:90:AB:CD:EF",
+    "revocationDatetime": "2024-06-01T15:30:00"
+  }
+}
+```
+
+| フィールド | タイプ | 説明 |
+|------|------|------|
+| result | Boolean | 失効処理の成否 |
+| serialNumber | String | 失効された証明書のシリアル番号 |
+| revocationDatetime | LocalDateTime | 失効日時 |
 
 ## テンプレートAPI
 
@@ -434,7 +868,7 @@ GET /v2.0/appkeys/{appkey}/ca-stores/{caStoreId}/templates
 | 名前 | タイプ | 必須 | 説明 |
 |------|------|------|------|
 | appkey | String | Y | Appkey |
-| caStoreId | Long | Y | ストアID |
+| caStoreId | Long | Y | リポジトリID |
 
 **Query Parameters**
 
@@ -447,6 +881,47 @@ GET /v2.0/appkeys/{appkey}/ca-stores/{caStoreId}/templates
 **必要権限**
 
 - `VIEWER`以上
+
+#### レスポンス
+
+**Response Body**
+
+```json
+{
+  "header": {
+    "resultCode": 0,
+    "resultMessage": "SUCCESS",
+    "isSuccessful": true
+  },
+  "body": {
+    "templates": [
+      {
+        "id": 100,
+        "name": "Web Server Template",
+        "description": "Server certificate template for web servers"
+      },
+      {
+        "id": 101,
+        "name": "Client Auth Template",
+        "description": "Client authentication certificate template"
+      }
+    ],
+    "totalCnt": 2,
+    "totalPageNo": 1,
+    "currentPageNo": 0
+  }
+}
+```
+
+| フィールド | タイプ | 説明 |
+|------|------|------|
+| templates | Array | テンプレート情報一覧 |
+| templates[].id | Long | テンプレートID |
+| templates[].name | String | テンプレート名 |
+| templates[].description | String | テンプレート説明 |
+| totalCnt | Long | 全テンプレート数 |
+| totalPageNo | Number | 全ページ数 |
+| currentPageNo | Number | 現在のページ番号(0から開始) |
 
 ### テンプレート詳細照会
 
@@ -463,12 +938,98 @@ GET /v2.0/appkeys/{appkey}/ca-stores/{caStoreId}/templates/{templateId}
 | 名前 | タイプ | 必須 | 説明 |
 |------|------|------|------|
 | appkey | String | Y | Appkey |
-| caStoreId | Long | Y | ストアID |
+| caStoreId | Long | Y | リポジトリID |
 | templateId | Long | Y | テンプレートID |
 
 **必要権限**
 
 - `VIEWER`以上
+
+#### レスポンス
+
+**Response Body**
+
+```json
+{
+  "header": {
+    "resultCode": 0,
+    "resultMessage": "SUCCESS",
+    "isSuccessful": true
+  },
+  "body": {
+    "id": 100,
+    "name": "Web Server Template",
+    "description": "Server certificate template for web servers",
+    "subjectInfo": {
+      "country": "KR",
+      "organization": "NHN Cloud"
+    },
+    "keyAlgorithm": "RSA",
+    "keyLength": 2048,
+    "keyInfo": {
+      "algorithm": "RSA",
+      "keySize": 2048
+    },
+    "keyUsage": ["DIGITAL_SIGNATURE", "KEY_ENCIPHERMENT"],
+    "extendedKeyUsage": ["SERVER_AUTHENTICATION"],
+    "extendedKeyUsageOids": [],
+    "signatureAlgorithm": "SHA256_WITH_RSA",
+    "isLeaf": true,
+    "signingCertificateId": 11,
+    "signingCertificateName": "Intermediate CA",
+    "creationUser": "admin@example.com",
+    "creationDatetime": "2024-01-15 11:00:00",
+    "lastChangeUser": "admin@example.com",
+    "lastChangeDatetime": "2024-01-15 11:00:00",
+    "basicConstraintsValidForNonCa": false,
+    "storeInServer": true,
+    "allowIpSans": false,
+    "useCsrCommonName": false,
+    "useCsrSans": false,
+    "useCsrOtherFields": false,
+    "maxTTL": "31536000",
+    "signatureBits": 256,
+    "backDateValidation": 30,
+    "urlSansWhitelist": [],
+    "otherSansWhitelist": [],
+    "policies": [],
+    "otherFields": []
+  }
+}
+```
+
+| フィールド | タイプ | 説明 |
+|------|------|------|
+| id | Long | テンプレートID |
+| name | String | テンプレート名 |
+| description | String | テンプレート説明 |
+| subjectInfo | Object | 主体情報(テンプレート固定値) |
+| keyAlgorithm | String | キーアルゴリズム |
+| keyLength | Number | キー長 |
+| keyInfo | Object | キー情報 |
+| keyUsage | String[] | Key Usage一覧 |
+| extendedKeyUsage | String[] | Extended Key Usage一覧 |
+| extendedKeyUsageOids | String[] | Extended Key UsageカスタムOID一覧 |
+| signatureAlgorithm | String | 署名アルゴリズム |
+| signingCertificateId | Long | 署名に使用される発行者証明書ID |
+| signingCertificateName | String | 署名に使用される発行者証明書名 |
+| basicConstraintsValidForNonCa | Boolean | Non-CAに対するBasic Constraints検査の有無 |
+| storeInServer | Boolean | サーバー保存の有無 |
+| allowIpSans | Boolean | IP SAN許可の有無 |
+| useCsrCommonName | Boolean | CSRのCN使用の有無 |
+| useCsrSans | Boolean | CSRのSAN使用の有無 |
+| useCsrOtherFields | Boolean | CSRのその他フィールド使用の有無 |
+| maxTTL | String | 最大TTL(秒単位の文字列) |
+| signatureBits | Number | 署名ビット数 |
+| backDateValidation | Long | バックデート検証値(秒) |
+| urlSansWhitelist | String[] | URL SANホワイトリスト |
+| otherSansWhitelist | OidInfo[] | その他SANホワイトリスト |
+| policies | String[] | ポリシーOID一覧 |
+| otherFields | OidInfo[] | その他フィールド |
+| creationDatetime | LocalDateTime | 作成日時 |
+| creationUser | String | 作成者 |
+| lastChangeDatetime | LocalDateTime | 最終変更日時 |
+| lastChangeUser | String | 最終変更者 |
 
 ### テンプレート作成
 
@@ -485,7 +1046,7 @@ POST /v2.0/appkeys/{appkey}/ca-stores/{caStoreId}/templates
 | 名前 | タイプ | 必須 | 説明 |
 |------|------|------|------|
 | appkey | String | Y | Appkey |
-| caStoreId | Long | Y | ストアID |
+| caStoreId | Long | Y | リポジトリID |
 
 **Request Body**
 
@@ -569,6 +1130,35 @@ POST /v2.0/appkeys/{appkey}/ca-stores/{caStoreId}/templates
 
 - `ADMIN`
 
+#### レスポンス
+
+**Response Body**
+
+```json
+{
+  "header": {
+    "resultCode": 0,
+    "resultMessage": "SUCCESS",
+    "isSuccessful": true
+  },
+  "body": {
+    "templateId": 100,
+    "name": "Web Server Template",
+    "description": "Server certificate template for web servers",
+    "signingCertificateId": 11,
+    "signingCertificateName": "Intermediate CA"
+  }
+}
+```
+
+| フィールド | タイプ | 説明 |
+|------|------|------|
+| templateId | Long | 作成されたテンプレートID |
+| name | String | テンプレート名 |
+| description | String | テンプレート説明 |
+| signingCertificateId | Long | 署名に使用される発行者証明書ID |
+| signingCertificateName | String | 署名に使用される発行者証明書名 |
+
 ### テンプレート修正
 
 テンプレートを修正します。
@@ -584,7 +1174,7 @@ PUT /v2.0/appkeys/{appkey}/ca-stores/{caStoreId}/templates/{templateId}
 | 名前 | タイプ | 必須 | 説明 |
 |------|------|------|------|
 | appkey | String | Y | Appkey |
-| caStoreId | Long | Y | ストアID |
+| caStoreId | Long | Y | リポジトリID |
 | templateId | Long | Y | テンプレートID |
 
 **Request Body**
@@ -594,6 +1184,25 @@ PUT /v2.0/appkeys/{appkey}/ca-stores/{caStoreId}/templates/{templateId}
 **必要権限**
 
 - `ADMIN`
+
+#### レスポンス
+
+**Response Body**
+
+```json
+{
+  "header": {
+    "resultCode": 0,
+    "resultMessage": "SUCCESS",
+    "isSuccessful": true
+  },
+  "body": true
+}
+```
+
+| フィールド | タイプ | 説明 |
+|------|------|------|
+| body | Boolean | 修正の成否 |
 
 ### テンプレート削除
 
@@ -610,12 +1219,31 @@ DELETE /v2.0/appkeys/{appkey}/ca-stores/{caStoreId}/templates/{templateId}
 | 名前 | タイプ | 必須 | 説明 |
 |------|------|------|------|
 | appkey | String | Y | Appkey |
-| caStoreId | Long | Y | ストアID |
+| caStoreId | Long | Y | リポジトリID |
 | templateId | Long | Y | テンプレートID |
 
 **必要権限**
 
 - `ADMIN`
+
+#### レスポンス
+
+**Response Body**
+
+```json
+{
+  "header": {
+    "resultCode": 0,
+    "resultMessage": "SUCCESS",
+    "isSuccessful": true
+  },
+  "body": true
+}
+```
+
+| フィールド | タイプ | 説明 |
+|------|------|------|
+| body | Boolean | 削除の成否 |
 
 ### テンプレートによる証明書発行
 
@@ -632,7 +1260,7 @@ POST /v2.0/appkeys/{appkey}/ca-stores/{caStoreId}/templates/{templateId}/certifi
 | 名前 | タイプ | 必須 | 説明 |
 |------|------|------|------|
 | appkey | String | Y | Appkey |
-| caStoreId | Long | Y | ストアID |
+| caStoreId | Long | Y | リポジトリID |
 | templateId | Long | Y | テンプレートID |
 
 **Request Body**
@@ -690,6 +1318,105 @@ POST /v2.0/appkeys/{appkey}/ca-stores/{caStoreId}/templates/{templateId}/certifi
   "removeRootsFromChain": false
 }
 ```
+
+#### レスポンス
+
+**Response Body**(GENERATEモード)
+
+```json
+{
+  "header": {
+    "resultCode": 0,
+    "resultMessage": "SUCCESS",
+    "isSuccessful": true
+  },
+  "body": {
+    "certificateId": 200,
+    "name": "api.example.com",
+    "type": "LEAF",
+    "status": "ACTIVE",
+    "commonName": "api.example.com",
+    "serialNumber": "AB:CD:EF:11:22:33:44:55",
+    "subjectInfo": {
+      "country": "KR",
+      "organization": "NHN Cloud",
+      "commonName": "api.example.com"
+    },
+    "notAfterDateTime": "2025-06-01 15:30:00",
+    "notBeforeDateTime": "2024-06-01 15:30:00",
+    "keyAlgorithm": "RSA",
+    "keyLength": 2048,
+    "keyUsage": ["DIGITAL_SIGNATURE", "KEY_ENCIPHERMENT"],
+    "extendedKeyUsage": ["SERVER_AUTHENTICATION"],
+    "certificatePem": "-----BEGIN CERTIFICATE-----\nMIIDazCC...\n-----END CERTIFICATE-----",
+    "chainCertificatePem": "-----BEGIN CERTIFICATE-----\nMIIDazCC...\n-----END CERTIFICATE-----",
+    "signatureAlgorithm": "SHA256_WITH_RSA",
+    "isLeaf": true,
+    "crlUrl": "https://kr1-pca.api.nhncloudservice.com/v2.0/appkeys/my-appkey/ca-stores/1/certs/11/crl/der",
+    "ocspUrl": "https://kr1-pca.api.nhncloudservice.com/v2.0/appkeys/my-appkey/ca-stores/1/ocsp",
+    "privateKey": "-----BEGIN PRIVATE KEY-----\nMIIEvQIBADANBgkqhkiG9w0...\n-----END PRIVATE KEY-----"
+  }
+}
+```
+
+**Response Body**(SIGNモード)
+
+```json
+{
+  "header": {
+    "resultCode": 0,
+    "resultMessage": "SUCCESS",
+    "isSuccessful": true
+  },
+  "body": {
+    "certificateId": 201,
+    "name": "api.example.com",
+    "type": "LEAF",
+    "status": "ACTIVE",
+    "commonName": "api.example.com",
+    "serialNumber": "AB:CD:EF:11:22:33:44:66",
+    "subjectInfo": {
+      "country": "KR",
+      "organization": "NHN Cloud",
+      "commonName": "api.example.com"
+    },
+    "notAfterDateTime": "2025-06-01 15:30:00",
+    "notBeforeDateTime": "2024-06-01 15:30:00",
+    "keyAlgorithm": "RSA",
+    "keyLength": 2048,
+    "keyUsage": ["DIGITAL_SIGNATURE", "KEY_ENCIPHERMENT"],
+    "extendedKeyUsage": ["SERVER_AUTHENTICATION"],
+    "certificatePem": "-----BEGIN CERTIFICATE-----\nMIIDazCC...\n-----END CERTIFICATE-----",
+    "chainCertificatePem": "-----BEGIN CERTIFICATE-----\nMIIDazCC...\n-----END CERTIFICATE-----",
+    "signatureAlgorithm": "SHA256_WITH_RSA",
+    "isLeaf": true,
+    "crlUrl": "https://kr1-pca.api.nhncloudservice.com/v2.0/appkeys/my-appkey/ca-stores/1/certs/11/crl/der",
+    "ocspUrl": "https://kr1-pca.api.nhncloudservice.com/v2.0/appkeys/my-appkey/ca-stores/1/ocsp"
+  }
+}
+```
+
+| フィールド | タイプ | 説明 |
+|------|------|------|
+| certificateId | Long | 発行された証明書ID |
+| name | String | 証明書名 |
+| type | String | 証明書タイプ(`LEAF`) |
+| status | String | 証明書状態 |
+| commonName | String | Common Name |
+| serialNumber | String | シリアル番号 |
+| notAfterDateTime | LocalDateTime | 有効期限 |
+| notBeforeDateTime | LocalDateTime | 有効開始日 |
+| keyAlgorithm | String | キーアルゴリズム |
+| keyLength | Number | キー長 |
+| certificatePem | String | 発行された証明書PEM |
+| chainCertificatePem | String | 証明書チェーンPEM |
+| signatureAlgorithm | String | 署名アルゴリズム |
+| crlUrl | String | CRLダウンロードURL |
+| ocspUrl | String | OCSPサーバーURL |
+| privateKey | String | 秘密鍵(GENERATEモードの場合のみ返される) |
+
+!!! danger "注意"
+    GENERATEモードで発行する際、レスポンスに含まれる`privateKey`は**このレスポンスが唯一の返却時点**です。サーバーには保存されないため、ただちに安全な場所に保存してください。SIGNモードはクライアントが秘密鍵を保有するため、レスポンスに`privateKey`は含まれません。
 
 ## 証明書ダウンロードAPI
 
