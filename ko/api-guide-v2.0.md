@@ -121,6 +121,69 @@ GET /v2.0/appkeys/{appkey}/ca-stores
 
 - `VIEWER` 이상
 
+#### 응답
+
+**Response Body**
+
+```json
+{
+  "header": {
+    "resultCode": 0,
+    "resultMessage": "SUCCESS",
+    "isSuccessful": true
+  },
+  "body": {
+    "caInfoList": [
+      {
+        "id": 1,
+        "name": "Production CA Store",
+        "description": "Production environment CA storage",
+        "toastProjectId": 12345,
+        "templateCnt": 3,
+        "issuerCnt": 2,
+        "certificateCnt": 25,
+        "totalEabCnt": 0,
+        "activeEabCnt": 0,
+        "deletedEabCnt": 0,
+        "status": "ACTIVE",
+        "crlActive": true,
+        "crlRefreshPeriod": 7,
+        "ocspActive": true,
+        "ocspRefreshPeriod": 1,
+        "ocspUrl": "https://kr1-pca.api.nhncloudservice.com/v2.0/appkeys/my-appkey/ca-stores/1/ocsp",
+        "creationDatetime": "2024-01-15T10:00:00",
+        "creationUser": "admin@example.com",
+        "lastChangeDatetime": "2024-01-20T14:30:00",
+        "lastChangeUser": "admin@example.com"
+      }
+    ],
+    "totalCnt": 1,
+    "totalPageNo": 1,
+    "currentPageNo": 0
+  }
+}
+```
+
+| 필드 | 타입 | 설명 |
+|------|------|------|
+| caInfoList | Array | 저장소 정보 목록 |
+| caInfoList[].id | Long | 저장소 ID |
+| caInfoList[].name | String | 저장소 이름 |
+| caInfoList[].description | String | 저장소 설명 |
+| caInfoList[].toastProjectId | Long | NHN Cloud 프로젝트 ID |
+| caInfoList[].templateCnt | Long | 템플릿 개수 |
+| caInfoList[].issuerCnt | Long | 발급자 인증서 개수 |
+| caInfoList[].certificateCnt | Long | 전체 인증서 개수 |
+| caInfoList[].status | String | 저장소 상태(`ACTIVE`, `INACTIVE`, `DELETED`) |
+| caInfoList[].crlActive | Boolean | CRL 활성화 여부 |
+| caInfoList[].crlRefreshPeriod | Number | CRL 갱신 주기(일) |
+| caInfoList[].ocspActive | Boolean | OCSP 활성화 여부 |
+| caInfoList[].ocspRefreshPeriod | Number | OCSP 갱신 주기(시간) |
+| caInfoList[].ocspUrl | String | OCSP 서버 URL |
+| totalCnt | Long | 전체 저장소 개수 |
+| totalPageNo | Long | 전체 페이지 수 |
+| currentPageNo | Long | 현재 페이지 번호(0부터 시작) |
+
 ### 저장소 상세 조회
 
 저장소 상세 정보를 조회합니다.
@@ -141,6 +204,62 @@ GET /v2.0/appkeys/{appkey}/ca-stores/{caStoreId}
 **필요 권한**
 
 - `VIEWER` 이상
+
+#### 응답
+
+**Response Body**
+
+```json
+{
+  "header": {
+    "resultCode": 0,
+    "resultMessage": "SUCCESS",
+    "isSuccessful": true
+  },
+  "body": {
+    "id": 1,
+    "name": "Production CA Store",
+    "description": "Production environment CA storage",
+    "toastProjectId": 12345,
+    "templateCnt": 3,
+    "issuerCnt": 2,
+    "certificateCnt": 25,
+    "totalEabCnt": 0,
+    "activeEabCnt": 0,
+    "deletedEabCnt": 0,
+    "status": "ACTIVE",
+    "crlActive": true,
+    "crlRefreshPeriod": 7,
+    "ocspActive": true,
+    "ocspRefreshPeriod": 1,
+    "ocspUrl": "https://kr1-pca.api.nhncloudservice.com/v2.0/appkeys/my-appkey/ca-stores/1/ocsp",
+    "creationDatetime": "2024-01-15T10:00:00",
+    "creationUser": "admin@example.com",
+    "lastChangeDatetime": "2024-01-20T14:30:00",
+    "lastChangeUser": "admin@example.com"
+  }
+}
+```
+
+| 필드 | 타입 | 설명 |
+|------|------|------|
+| id | Long | 저장소 ID |
+| name | String | 저장소 이름 |
+| description | String | 저장소 설명 |
+| toastProjectId | Long | NHN Cloud 프로젝트 ID |
+| templateCnt | Long | 템플릿 개수 |
+| issuerCnt | Long | 발급자 인증서 개수 |
+| certificateCnt | Long | 전체 인증서 개수 |
+| status | String | 저장소 상태(`ACTIVE`, `INACTIVE`, `DELETED`) |
+| crlActive | Boolean | CRL 활성화 여부 |
+| crlRefreshPeriod | Number | CRL 갱신 주기(일) |
+| ocspActive | Boolean | OCSP 활성화 여부 |
+| ocspRefreshPeriod | Number | OCSP 갱신 주기(시간) |
+| ocspUrl | String | OCSP 서버 URL |
+| creationDatetime | LocalDateTime | 생성 일시 |
+| creationUser | String | 생성자 |
+| lastChangeDatetime | LocalDateTime | 마지막 변경 일시 |
+| lastChangeUser | String | 마지막 변경자 |
 
 ### 저장소 생성
 
@@ -186,6 +305,41 @@ POST /v2.0/appkeys/{appkey}/ca-stores
 }
 ```
 
+#### 응답
+
+**Response Body**
+
+```json
+{
+  "header": {
+    "resultCode": 0,
+    "resultMessage": "SUCCESS",
+    "isSuccessful": true
+  },
+  "body": {
+    "id": 1,
+    "name": "Production CA Store",
+    "toastProjectId": 12345,
+    "status": "ACTIVE",
+    "creationDatetime": "2024-01-15T10:00:00",
+    "creationUser": "admin@example.com",
+    "lastChangeDatetime": "2024-01-15T10:00:00",
+    "lastChangeUser": "admin@example.com"
+  }
+}
+```
+
+| 필드 | 타입 | 설명 |
+|------|------|------|
+| id | Long | 생성된 저장소 ID |
+| name | String | 저장소 이름 |
+| toastProjectId | Long | NHN Cloud 프로젝트 ID |
+| status | String | 저장소 상태 |
+| creationDatetime | LocalDateTime | 생성 일시 |
+| creationUser | String | 생성자 |
+| lastChangeDatetime | LocalDateTime | 마지막 변경 일시 |
+| lastChangeUser | String | 마지막 변경자 |
+
 ### 저장소 수정
 
 저장소를 수정합니다.
@@ -211,6 +365,33 @@ PUT /v2.0/appkeys/{appkey}/ca-stores/{caStoreId}
 
 - `ADMIN`
 
+#### 응답
+
+**Response Body**
+
+```json
+{
+  "header": {
+    "resultCode": 0,
+    "resultMessage": "SUCCESS",
+    "isSuccessful": true
+  },
+  "body": {
+    "id": 1,
+    "name": "Production CA Store (Updated)",
+    "toastProjectId": 12345,
+    "status": "ACTIVE"
+  }
+}
+```
+
+| 필드 | 타입 | 설명 |
+|------|------|------|
+| id | Long | 저장소 ID |
+| name | String | 저장소 이름 |
+| toastProjectId | Long | NHN Cloud 프로젝트 ID |
+| status | String | 저장소 상태 |
+
 ### 저장소 삭제
 
 저장소를 삭제합니다.
@@ -231,6 +412,33 @@ DELETE /v2.0/appkeys/{appkey}/ca-stores/{caStoreId}
 **필요 권한**
 
 - `ADMIN`
+
+#### 응답
+
+**Response Body**
+
+```json
+{
+  "header": {
+    "resultCode": 0,
+    "resultMessage": "SUCCESS",
+    "isSuccessful": true
+  },
+  "body": {
+    "id": 1,
+    "name": "Production CA Store",
+    "toastProjectId": 12345,
+    "status": "DELETED"
+  }
+}
+```
+
+| 필드 | 타입 | 설명 |
+|------|------|------|
+| id | Long | 삭제된 저장소 ID |
+| name | String | 저장소 이름 |
+| toastProjectId | Long | NHN Cloud 프로젝트 ID |
+| status | String | 저장소 상태(`DELETED`) |
 
 ## 인증서(발급자) API
 
@@ -264,6 +472,71 @@ GET /v2.0/appkeys/{appkey}/ca-stores/{caStoreId}/certs
 
 - `VIEWER` 이상
 
+#### 응답
+
+**Response Body**
+
+```json
+{
+  "header": {
+    "resultCode": 0,
+    "resultMessage": "SUCCESS",
+    "isSuccessful": true
+  },
+  "body": {
+    "listCerts": [
+      {
+        "id": 10,
+        "name": "Root CA",
+        "type": "ROOT",
+        "commonName": "NHN Cloud Root CA",
+        "serialNumber": "12:34:56:78:90:AB:CD:EF",
+        "status": "ACTIVE",
+        "notBefore": "2024-01-15T10:00:00",
+        "notAfter": "2034-01-15T10:00:00",
+        "isLeaf": false,
+        "creationDatetime": "2024-01-15T10:00:00",
+        "creationUser": "admin@example.com"
+      },
+      {
+        "id": 11,
+        "name": "Intermediate CA",
+        "type": "INTERMEDIATE",
+        "commonName": "NHN Cloud Intermediate CA",
+        "serialNumber": "AB:CD:EF:01:23:45:67:89",
+        "status": "ACTIVE",
+        "notBefore": "2024-01-15T10:30:00",
+        "notAfter": "2029-01-15T10:30:00",
+        "isLeaf": false,
+        "creationDatetime": "2024-01-15T10:30:00",
+        "creationUser": "admin@example.com"
+      }
+    ],
+    "totalCnt": 2,
+    "totalPageNo": 1,
+    "currentPageNo": 0
+  }
+}
+```
+
+| 필드 | 타입 | 설명 |
+|------|------|------|
+| listCerts | Array | 인증서 정보 목록 |
+| listCerts[].id | Long | 인증서 ID |
+| listCerts[].name | String | 인증서 이름 |
+| listCerts[].type | String | 인증서 타입(`ROOT`, `INTERMEDIATE`, `LEAF`) |
+| listCerts[].commonName | String | Common Name |
+| listCerts[].serialNumber | String | 시리얼 번호(16진수, 콜론 구분) |
+| listCerts[].status | String | 인증서 상태(`ACTIVE`, `INACTIVE`, `REVOKED`, `EXPIRED`, `DELETED`) |
+| listCerts[].notBefore | LocalDateTime | 유효 시작일 |
+| listCerts[].notAfter | LocalDateTime | 유효 만료일 |
+| listCerts[].isLeaf | Boolean | Leaf 인증서 여부 |
+| listCerts[].creationDatetime | LocalDateTime | 생성 일시 |
+| listCerts[].creationUser | String | 생성자 |
+| totalCnt | Long | 전체 개수 |
+| totalPageNo | Long | 전체 페이지 수 |
+| currentPageNo | Long | 현재 페이지 번호 |
+
 ### 인증서 상세 조회
 
 인증서 상세 정보를 조회합니다.
@@ -285,6 +558,82 @@ GET /v2.0/appkeys/{appkey}/ca-stores/{caStoreId}/certs/{certId}
 **필요 권한**
 
 - `VIEWER` 이상
+
+#### 응답
+
+**Response Body**
+
+```json
+{
+  "header": {
+    "resultCode": 0,
+    "resultMessage": "SUCCESS",
+    "isSuccessful": true
+  },
+  "body": {
+    "certificateId": 10,
+    "name": "Root CA",
+    "description": "Production Root CA",
+    "type": "ROOT",
+    "status": "ACTIVE",
+    "commonName": "NHN Cloud Root CA",
+    "serialNumber": "12:34:56:78:90:AB:CD:EF",
+    "subjectInfo": {
+      "country": "KR",
+      "organization": "NHN Cloud",
+      "commonName": "NHN Cloud Root CA"
+    },
+    "notAfterDateTime": "2034-01-15 10:00:00",
+    "notBeforeDateTime": "2024-01-15 10:00:00",
+    "keyAlgorithm": "RSA",
+    "keyLength": 2048,
+    "keyUsage": ["KEY_CERT_SIGN", "CRL_SIGN"],
+    "extendedKeyUsage": [],
+    "certificatePem": "-----BEGIN CERTIFICATE-----\nMIIDazCC...\n-----END CERTIFICATE-----",
+    "chainCertificatePem": "-----BEGIN CERTIFICATE-----\nMIIDazCC...\n-----END CERTIFICATE-----",
+    "signatureAlgorithm": "SHA256_WITH_RSA",
+    "isLeaf": false,
+    "childCertificateList": [
+      {
+        "certificateId": 11,
+        "name": "Intermediate CA",
+        "description": "Production Intermediate CA",
+        "cn": "NHN Cloud Intermediate CA",
+        "serialNumber": "AB:CD:EF:01:23:45:67:89",
+        "isLeaf": false
+      }
+    ],
+    "crlUrl": "https://kr1-pca.api.nhncloudservice.com/v2.0/appkeys/my-appkey/ca-stores/1/certs/10/crl/der",
+    "ocspUrl": "https://kr1-pca.api.nhncloudservice.com/v2.0/appkeys/my-appkey/ca-stores/1/ocsp",
+    "policies": []
+  }
+}
+```
+
+| 필드 | 타입 | 설명 |
+|------|------|------|
+| certificateId | Long | 인증서 ID |
+| name | String | 인증서 이름 |
+| description | String | 인증서 설명 |
+| type | String | 인증서 타입(`ROOT`, `INTERMEDIATE`, `LEAF`) |
+| status | String | 인증서 상태 |
+| commonName | String | Common Name |
+| serialNumber | String | 시리얼 번호 |
+| subjectInfo | Object | 주체 정보 |
+| notAfterDateTime | LocalDateTime | 유효 만료일 |
+| notBeforeDateTime | LocalDateTime | 유효 시작일 |
+| keyAlgorithm | String | 키 알고리즘(`RSA`, `EC`, `ED25519`) |
+| keyLength | Number | 키 길이 |
+| keyUsage | String[] | Key Usage 목록 |
+| extendedKeyUsage | String[] | Extended Key Usage 목록 |
+| certificatePem | String | 인증서 PEM |
+| chainCertificatePem | String | 인증서 체인 PEM |
+| signatureAlgorithm | String | 서명 알고리즘 |
+| isLeaf | Boolean | Leaf 인증서 여부 |
+| childCertificateList | Array | 하위 인증서 목록 |
+| crlUrl | String | CRL 다운로드 URL |
+| ocspUrl | String | OCSP 서버 URL |
+| policies | String[] | Certificate Policies OID 목록 |
 
 ### 인증서(발급자) 발급
 
@@ -395,6 +744,66 @@ POST /v2.0/appkeys/{appkey}/ca-stores/{caStoreId}/certs
 }
 ```
 
+#### 응답
+
+**Response Body**
+
+```json
+{
+  "header": {
+    "resultCode": 0,
+    "resultMessage": "SUCCESS",
+    "isSuccessful": true
+  },
+  "body": {
+    "certificateId": 10,
+    "name": "Root CA",
+    "description": "Production Root CA",
+    "type": "ROOT",
+    "status": "ACTIVE",
+    "commonName": "NHN Cloud Root CA",
+    "serialNumber": "12:34:56:78:90:AB:CD:EF",
+    "subjectInfo": {
+      "country": "KR",
+      "organization": "NHN Cloud",
+      "commonName": "NHN Cloud Root CA"
+    },
+    "notAfterDateTime": "2034-01-15 10:00:00",
+    "notBeforeDateTime": "2024-01-15 10:00:00",
+    "keyAlgorithm": "RSA",
+    "keyLength": 2048,
+    "keyUsage": ["KEY_CERT_SIGN", "CRL_SIGN"],
+    "certificatePem": "-----BEGIN CERTIFICATE-----\nMIIDazCC...\n-----END CERTIFICATE-----",
+    "chainCertificatePem": "-----BEGIN CERTIFICATE-----\nMIIDazCC...\n-----END CERTIFICATE-----",
+    "signatureAlgorithm": "SHA256_WITH_RSA",
+    "isLeaf": false,
+    "crlUrl": "https://kr1-pca.api.nhncloudservice.com/v2.0/appkeys/my-appkey/ca-stores/1/certs/10/crl/der",
+    "ocspUrl": "https://kr1-pca.api.nhncloudservice.com/v2.0/appkeys/my-appkey/ca-stores/1/ocsp"
+  }
+}
+```
+
+| 필드 | 타입 | 설명 |
+|------|------|------|
+| certificateId | Long | 발급된 인증서 ID |
+| name | String | 인증서 이름 |
+| type | String | 인증서 타입(`ROOT`, `INTERMEDIATE`) |
+| status | String | 인증서 상태 |
+| commonName | String | Common Name |
+| serialNumber | String | 시리얼 번호 |
+| notAfterDateTime | LocalDateTime | 유효 만료일 |
+| notBeforeDateTime | LocalDateTime | 유효 시작일 |
+| keyAlgorithm | String | 키 알고리즘 |
+| keyLength | Number | 키 길이 |
+| certificatePem | String | 발급된 인증서 PEM |
+| chainCertificatePem | String | 인증서 체인 PEM |
+| signatureAlgorithm | String | 서명 알고리즘 |
+| crlUrl | String | CRL 다운로드 URL |
+| ocspUrl | String | OCSP 서버 URL |
+
+!!! note "참고"
+    발급자 인증서 발급 API는 `privateKey`를 응답에 포함하지 않습니다. 발급자의 개인 키는 서버에 안전하게 저장됩니다.
+
 ### 인증서 폐기
 
 인증서를 폐기합니다.
@@ -416,6 +825,31 @@ POST /v2.0/appkeys/{appkey}/ca-stores/{caStoreId}/certs/{certId}/revoke
 **필요 권한**
 
 - `ADMIN`
+
+#### 응답
+
+**Response Body**
+
+```json
+{
+  "header": {
+    "resultCode": 0,
+    "resultMessage": "SUCCESS",
+    "isSuccessful": true
+  },
+  "body": {
+    "result": true,
+    "serialNumber": "12:34:56:78:90:AB:CD:EF",
+    "revocationDatetime": "2024-06-01T15:30:00"
+  }
+}
+```
+
+| 필드 | 타입 | 설명 |
+|------|------|------|
+| result | Boolean | 폐기 처리 성공 여부 |
+| serialNumber | String | 폐기된 인증서의 시리얼 번호 |
+| revocationDatetime | LocalDateTime | 폐기 일시 |
 
 ## 템플릿 API
 
@@ -448,6 +882,47 @@ GET /v2.0/appkeys/{appkey}/ca-stores/{caStoreId}/templates
 
 - `VIEWER` 이상
 
+#### 응답
+
+**Response Body**
+
+```json
+{
+  "header": {
+    "resultCode": 0,
+    "resultMessage": "SUCCESS",
+    "isSuccessful": true
+  },
+  "body": {
+    "templates": [
+      {
+        "id": 100,
+        "name": "Web Server Template",
+        "description": "Server certificate template for web servers"
+      },
+      {
+        "id": 101,
+        "name": "Client Auth Template",
+        "description": "Client authentication certificate template"
+      }
+    ],
+    "totalCnt": 2,
+    "totalPageNo": 1,
+    "currentPageNo": 0
+  }
+}
+```
+
+| 필드 | 타입 | 설명 |
+|------|------|------|
+| templates | Array | 템플릿 정보 목록 |
+| templates[].id | Long | 템플릿 ID |
+| templates[].name | String | 템플릿 이름 |
+| templates[].description | String | 템플릿 설명 |
+| totalCnt | Long | 전체 템플릿 개수 |
+| totalPageNo | Number | 전체 페이지 수 |
+| currentPageNo | Number | 현재 페이지 번호(0부터 시작) |
+
 ### 템플릿 상세 조회
 
 템플릿 상세 정보를 조회합니다.
@@ -469,6 +944,92 @@ GET /v2.0/appkeys/{appkey}/ca-stores/{caStoreId}/templates/{templateId}
 **필요 권한**
 
 - `VIEWER` 이상
+
+#### 응답
+
+**Response Body**
+
+```json
+{
+  "header": {
+    "resultCode": 0,
+    "resultMessage": "SUCCESS",
+    "isSuccessful": true
+  },
+  "body": {
+    "id": 100,
+    "name": "Web Server Template",
+    "description": "Server certificate template for web servers",
+    "subjectInfo": {
+      "country": "KR",
+      "organization": "NHN Cloud"
+    },
+    "keyAlgorithm": "RSA",
+    "keyLength": 2048,
+    "keyInfo": {
+      "algorithm": "RSA",
+      "keySize": 2048
+    },
+    "keyUsage": ["DIGITAL_SIGNATURE", "KEY_ENCIPHERMENT"],
+    "extendedKeyUsage": ["SERVER_AUTHENTICATION"],
+    "extendedKeyUsageOids": [],
+    "signatureAlgorithm": "SHA256_WITH_RSA",
+    "isLeaf": true,
+    "signingCertificateId": 11,
+    "signingCertificateName": "Intermediate CA",
+    "creationUser": "admin@example.com",
+    "creationDatetime": "2024-01-15 11:00:00",
+    "lastChangeUser": "admin@example.com",
+    "lastChangeDatetime": "2024-01-15 11:00:00",
+    "basicConstraintsValidForNonCa": false,
+    "storeInServer": true,
+    "allowIpSans": false,
+    "useCsrCommonName": false,
+    "useCsrSans": false,
+    "useCsrOtherFields": false,
+    "maxTTL": "31536000",
+    "signatureBits": 256,
+    "backDateValidation": 30,
+    "urlSansWhitelist": [],
+    "otherSansWhitelist": [],
+    "policies": [],
+    "otherFields": []
+  }
+}
+```
+
+| 필드 | 타입 | 설명 |
+|------|------|------|
+| id | Long | 템플릿 ID |
+| name | String | 템플릿 이름 |
+| description | String | 템플릿 설명 |
+| subjectInfo | Object | 주체 정보(템플릿 고정 값) |
+| keyAlgorithm | String | 키 알고리즘 |
+| keyLength | Number | 키 길이 |
+| keyInfo | Object | 키 정보 |
+| keyUsage | String[] | Key Usage 목록 |
+| extendedKeyUsage | String[] | Extended Key Usage 목록 |
+| extendedKeyUsageOids | String[] | Extended Key Usage 커스텀 OID 목록 |
+| signatureAlgorithm | String | 서명 알고리즘 |
+| signingCertificateId | Long | 서명에 사용되는 발급자 인증서 ID |
+| signingCertificateName | String | 서명에 사용되는 발급자 인증서 이름 |
+| basicConstraintsValidForNonCa | Boolean | Non-CA에 대한 Basic Constraints 검사 여부 |
+| storeInServer | Boolean | 서버 저장 여부 |
+| allowIpSans | Boolean | IP SAN 허용 여부 |
+| useCsrCommonName | Boolean | CSR의 CN 사용 여부 |
+| useCsrSans | Boolean | CSR의 SAN 사용 여부 |
+| useCsrOtherFields | Boolean | CSR의 기타 필드 사용 여부 |
+| maxTTL | String | 최대 TTL(초 단위 문자열) |
+| signatureBits | Number | 서명 비트 수 |
+| backDateValidation | Long | 백데이트 검증 값(초) |
+| urlSansWhitelist | String[] | URL SAN 화이트리스트 |
+| otherSansWhitelist | OidInfo[] | 기타 SAN 화이트리스트 |
+| policies | String[] | 정책 OID 목록 |
+| otherFields | OidInfo[] | 기타 필드 |
+| creationDatetime | LocalDateTime | 생성 일시 |
+| creationUser | String | 생성자 |
+| lastChangeDatetime | LocalDateTime | 마지막 변경 일시 |
+| lastChangeUser | String | 마지막 변경자 |
 
 ### 템플릿 생성
 
@@ -493,7 +1054,7 @@ POST /v2.0/appkeys/{appkey}/ca-stores/{caStoreId}/templates
 |------|------|------|------|-----------|
 | name | String | Y | 템플릿 이름 | 최대 64자 |
 | description | String | N | 템플릿 설명 | 최대 256자 |
-| parentCertId | Number | Y | 상위 인증서 ID | |
+| parentCertId | Number | Y | 상위 인증서 ID | 발급자 인증서만 가능 |
 | maxTTL | Number | 조건부 | 최대 유효 기간(초) | 0 ~ 315,360,000(최대 10년)<br>`maxSpecificDate`와 택 1 |
 | maxSpecificDate | String | 조건부 | 최대 만료일 제한 | 1970-01-01T00:00:00 ~ 2999-12-31T23:59:59<br>형식: `2025-12-31T23:59:59`<br>`maxTTL`과 택 1 |
 | backDateValidation | Number | N | 백데이트 유효성(초) | 0 ~ 2,592,000(최대 30일)<br>기본값: `30` |
@@ -569,6 +1130,35 @@ POST /v2.0/appkeys/{appkey}/ca-stores/{caStoreId}/templates
 
 - `ADMIN`
 
+#### 응답
+
+**Response Body**
+
+```json
+{
+  "header": {
+    "resultCode": 0,
+    "resultMessage": "SUCCESS",
+    "isSuccessful": true
+  },
+  "body": {
+    "templateId": 100,
+    "name": "Web Server Template",
+    "description": "Server certificate template for web servers",
+    "signingCertificateId": 11,
+    "signingCertificateName": "Intermediate CA"
+  }
+}
+```
+
+| 필드 | 타입 | 설명 |
+|------|------|------|
+| templateId | Long | 생성된 템플릿 ID |
+| name | String | 템플릿 이름 |
+| description | String | 템플릿 설명 |
+| signingCertificateId | Long | 서명에 사용되는 발급자 인증서 ID |
+| signingCertificateName | String | 서명에 사용되는 발급자 인증서 이름 |
+
 ### 템플릿 수정
 
 템플릿을 수정합니다.
@@ -595,6 +1185,25 @@ PUT /v2.0/appkeys/{appkey}/ca-stores/{caStoreId}/templates/{templateId}
 
 - `ADMIN`
 
+#### 응답
+
+**Response Body**
+
+```json
+{
+  "header": {
+    "resultCode": 0,
+    "resultMessage": "SUCCESS",
+    "isSuccessful": true
+  },
+  "body": true
+}
+```
+
+| 필드 | 타입 | 설명 |
+|------|------|------|
+| body | Boolean | 수정 성공 여부 |
+
 ### 템플릿 삭제
 
 템플릿을 삭제합니다.
@@ -616,6 +1225,25 @@ DELETE /v2.0/appkeys/{appkey}/ca-stores/{caStoreId}/templates/{templateId}
 **필요 권한**
 
 - `ADMIN`
+
+#### 응답
+
+**Response Body**
+
+```json
+{
+  "header": {
+    "resultCode": 0,
+    "resultMessage": "SUCCESS",
+    "isSuccessful": true
+  },
+  "body": true
+}
+```
+
+| 필드 | 타입 | 설명 |
+|------|------|------|
+| body | Boolean | 삭제 성공 여부 |
 
 ### 템플릿으로 인증서 발급
 
@@ -690,6 +1318,105 @@ POST /v2.0/appkeys/{appkey}/ca-stores/{caStoreId}/templates/{templateId}/certifi
   "removeRootsFromChain": false
 }
 ```
+
+#### 응답
+
+**Response Body**(GENERATE 모드)
+
+```json
+{
+  "header": {
+    "resultCode": 0,
+    "resultMessage": "SUCCESS",
+    "isSuccessful": true
+  },
+  "body": {
+    "certificateId": 200,
+    "name": "api.example.com",
+    "type": "LEAF",
+    "status": "ACTIVE",
+    "commonName": "api.example.com",
+    "serialNumber": "AB:CD:EF:11:22:33:44:55",
+    "subjectInfo": {
+      "country": "KR",
+      "organization": "NHN Cloud",
+      "commonName": "api.example.com"
+    },
+    "notAfterDateTime": "2025-06-01 15:30:00",
+    "notBeforeDateTime": "2024-06-01 15:30:00",
+    "keyAlgorithm": "RSA",
+    "keyLength": 2048,
+    "keyUsage": ["DIGITAL_SIGNATURE", "KEY_ENCIPHERMENT"],
+    "extendedKeyUsage": ["SERVER_AUTHENTICATION"],
+    "certificatePem": "-----BEGIN CERTIFICATE-----\nMIIDazCC...\n-----END CERTIFICATE-----",
+    "chainCertificatePem": "-----BEGIN CERTIFICATE-----\nMIIDazCC...\n-----END CERTIFICATE-----",
+    "signatureAlgorithm": "SHA256_WITH_RSA",
+    "isLeaf": true,
+    "crlUrl": "https://kr1-pca.api.nhncloudservice.com/v2.0/appkeys/my-appkey/ca-stores/1/certs/11/crl/der",
+    "ocspUrl": "https://kr1-pca.api.nhncloudservice.com/v2.0/appkeys/my-appkey/ca-stores/1/ocsp",
+    "privateKey": "-----BEGIN PRIVATE KEY-----\nMIIEvQIBADANBgkqhkiG9w0...\n-----END PRIVATE KEY-----"
+  }
+}
+```
+
+**Response Body**(SIGN 모드)
+
+```json
+{
+  "header": {
+    "resultCode": 0,
+    "resultMessage": "SUCCESS",
+    "isSuccessful": true
+  },
+  "body": {
+    "certificateId": 201,
+    "name": "api.example.com",
+    "type": "LEAF",
+    "status": "ACTIVE",
+    "commonName": "api.example.com",
+    "serialNumber": "AB:CD:EF:11:22:33:44:66",
+    "subjectInfo": {
+      "country": "KR",
+      "organization": "NHN Cloud",
+      "commonName": "api.example.com"
+    },
+    "notAfterDateTime": "2025-06-01 15:30:00",
+    "notBeforeDateTime": "2024-06-01 15:30:00",
+    "keyAlgorithm": "RSA",
+    "keyLength": 2048,
+    "keyUsage": ["DIGITAL_SIGNATURE", "KEY_ENCIPHERMENT"],
+    "extendedKeyUsage": ["SERVER_AUTHENTICATION"],
+    "certificatePem": "-----BEGIN CERTIFICATE-----\nMIIDazCC...\n-----END CERTIFICATE-----",
+    "chainCertificatePem": "-----BEGIN CERTIFICATE-----\nMIIDazCC...\n-----END CERTIFICATE-----",
+    "signatureAlgorithm": "SHA256_WITH_RSA",
+    "isLeaf": true,
+    "crlUrl": "https://kr1-pca.api.nhncloudservice.com/v2.0/appkeys/my-appkey/ca-stores/1/certs/11/crl/der",
+    "ocspUrl": "https://kr1-pca.api.nhncloudservice.com/v2.0/appkeys/my-appkey/ca-stores/1/ocsp"
+  }
+}
+```
+
+| 필드 | 타입 | 설명 |
+|------|------|------|
+| certificateId | Long | 발급된 인증서 ID |
+| name | String | 인증서 이름 |
+| type | String | 인증서 타입(`LEAF`) |
+| status | String | 인증서 상태 |
+| commonName | String | Common Name |
+| serialNumber | String | 시리얼 번호 |
+| notAfterDateTime | LocalDateTime | 유효 만료일 |
+| notBeforeDateTime | LocalDateTime | 유효 시작일 |
+| keyAlgorithm | String | 키 알고리즘 |
+| keyLength | Number | 키 길이 |
+| certificatePem | String | 발급된 인증서 PEM |
+| chainCertificatePem | String | 인증서 체인 PEM |
+| signatureAlgorithm | String | 서명 알고리즘 |
+| crlUrl | String | CRL 다운로드 URL |
+| ocspUrl | String | OCSP 서버 URL |
+| privateKey | String | 개인 키(GENERATE 모드일 때만 반환) |
+
+!!! danger "주의"
+    GENERATE 모드로 발급 시 응답에 포함된 `privateKey`는 **이 응답이 유일한 반환 시점**입니다. 서버에는 저장되지 않으므로 즉시 안전한 위치에 저장하세요. SIGN 모드는 클라이언트가 개인 키를 보유하므로 응답에 `privateKey`가 포함되지 않습니다.
 
 ## 인증서 다운로드 API
 
