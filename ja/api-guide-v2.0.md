@@ -1145,6 +1145,7 @@ POST /v2.0/appkeys/{appkey}/ca-stores/{caStoreId}/templates
     "templateId": 100,
     "name": "Web Server Template",
     "description": "Server certificate template for web servers",
+    "attributes": "{\"parentCertId\":11,\"maxTTL\":31536000,\"keyInfo\":{\"algorithm\":\"RSA\",\"keySize\":2048},\"signatureBits\":256,\"storeInServer\":true,\"subjectInfo\":{\"country\":\"KR\"}}",
     "signingCertificateId": 11,
     "signingCertificateName": "Intermediate CA"
   }
@@ -1156,6 +1157,7 @@ POST /v2.0/appkeys/{appkey}/ca-stores/{caStoreId}/templates
 | templateId | Long | 作成されたテンプレートID |
 | name | String | テンプレート名 |
 | description | String | テンプレート説明 |
+| attributes | String | テンプレート属性をJSONでシリアライズした文字列です。<br>**リクエスト本文**から`name`、`description`を除いたフィールドで構成され、各フィールドの説明は上記のリクエスト本文の表を参照してください。 |
 | signingCertificateId | Long | 署名に使用される発行者証明書ID |
 | signingCertificateName | String | 署名に使用される発行者証明書名 |
 

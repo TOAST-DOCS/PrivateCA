@@ -1145,6 +1145,7 @@ POST /v2.0/appkeys/{appkey}/ca-stores/{caStoreId}/templates
     "templateId": 100,
     "name": "Web Server Template",
     "description": "Server certificate template for web servers",
+    "attributes": "{\"parentCertId\":11,\"maxTTL\":31536000,\"keyInfo\":{\"algorithm\":\"RSA\",\"keySize\":2048},\"signatureBits\":256,\"storeInServer\":true,\"subjectInfo\":{\"country\":\"KR\"}}",
     "signingCertificateId": 11,
     "signingCertificateName": "Intermediate CA"
   }
@@ -1156,6 +1157,7 @@ POST /v2.0/appkeys/{appkey}/ca-stores/{caStoreId}/templates
 | templateId | Long | 생성된 템플릿 ID |
 | name | String | 템플릿 이름 |
 | description | String | 템플릿 설명 |
+| attributes | String | 템플릿 속성을 JSON으로 직렬화한 문자열입니다.<br>**요청 본문**에서 `name`, `description`을 제외한 필드로 구성되며, 각 필드 설명은 위 요청 본문 표를 참조하세요. |
 | signingCertificateId | Long | 서명에 사용되는 발급자 인증서 ID |
 | signingCertificateName | String | 서명에 사용되는 발급자 인증서 이름 |
 

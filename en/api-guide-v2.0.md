@@ -1145,6 +1145,7 @@ POST /v2.0/appkeys/{appkey}/ca-stores/{caStoreId}/templates
     "templateId": 100,
     "name": "Web Server Template",
     "description": "Server certificate template for web servers",
+    "attributes": "{\"parentCertId\":11,\"maxTTL\":31536000,\"keyInfo\":{\"algorithm\":\"RSA\",\"keySize\":2048},\"signatureBits\":256,\"storeInServer\":true,\"subjectInfo\":{\"country\":\"KR\"}}",
     "signingCertificateId": 11,
     "signingCertificateName": "Intermediate CA"
   }
@@ -1156,6 +1157,7 @@ POST /v2.0/appkeys/{appkey}/ca-stores/{caStoreId}/templates
 | templateId | Long | Created template ID |
 | name | String | Template name |
 | description | String | Template description |
+| attributes | String | A string serializing the template attributes into JSON.<br>It consists of the fields in the **request body** except `name` and `description`. For a description of each field, refer to the request body table above. |
 | signingCertificateId | Long | ID of the issuer certificate used for signing |
 | signingCertificateName | String | Name of the issuer certificate used for signing |
 
