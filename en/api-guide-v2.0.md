@@ -1314,6 +1314,7 @@ POST /v2.0/appkeys/{appkey}/ca-stores/{caStoreId}/templates/{templateId}/certifi
 ```json
 {
   "mode": "SIGN",
+  "commonName": "api.example.com",
   "csr": "-----BEGIN CERTIFICATE REQUEST-----\nMIIC...\n-----END CERTIFICATE REQUEST-----",
   "ttlValue": 31536000,
   "format": "PEM",

@@ -40,7 +40,8 @@ You can use either Certbot or acme.sh as your ACME client. Please choose the too
 - **Certbot**: An ACME client tool developed by Let's Encrypt, based on Python.
 - **acme.sh**: A lightweight ACME client written in pure Shell script with minimal dependencies and an easy installation process.
 
-!!! tip "Notice" To automate certificate management in Kubernetes, please refer to the [ACME Certificate Renewal Guide](cert-manager-guide.md) (cert-manager).
+!!! tip "Notice"
+    To automate certificate management in Kubernetes, please refer to the [ACME Certificate Renewal Guide (cert-manager)](cert-manager-guide.md).
 
 ### Renew your certificate with Certbot
 
@@ -126,7 +127,7 @@ The `deploy-hook` is only executed if the certificate is successfully issued.
 ```bash
 #!/bin/bash
 # Processing tasks after certificate issuance is complete
-echo "\[post.sh] Certificate issued successfully!"
+echo "[post.sh] Certificate issued successfully!"
 
 # Copy the certificate to the target location
 cp /etc/letsencrypt/live/example.com/fullchain.pem ~/Downloads/
@@ -203,7 +204,8 @@ sudo crontab -e
 You can adjust the renewal interval in the `/etc/letsencrypt/renewal/<domain>.conf` file.
 
 ```ini
-[renewalparams] renew_before_expiry = 30 days
+[renewalparams]
+renew_before_expiry = 30 days
 ```
 
 You can change the `renew_before_expiry` value to set how many days before the certificate expires to attempt to renew.
@@ -246,10 +248,13 @@ curl https://get.acme.sh | sh
 After the installation is complete, load the environment variables.
 
 ```bash
-. ~/.acme.sh/acme.sh.env acme.sh --version
+. ~/.acme.sh/acme.sh.env
+acme.sh --version
 ```
 
-!!! tip "Notice" - When reconnecting to a container or a new shell session, you must reload environment variables with the command `. ~/.acme.sh/acme.sh.env`. - The email address is optional during installation.
+!!! tip "Notice"
+    - When reconnecting to a container or a new shell session, you must reload environment variables with the command `. ~/.acme.sh/acme.sh.env`.
+    - The email address is optional during installation.
 
 **Installation Example (Manual Download)**
 
@@ -270,7 +275,9 @@ acme.sh --register-account \
   --eab-hmac-key "YOUR_ACME_TOKEN_HMAC_KEY"
 ```
 
-!!! DANGER "Caution" - Account registration **only** needs to be done **once for the first time**. - After registration, you can omit the `--eab-kid and` `--eab-hmac-key` options when issuing a certificate.
+!!! danger "Caution"
+    - Account registration **only** needs to be done **once for the first time**.
+    - After registration, you can omit the `--eab-kid` and `--eab-hmac-key` options when issuing a certificate.
 
 #### Issue Certificate
 
@@ -321,9 +328,9 @@ acme.sh --issue \
 ```
 
 !!! danger "Caution"
-\- Port 80 must be open and available.
-\- If an existing web server is using port 80, it must be temporarily stopped.
-\- To use a different port, add the `--httpport` option.
+    - Port 80 must be open and available.
+    - If an existing web server is using port 80, it must be temporarily stopped.
+    - To use a different port, add the `--httpport` option.
 
 #### Verify Issued Certificates
 
@@ -334,7 +341,8 @@ Certificates are stored in the following paths by default:
 ├── <domain name>.cer # Server certificate (leaf certificate)
 ├── <domain name>.key # Private key
 ├── ca.cer # CA chain (Intermediate + Root)
-└── fullchain.cer # Full chain (leaf certificate + CA chain) ```
+└── fullchain.cer # Full chain (leaf certificate + CA chain)
+```
 
 !!! tip "Notice"
     - `<domain name>.cer`: contains only leaf certificates
