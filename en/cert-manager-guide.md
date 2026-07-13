@@ -6,11 +6,11 @@ The Private CA service supports the automatic certificate management environment
 This guide explains how to use a Private CA ACME server with cert-manager to issue and automatically renew certificates within a Kubernetes environment.
 
 !!! tip "Notice"
-   - **Automatic Certificate Management Environment (ACME)**: A standard protocol for automating certificate issuance and renewal.
-   - **cert-manager**: The native controller that automatically manages TLS certificates in Kubernetes.
-   - **Base certificate**: The certificate in the template role that ACME auto-renewal references.
-   - **certificate signing request (CSR)**: A signing request file for requesting a certificate to be issued.
-   - **External account binding (EAB)**: Account binding information for authenticating to the ACME server.
+    - **Automatic Certificate Management Environment (ACME)**: A standard protocol for automating certificate issuance and renewal.
+    - **cert-manager**: The native controller that automatically manages TLS certificates in Kubernetes.
+    - **Base certificate**: The certificate in the template role that ACME auto-renewal references.
+    - **certificate signing request (CSR)**: A signing request file for requesting a certificate to be issued.
+    - **External account binding (EAB)**: Account binding information for authenticating to the ACME server.
 
 !!! tip "Notice"
     To manage certificates using Certbot or acme.sh in a standard server environment, refer to the [ACME Certificate Renewal Guide (Certbot, acme.sh)](acme-guide.md).
@@ -106,17 +106,17 @@ spec:
   acme:
     server: https://kr1-pca.api.nhncloudservice.com/acme/v2.0/cert/{certId}/directory
 
-    # --- Start adding EAB settings --- --- External Account Binding.
+    # --- Start of EAB settings ---
     externalAccountBinding:
-      # keyID: "9998617a-2799-41dd-a75b-ff093f5472c7" # Example: "kid-1", "my-account-id", etc. ID received from the server.
+      keyID: "9998617a-2799-41dd-a75b-ff093f5472c7" # Example: "kid-1", "my-account-id", etc. ID received from the server.
       keySecretRef:
         name: acme-eab-secret # Secret name created above.
-        key: secret # Key name inside the Secret
-    # --- End of adding EAB settings
+        key: secret           # Key name inside the Secret
+    # --- End of EAB settings ---
 
     privateKeySecretRef:
       name: my-acme-account-key-example-com # Generated automatically by cert-manager.
-    skipTLSVerify: true # required as this is a private certificate server
+    skipTLSVerify: true  # Required as this is a private certificate server
     solvers:
     - http01:
         ingress:
@@ -184,20 +184,23 @@ providers:
   kubernetesGateway:
     enabled: true
 
-# Automatically Generate a GatewayClass
-gatewayClass: enabled: true name: traefik
+# Automatically create a GatewayClass
+gatewayClass:
+  enabled: true
+  name: traefik
 
-# Disable Automatic Creation of Gateway (create them manually)
-gateway: enabled: false
+# Disable automatic creation of Gateway (create it manually)
+gateway:
+  enabled: false
 
-# Set Internal Port to 1024 or Higher
+# Set internal ports to 1024 or higher
 ports:
   web:
-    port: 8000 # internal port
-    exposedPort: 80 # external port
+    port: 8000          # Internal port
+    exposedPort: 80     # External port
   websecure:
-    port: 8443 # internalport
-    exposedPort: 443 # external port
+    port: 8443          # Internal port
+    exposedPort: 443    # External port
 
 service:
   type: LoadBalancer
@@ -225,10 +228,10 @@ spec:
   # HTTP Listener (port 80)
   - name: http
     protocol: HTTP
-    port: 8000 # Matches Traefik's web entryPoint
+    port: 8000  # Matches Traefik's web entryPoint
     allowedRoutes:
-    namespaces:
-      from: All
+      namespaces:
+        from: All
   # HTTPS Listener (port 443)
   - name: https
     protocol: HTTPS
@@ -262,13 +265,13 @@ spec:
   acme:
     server: https://kr1-pca.api.nhncloudservice.com/acme/v2.0/cert/{certId}/directory
 
-    # --- Start adding EAB settings --- --- External Account Binding.
+    # --- Start of EAB settings ---
     externalAccountBinding:
       keyID: "9998617a-2799-41dd-a75b-ff093f5472c7"
       keySecretRef:
         name: acme-eab-secret
         key: secret
-    # --- End of adding EAB settings ---.
+    # --- End of EAB settings ---
 
     privateKeySecretRef:
       name: my-acme-account-key-example-com
@@ -332,27 +335,28 @@ The HTTP-01 challenge requires cert-manager to send an HTTP request to your doma
 kubectl edit deployment cert-manager -n cert-manager
 ```
 
-Add the following content under `spec.template.spec`:
+Add the following content under `spec.template.spec`.
 
 ```yaml
 spec:
   template:
     spec:
       hostAliases:
-      - ip: "114.110.145.74" # External IP of the Kubernetes cluster (e.g., NKS Floating IP, LoadBalancer IP)
-      hostnames:
-      - "example.com" # Any domain you set in the certificate
-      - "sub.example.com"
+      - ip: "114.110.145.74"  # External IP of the Kubernetes cluster (e.g., NKS Floating IP, LoadBalancer IP)
+        hostnames:
+        - "example.com"       # Any domain you set in the certificate
+        - "sub.example.com"
 ```
 
 This configuration ensures that requests from the cert-manager Pod to the domain are routed to the specified IP address.
 
 !!! danger "Caution"
     - The IP address must be set to the external IP of the Ingress Controller of the Kubernetes cluster or the LoadBalancer of the Gateway.
-    - Make sure to add **all the domains**`(commonName` and `dnsNames`) you set in the certificate to `the hostnames`.
+    - Make sure to add **all the domains**(`commonName` and `dnsNames`) you set in the certificate to `hostnames`.
     - In production environments, it is recommended to set up real DNS records.
 
-!!! tip "Notice" When using the Gateway API, cert-manager automatically creates the following resources to handle the challenge process.
+!!! tip "Notice"
+    When using the Gateway API, cert-manager automatically creates the following resources to handle the challenge process.
 
     1. **HTTPRoute**: For each domain, create an HTTPRoute to handle the Challenge path (`/.well-known/acme/v2.0-challenge/`).
     2. **Service**: Create a Service to handle the Challenge.
@@ -511,7 +515,7 @@ cmctl renew test-server-cert-example-com -n default
 ```bash
 # Trigger Manual Renewals with Certificate Annotations
 kubectl annotate certificate test-server-cert-example-com -n default \
-    cert-manager.io/issue-temporary-certificate="true" --overwrite
+  cert-manager.io/issue-temporary-certificate="true" --overwrite
 ```
 
 **Method 3: Regenerate a certificate resource**
@@ -534,12 +538,14 @@ To test that auto-renewal is working properly, you can use the following methods
 
 You can quickly verify the renewal process by setting a short TTL for the Base certificate and a smaller `renewBefore` value in the Certificate resource.
 
-Example settings - Base certificate TTL: 2 days - Certificate `renewBefore`: 24h (Start renewal 24 hours before expiration)
+Example settings
+- Base certificate TTL: 2 days
+- Certificate `renewBefore`: 24h (Start renewal 24 hours before expiration)
 
 ```yaml
 spec:
   renewBefore: 24h # Start renewal 24 hours before expiration
-  ```
+```
 
 **Method 2: Test immediately with manual renewal**
 
