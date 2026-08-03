@@ -1,3 +1,5 @@
+<!-- pre-align:aligned sig=a02b34477090 -->
+
 # ACME Certificate Renewal Guide (Certbot, acme.sh)
 **Management > Private CA > ACME Certificate Renewal Guide (Certbot, acme.sh)**
 
@@ -13,11 +15,13 @@ This guide explains how to use a Private CA ACME server with Certbot or acme.sh 
     - **Certificate Signing Request (CSR)**: It is used to request certificate issuance.
     - **EAB(external account binding)**: Account binding information to authenticate to the ACME server.
 
-## Prepare in advance
+<a id="prepare-in-advance"></a>
+## Prepare in advance { #prepare-in-advance }
 
 Before you can begin issuing certificates through ACME, you need to prepare the following:
 
-### 1. Issue a base certificate
+<a id="issue-a-base-certificate"></a>
+### 1. Issue a base certificate { #issue-a-base-certificate }
 
 The base certificate acts as a "template" that the ACME server references for automatic renewal.
 
@@ -25,7 +29,8 @@ The base certificate acts as a "template" that the ACME server references for au
 - Base certificates are created in the console with the normal certificate issuance procedure.
 - After you've been issued a base certificate, use the ID from that certificate in your ACME Directory URL.
 
-### 2. Verify ACME server information
+<a id="verify-acme-server-information"></a>
+### 2. Verify ACME server information { #verify-acme-server-information }
 
 In the Private CA console, verify the following information:
 
@@ -33,7 +38,8 @@ In the Private CA console, verify the following information:
 - **ACME Token ID**: ACME token ID issued from the console (**YOUR\_ACME\_TOKEN\_ID**)
 - **ACME HMAC Key**: Console-issued ACME token HMAC key (**YOUR\_ACME\_TOKEN\_HMAC\_KEY**)
 
-## Renew a Certificate
+<a id="renew-a-certificate"></a>
+## Renew a Certificate { #renew-a-certificate }
 
 You can use either Certbot or acme.sh as your ACME client. Please choose the tool that best fits your environment to proceed.
 
@@ -43,8 +49,10 @@ You can use either Certbot or acme.sh as your ACME client. Please choose the too
 !!! tip "Notice"
     To automate certificate management in Kubernetes, please refer to the [ACME Certificate Renewal Guide (cert-manager)](cert-manager-guide.md).
 
-### Renew your certificate with Certbot
+<a id="renew-your-certificate-with-certbot"></a>
+### Renew your certificate with Certbot { #renew-your-certificate-with-certbot }
 
+<a id="renew-your-certificate-with-certbot-install-certbot"></a>
 #### Install Certbot
 
 Certbot is the most widely used ACME client. Refer to the [official Certbot documentation](https://certbot.eff.org/) to install it for your operating system.
@@ -62,6 +70,7 @@ sudo apt install certbot
 sudo yum install certbot
 ```
 
+<a id="renew-your-certificate-with-certbot-configure-commands"></a>
 #### Configure commands
 
 Here's an example of a basic certificate issuance command:
@@ -82,6 +91,7 @@ certbot certonly \
   --register-unsafely-without-email
 ```
 
+<a id="renew-your-certificate-with-certbot-key-option-description"></a>
 #### Key Option Description
 
 | Option | Description | Required | Default |
@@ -109,6 +119,7 @@ certbot certonly \
 !!! danger "Caution"
     When specifying domains, you must ensure they match the Common Name (CN) and Subject Alternative Name (SAN) of the Base certificate. Before issuance, please verify the certificate details in the console to confirm that the correct domains are assigned to the `-d` option.
 
+<a id="renew-your-certificate-with-certbot-hook-script-example"></a>
 #### Hook script example
 
 ##### pre.sh (pre-authentication execution script)
@@ -137,6 +148,7 @@ cp /etc/letsencrypt/live/example.com/privkey.pem ~/Downloads/
 # systemctl reload nginx
 ```
 
+<a id="renew-your-certificate-with-certbot-verify-issued-certificates"></a>
 #### Verify Issued Certificates
 
 Certificates are stored in the following paths by default:
@@ -159,6 +171,7 @@ openssl x509 -in /etc/letsencrypt/live/<domain name (CN)>/cert.pem -text -noout
 openssl x509 -in /etc/letsencrypt/live/<domain name (CN)>/cert.pem -noout -dates
 ```
 
+<a id="renew-your-certificate-with-certbot-set-up-certificate-auto-renewal"></a>
 #### Set up Certificate Auto-renewal
 
 Certbot can automatically renew certificates that are nearing expiration.
@@ -217,6 +230,7 @@ You can change the `renew_before_expiry` value to set how many days before the c
     - The auto-registered cron jobs that are included with the Certbot installation may contain default options, so it is recommended that you modify the `/etc/cron.d/certbot` file as needed.
     - The default cron job includes a random delay `(perl -e 'sleep int(rand(43200))')`. This is to prevent overloading the ACME server, and if you need it to execute immediately, you should remove the syntax or use the `--no-random-sleep-on-renew` option.
 
+<a id="renew-your-certificate-with-certbot-troubleshooting"></a>
 #### Troubleshooting
 
 ##### If certificate issuance fails
@@ -231,10 +245,12 @@ You can change the `renew_before_expiry` value to set how many days before the c
 1. **Verify Renewal settings**: verify that the `/etc/letsencrypt/renewal/<domain>.conf` file exists and is correct.
 2. **Check hook script existence**: verify that the script specified `with manual-auth-hook` still exists.
 
-### Certificate Renewal with acme.sh
+<a id="certificate-renewal-with-acmesh"></a>
+### Certificate Renewal with acme.sh { #certificate-renewal-with-acmesh }
 
 acme.sh is a lightweight ACME client written in pure Shell script, with minimal dependencies and an easy installation process.
 
+<a id="certificate-renewal-with-acmesh-install-acmesh"></a>
 #### Install acme.sh
 
 acme.sh can be easily installed via an install script.
@@ -264,6 +280,7 @@ cd acme.sh
 ./acme.sh --install
 ```
 
+<a id="certificate-renewal-with-acmesh-sign-up-for-an-acme-account"></a>
 #### Sign up for an ACME Account
 
 Before you can issue a certificate, you must first register an account with the ACME server.
@@ -279,6 +296,7 @@ acme.sh --register-account \
     - Account registration **only** needs to be done **once for the first time**.
     - After registration, you can omit the `--eab-kid` and `--eab-hmac-key` options when issuing a certificate.
 
+<a id="certificate-renewal-with-acmesh-issue-certificate"></a>
 #### Issue Certificate
 
 You can issue certificates after you sign up for an account.
@@ -293,6 +311,7 @@ acme.sh --issue \
   --standalone
 ```
 
+<a id="certificate-renewal-with-acmesh-key-option-description"></a>
 #### Key Option Description
 
 | Options | Description | Required | Default |
@@ -315,6 +334,7 @@ acme.sh --issue \
 !!! danger "Caution"
     When specifying domains, you must ensure they match the Common Name (CN) and Subject Alternative Name (SAN) of the Base certificate. Before issuance, please verify the certificate details in the console to confirm that the correct domains are assigned to the `-d` option..
 
+<a id="certificate-renewal-with-acmesh-issue-certificates-in-standalone-mode"></a>
 #### Issue Certificates in Standalone Mode
 
 acme.sh runs a temporary web server to handle HTTP-01 challenges.
@@ -332,6 +352,7 @@ acme.sh --issue \
     - If an existing web server is using port 80, it must be temporarily stopped.
     - To use a different port, add the `--httpport` option.
 
+<a id="certificate-renewal-with-acmesh-verify-issued-certificates"></a>
 #### Verify Issued Certificates
 
 Certificates are stored in the following paths by default:
@@ -359,6 +380,7 @@ openssl x509 -in ~/.acme.sh/example.com/example.com.cer -text -noout
 openssl x509 -in ~/.acme.sh/example.com/example.com.cer -noout -dates
 ```
 
+<a id="certificate-renewal-with-acmesh-install-certificate-deployment"></a>
 #### Install Certificate (Deployment)
 
 acme.sh can use the `--install-cert` command to copy the certificate to the desired location and restart the web server.
@@ -392,6 +414,7 @@ acme.sh --install-cert -d example.com \
     - `--ca-file`: CA chain storage path
     - `--reloadcmd`: command to run automatically after certificate installation
 
+<a id="certificate-renewal-with-acmesh-set-up-certificate-auto-renewal"></a>
 #### Set up Certificate Auto-renewal
 
 acme.sh automatically registers a cron job upon installation to check and renew certificate expirations.
@@ -454,6 +477,7 @@ This setting will attempt to renew 30 days before expiration.
     - The `Le_RenewalDays` value must be carefully adjusted to account for the ACME server's Rate Limit policy.
     - If you're using Standalone mode, you might need a script to suspend your web server because port 80 must be available for renewal.
 
+<a id="certificate-renewal-with-acmesh-troubleshooting"></a>
 #### Troubleshooting
 
 ##### If certificate issuance fails
@@ -479,7 +503,8 @@ acme.sh --issue \
 3. **Check Logs**: Check the `~/.acme.sh/<domain>/<domain>.log` file for error messages.
 4. **Test Manual Renewal**: Diagnose the issue by attempting a manual renewal with the command `acme.sh --renew -d example.com --force --debug`.
 
-## About ACME protocol
+<a id="about-acme-protocol"></a>
+## About ACME protocol { #about-acme-protocol }
 
 Through the ACME Directory URL `(/directory`) provided by the private CA, the ACME client automatically gets all the endpoint information it needs.
 
@@ -487,7 +512,8 @@ The ACME protocol workflow is fully automated by the client, requiring only the 
 
 For more information about the ACME protocol, see [RFC 8555](https://datatracker.ietf.org/doc/html/rfc8555).
 
-## References
+<a id="references"></a>
+## References { #references }
 
 - [Certbot official documentation](https://certbot.eff.org/)
 - [acme.sh official documentation](https://github.com/acmesh-official/acme.sh)

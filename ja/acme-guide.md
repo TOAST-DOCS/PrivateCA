@@ -1,3 +1,5 @@
+<!-- pre-align:aligned sig=720aaaa1f9a2 -->
+
 # ACME証明書更新ガイド
 **Management > Private CA > ACME証明書更新ガイド**
 
@@ -12,11 +14,13 @@ Private CAサービスはACME(automatic certificate management environment)プ�
     - **CSR(certificate signing request)**：証明書発行をリクエストするための署名リクエストファイルです。
     - **EAB(external account binding)**：ACMEサーバーに認証するためのアカウントバインディング情報です。
 
-## 事前準備
+<a id="prepare-in-advance"></a>
+## 事前準備 { #prepare-in-advance }
 
 ACMEによる証明書発行を開始する前に、次の事項を準備する必要があります。
 
-### 1. Base証明書の発行
+<a id="issue-a-base-certificate"></a>
+### 1. Base証明書の発行 { #issue-a-base-certificate }
 
 Base証明書は、ACMEサーバーが自動更新時に参照する「テンプレート」の役割を果たします。
 
@@ -24,7 +28,8 @@ Base証明書は、ACMEサーバーが自動更新時に参照する「テンプ
 - Base証明書はコンソールで一般的な証明書発行手順で作成します。
 - Base証明書を発行した後、該当証明書のIDをACME Directory URLに使用します。
 
-### 2. Certbotのインストール
+<a id="install-certbot"></a>
+### 2. Certbotのインストール { #install-certbot }
 
 Certbotは最も広く使用されているACMEクライアントです。[Certbot公式ドキュメント](https://certbot.eff.org/)を参考に、OSに合わせてインストールします。
 
@@ -41,7 +46,8 @@ sudo apt install certbot
 sudo yum install certbot
 ```
 
-### 3. ACMEサーバー情報の確認
+<a id="verify-acme-server-information"></a>
+### 3. ACMEサーバー情報の確認 { #verify-acme-server-information }
 
 Private CAコンソールで次の情報を確認します。
 
@@ -49,11 +55,13 @@ Private CAコンソールで次の情報を確認します。
 - **ACMEトークンID**：コンソールで発行したACMEトークンID(**YOUR_ACME_TOKEN_ID**)
 - **ACME HMACキー**：コンソールで発行したACMEトークンHMACキー(**YOUR_ACME_TOKEN_HMAC_KEY**)
 
-## 証明書の更新
+<a id="renew-a-certificate"></a>
+## 証明書の更新 { #renew-a-certificate }
 
 Certbotを使用して証明書を発行する手順は次のとおりです。
 
-### コマンド構成
+<a id="configure-commands"></a>
+### コマンド構成 { #configure-commands }
 
 次は基本的な証明書発行コマンドの例です。
 
@@ -73,7 +81,8 @@ certbot certonly \
   --register-unsafely-without-email
 ```
 
-### 主なオプションの説明
+<a id="key-option-description"></a>
+### 主なオプションの説明 { #key-option-description }
 
 | オプション | 説明 | 必須 | デフォルト値 |
 |------|------|------|--------|
@@ -100,8 +109,10 @@ certbot certonly \
 !!! danger "注意"
     ドメイン指定時、Base証明書に設定されたCN(common name)とドメインSAN(subject alternative name)を正確に入力する必要があります。証明書発行前にコンソールでBase証明書のCNとSAN情報を確認し、`-d`オプションに正しいドメインを指定したか必ず検証してください。
 
-### Hookスクリプト例
+<a id="hook-script-example"></a>
+### Hookスクリプト例 { #hook-script-example }
 
+<a id="hook-script-example-presh-pre-authentication-execution-script"></a>
 #### pre.sh(認証前実行スクリプト)
 
 `manual-auth-hook`は内容が空であってもファイルとして存在する必要があります。これは証明書更新(renew)時のエラーを防止するためです。
@@ -111,6 +122,7 @@ certbot certonly \
 # 必要な認証前処理作業をここに追加できます。
 ```
 
+<a id="hook-script-example-postsh-script-to-execute-after-certificate-issuance"></a>
 #### post.sh(証明書発行後実行スクリプト)
 
 `deploy-hook`は証明書が正常に発行された場合にのみ実行されます。
@@ -128,7 +140,8 @@ cp /etc/letsencrypt/live/example.com/privkey.pem ~/Downloads/
 # systemctl reload nginx
 ```
 
-## 発行された証明書の確認
+<a id="verify-issued-certificates"></a>
+## 発行された証明書の確認 { #verify-issued-certificates }
 
 証明書は基本的に次のパスに保存されます。
 
@@ -140,7 +153,8 @@ cp /etc/letsencrypt/live/example.com/privkey.pem ~/Downloads/
 └── privkey.pem       # 秘密鍵
 ```
 
-### 証明書内容の確認
+<a id="verify-certificate-contents"></a>
+### 証明書内容の確認 { #verify-certificate-contents }
 
 ```bash
 # 証明書情報の確認
@@ -150,23 +164,27 @@ openssl x509 -in /etc/letsencrypt/live/<ドメイン名(CN)>/cert.pem -text -noo
 openssl x509 -in /etc/letsencrypt/live/<ドメイン名(CN)>/cert.pem -noout -dates
 ```
 
-## 証明書自動更新の設定
+<a id="set-up-certificate-auto-renewal"></a>
+## 証明書自動更新の設定 { #set-up-certificate-auto-renewal }
 
 Certbotは期限切れが近い証明書を自動的に更新できます。
 
-### 更新前提条件
+<a id="renewal-prerequisites"></a>
+### 更新前提条件 { #renewal-prerequisites }
 
 - 初回発行履歴が必要です。
 - `/etc/letsencrypt/renewal/<ドメイン>.conf`ファイルが存在する必要があります。
 - `/etc/letsencrypt/live/<ドメイン>/`ディレクトリに証明書ファイルが存在する必要があります。
 
-### 自動更新設定
+<a id="set-up-auto-renewal"></a>
+### 自動更新設定 { #set-up-auto-renewal }
 
 Certbotインストール時、自動的にcronまたはsystemd timerが登録され、定期的に証明書の期限切れ可否を確認します。
 
 **基本更新サイクル**：期限切れ30日前から自動更新試行
 
-### 手動更新
+<a id="manual-renewal"></a>
+### 手動更新 { #manual-renewal }
 
 必要に応じて次のコマンドで手動更新を実行できます。
 
@@ -178,7 +196,8 @@ sudo certbot renew
 sudo certbot renew --force-renewal
 ```
 
-### Cronジョブ登録
+<a id="register-a-cron-job"></a>
+### Cronジョブ登録 { #register-a-cron-job }
 
 自動更新が登録されていない場合、手動でcronジョブを追加できます。
 
@@ -190,7 +209,8 @@ sudo crontab -e
 0 2 * * * certbot renew --no-random-sleep-on-renew
 ```
 
-### 更新サイクル変更
+<a id="change-a-renewal-cycle"></a>
+### 更新サイクル変更 { #change-a-renewal-cycle }
 
 `/etc/letsencrypt/renewal/<ドメイン>.conf`ファイルで更新サイクルを調整できます。
 
@@ -208,21 +228,25 @@ renew_before_expiry = 30 days
     - Certbotインストール時に自動登録されたcronジョブにはデフォルトオプションが含まれている場合があるため、必要に応じて`/etc/cron.d/certbot`ファイルを修正することを推奨します。
     - デフォルトcronジョブにはランダム遅延(`perl -e 'sleep int(rand(43200))'`)が含まれています。これはACMEサーバーの過負荷防止のためであり、即時実行が必要な場合は該当構文を削除するか`--no-random-sleep-on-renew`オプションを使用する必要があります。
 
-## トラブルシューティング
+<a id="troubleshooting"></a>
+## トラブルシューティング { #troubleshooting }
 
-### 証明書発行失敗時
+<a id="if-certificate-issuance-fails"></a>
+### 証明書発行失敗時 { #if-certificate-issuance-fails }
 
 1. **ACME Directory URL確認**：`--server`オプションのURLが正しいか確認します。
 2. **EAB認証情報確認**：`--eab-kid`と`--eab-hmac-key`の値が正確か確認します。
 3. **ドメイン検証失敗**：Challenge方式が環境に合っているか確認します。HTTP Challengeの場合、80番ポートが開いている必要があります。
 4. **Hookスクリプト権限**：`pre.sh`と`post.sh`ファイルに実行権限があるか確認します。
 
-### 証明書更新失敗時
+<a id="if-certificate-renewal-fails"></a>
+### 証明書更新失敗時 { #if-certificate-renewal-fails }
 
 1. **Renewal設定確認**：`/etc/letsencrypt/renewal/<ドメイン>.conf`ファイルが存在し、正しいか確認します。
 2. **Hookスクリプト存在確認**：`manual-auth-hook`で指定したスクリプトがまだ存在するか確認します。
 
-## ACMEプロトコル情報
+<a id="about-acme-protocol"></a>
+## ACMEプロトコル情報 { #about-acme-protocol }
 
 Private CAで提供するACME Directory URL(`/directory`)を通じて、ACMEクライアントは必要な全てのエンドポイント情報を自動的に取得します。
 
@@ -230,7 +254,8 @@ ACMEプロトコルの全体フローはクライアントによって自動的�
 
 ACMEプロトコルの詳細については、[RFC 8555](https://datatracker.ietf.org/doc/html/rfc8555)を参照してください。
 
-## 参考資料
+<a id="references"></a>
+## 参考資料 { #references }
 
 - [Certbot公式ドキュメント](https://certbot.eff.org/)
 - [ACMEプロトコル仕様(RFC 8555)](https://datatracker.ietf.org/doc/html/rfc8555)

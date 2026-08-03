@@ -1,9 +1,12 @@
+<!-- pre-align:aligned sig=087cd81ac2d8 -->
+
 # コンソール利用ガイド
 **Management > Private CA > コンソール利用ガイド**
 
 Private CAコンソールは認証局(certificate authority, CA)を中心に構成されており、全てのリソース(証明書テンプレート、発行者、証明書、ACMEトークン)は特定のリポジトリに属します。コンソール画面は左側にリポジトリリスト、右側に選択したリポジトリの詳細情報を表示するタブ構造になっています。
 
-## Private CA利用フロー
+<a id="private-ca-usage-flow"></a>
+## Private CA利用フロー { #private-ca-usage-flow }
 
 Private CAで証明書を発行するまでの過程は次のとおりです。
 
@@ -19,11 +22,13 @@ Private CAで証明書を発行するまでの過程は次のとおりです。
     - **Root CA**：自己署名した最上位証明書です。全ての信頼の起点です。
     - **Intermediate CA**：Root CAによって署名された中間証明書です。実際のサーバー証明書発行に使用されます。
 
-## リポジトリ
+<a id="repository"></a>
+## リポジトリ { #repository }
 
 リポジトリはPrivate CAを管理する基本単位です。リポジトリを作成すると、発行者、証明書テンプレート、証明書などを管理できます。
 
-### リポジトリ追加
+<a id="add-repository"></a>
+### リポジトリ追加 { #add-repository }
 
 1. コンソール左上の**+ 追加**をクリックしてリポジトリを追加します。
   ![ca_empty_list](https://static.toastoven.net/prod_privateca/2025-12-23_ko/ca_init.png)
@@ -43,7 +48,8 @@ Private CAで証明書を発行するまでの過程は次のとおりです。
 
 3. **作成**をクリックしてリポジトリを作成します。
 
-### リポジトリ修正、削除
+<a id="modify-and-delete-repositories"></a>
+### リポジトリ修正、削除 { #modify-and-delete-repositories }
 
 リポジトリリストで各リポジトリ項目の右側にあるメニューボタン(⋮)をクリックすると、次の作業を実行できます。
 ![overview_3dot](https://static.toastoven.net/prod_privateca/2025-12-23_ko/overview_3dot.png)
@@ -55,10 +61,12 @@ Private CAで証明書を発行するまでの過程は次のとおりです。
 !!! danger "注意"
     削除作業は元に戻せないため注意が必要です。
 
-### リポジトリ詳細情報
+<a id="repository-details"></a>
+### リポジトリ詳細情報 { #repository-details }
 
 左側のリポジトリリストで希望するリポジトリをクリックすると、右側の画面にリポジトリの詳細情報が表示されます。リポジトリ詳細情報画面はリポジトリ名、説明とタブリスト、そして複数の詳細情報で構成されています。
 
+<a id="repository-details-tab-list"></a>
 #### タブリスト
 
 リポジトリを選択すると、右側の画面上部には次のようなタブがあり、各タブをクリックして該当機能に移動できます。
@@ -71,6 +79,7 @@ Private CAで証明書を発行するまでの過程は次のとおりです。
 - **ACME管理**：ACMEトークンリスト及び管理
 - **証明書履歴**：リポジトリの証明書履歴確認
 
+<a id="repository-details-resource-statistics-card"></a>
 #### リソース統計カード
 
 画面上部にはリポジトリの主要リソース数を表示するカードが3つ表示されます。
@@ -82,6 +91,7 @@ Private CAで証明書を発行するまでの過程は次のとおりです。
 
 各カードの**{カード名}表示 >**をクリックすると、該当リソースの管理タブにすぐに移動できます。
 
+<a id="repository-details-acme-info"></a>
 #### ACME情報
 
 リソースカード下部にはACME情報が表示されます。
@@ -91,6 +101,7 @@ Private CAで証明書を発行するまでの過程は次のとおりです。
 - **アクティブトークン**：アクティブ状態のACMEトークン数
 - **削除されたトークン**：削除されたACMEトークン数
 
+<a id="repository-details-2"></a>
 #### リポジトリ詳細情報
 
 ACME情報下部にはリポジトリ詳細情報が表示されます。
@@ -105,11 +116,13 @@ ACME情報下部にはリポジトリ詳細情報が表示されます。
 !!! tip "ポイント"
     CRLとOCSPは証明書の失効状態を確認する方法です。CRLは失効した証明書リストを提供し、OCSPは個別証明書の状態をリクエスト時点の状態で素早く照会できます。
 
-## 発行者
+<a id="issuer"></a>
+## 発行者 { #issuer }
 
 発行者は証明書に署名し発行する認証局です。Private CAではRoot CAとIntermediate CAの2種類のタイプの発行者を作成できます。
 
-### 発行者タイプ選択ガイド
+<a id="guide-to-selecting-an-issuer-type"></a>
+### 発行者タイプ選択ガイド { #guide-to-selecting-an-issuer-type }
 
 - **Root CAのみ使用する場合**：小規模組織内部用証明書発行
 - **Root CA + Intermediate CA使用する場合**
@@ -117,7 +130,8 @@ ACME情報下部にはリポジトリ詳細情報が表示されます。
     - 複数の部署/プロジェクト別に別途CAを運営したい場合
     - セキュリティベストプラクティスに従いたい場合(推奨)
 
-### 発行者リスト
+<a id="issuer-list"></a>
+### 発行者リスト { #issuer-list }
 
 発行者タブでは作成された全ての発行者をテーブル形式で確認できます。テーブルには次の情報が表示されます。
 ![issuer_list_after](https://static.toastoven.net/prod_privateca/2025-12-23_ko/issuer_list_after.png)
@@ -132,7 +146,8 @@ ACME情報下部にはリポジトリ詳細情報が表示されます。
 
 各発行者項目には**失効**ボタンがあり、必要に応じて発行者を**失効させる**ことができます。
 
-### 発行者追加
+<a id="add-an-issuer"></a>
+### 発行者追加 { #add-an-issuer }
 
 1. 発行者タブで**+ 追加**をクリックします。
   ![issuer_list](https://static.toastoven.net/prod_privateca/2025-12-23_ko/issuer_list.png)
@@ -178,11 +193,13 @@ ACME情報下部にはリポジトリ詳細情報が表示されます。
 
 3. **追加**をクリックして発行者を追加します。
 
-### 発行者詳細情報
+<a id="issuer-details"></a>
+### 発行者詳細情報 { #issuer-details }
 
 発行者リストで発行者名をクリックすると詳細情報ページに移動します。詳細ページには次の情報が表示され、上部のダウンロードボタンを通じて証明書PEMファイルをダウンロードできます。
 ![issuer_detail](https://static.toastoven.net/prod_privateca/2025-12-23_ko/issuer_detail.png)
 
+<a id="issuer-details-certificate-information"></a>
 #### 証明書情報
 - 状態、タイプ、シリアル番号
 - 主体情報(subject DN)
@@ -192,14 +209,17 @@ ACME情報下部にはリポジトリ詳細情報が表示されます。
 - 有効期間(有効開始時刻、有効終了時刻)
 - 証明書PEM内容
 
+<a id="issuer-details-issuer-url"></a>
 #### 発行者URL
 - **発行証明書URL**：この発行者が発行した証明書リスト
 - **CRL配布ポイント**：CRLを確認できるURL
 - **OCSPサーバー**：OCSPレスポンダURL
 
 
-### 発行者修正、失効
+<a id="issuer-modification-revocation"></a>
+### 発行者修正、失効 { #issuer-modification-revocation }
 
+<a id="issuer-modification-revocation-modify-issuer"></a>
 #### 発行者修正
 発行者詳細ページで名前と説明を直接修正できます。修正後、**保存**をクリックして変更事項を保存します。
 
@@ -207,6 +227,7 @@ ACME情報下部にはリポジトリ詳細情報が表示されます。
     - **名前**：発行者名を修正できます。
     - **説明**：発行者説明を修正できます。
 
+<a id="issuer-modification-revocation-issuer-revocation"></a>
 #### 発行者失効
 1. 発行者リストで失効させる発行者の**失効**をクリックします。
 2. 確認ダイアログで**失効**をクリックして失効を確定します。
@@ -215,11 +236,13 @@ ACME情報下部にはリポジトリ詳細情報が表示されます。
     - 発行者を失効させると、該当発行者が発行した全ての証明書の信頼性に影響を及ぼします。失効した発行者はこれ以上証明書を発行できず、すでに発行された証明書はCRLまたはOCSPを通じて失効状態を確認できます。
     - ルート証明書は失効させることができません。
 
-## 証明書テンプレート
+<a id="certificate-template"></a>
+## 証明書テンプレート { #certificate-template }
 
 証明書テンプレートは、証明書を迅速かつ一貫性を持って発行するための設定の集まりです。証明書テンプレートを使用すると、同じ設定で複数の証明書を簡単に発行できます。
 
-### 証明書テンプレートリスト
+<a id="list-of-certificate-templates"></a>
+### 証明書テンプレートリスト { #list-of-certificate-templates }
 
 証明書テンプレートタブでは、作成された全ての証明書テンプレートをテーブル形式で確認できます。テーブルには次の情報が表示されます。
 ![template_list_after](https://static.toastoven.net/prod_privateca/2025-12-23_ko/template_list_after.png)
@@ -229,7 +252,8 @@ ACME情報下部にはリポジトリ詳細情報が表示されます。
 
 各証明書テンプレート項目には**修正**及び**削除**ボタンがあり、証明書テンプレートを管理できます。
 
-### 証明書テンプレート追加
+<a id="add-a-certificate-template"></a>
+### 証明書テンプレート追加 { #add-a-certificate-template }
 
 1. 証明書テンプレートタブで**+ 追加**をクリックします。
   ![template_list](https://static.toastoven.net/prod_privateca/2025-12-23_ko/template_list.png)
@@ -294,20 +318,24 @@ ACME情報下部にはリポジトリ詳細情報が表示されます。
 
 3. **追加**をクリックして証明書テンプレートを追加します。
 
-### 証明書テンプレート詳細情報
+<a id="certificate-template-details"></a>
+### 証明書テンプレート詳細情報 { #certificate-template-details }
 
 証明書テンプレートリストで証明書テンプレート名をクリックすると詳細情報ページに移動します。詳細ページは折りたたみ可能なセクションで構成されており、ユーザーが入力した情報を確認できます。
 ![template_detail](https://static.toastoven.net/prod_privateca/2025-12-23_ko/template_detail.png)
 
 詳細ページ上部には**+ 証明書新規作成**及び**修正**、**削除**ボタンがあります。
 
-### 証明書テンプレート修正、削除
+<a id="modify-delete-certificate-template"></a>
+### 証明書テンプレート修正、削除 { #modify-delete-certificate-template }
 
+<a id="modify-delete-certificate-template-modify-certificate-template"></a>
 #### 証明書テンプレート修正
 1. 証明書テンプレートリストで**修正**をクリックするか、詳細ページで**修正**をクリックします。
 2. 証明書テンプレート修正ページで必要な内容を変更します。
 3. **修正**をクリックして変更事項を保存します。
 
+<a id="modify-delete-certificate-template-delete-a-certificate-template"></a>
 #### 証明書テンプレート削除
 1. 証明書テンプレートリストで削除する証明書テンプレートの**削除**をクリックするか、詳細ページで**削除**をクリックします。
 2. 確認ダイアログで**削除**をクリックして削除を確定します。
@@ -315,7 +343,8 @@ ACME情報下部にはリポジトリ詳細情報が表示されます。
 !!! tip "ポイント"
     証明書テンプレートを削除しても、該当証明書テンプレートですでに作成された証明書には影響しません。
 
-### 証明書テンプレートを使用した証明書作成
+<a id="create-certificates-with-certificate-templates"></a>
+### 証明書テンプレートを使用した証明書作成 { #create-certificates-with-certificate-templates }
 
 証明書テンプレートを使用して証明書を作成する方法は次のとおりです。
 
@@ -336,11 +365,13 @@ ACME情報下部にはリポジトリ詳細情報が表示されます。
 
 作成された証明書はユーザーの選択に応じてPrivate CAに保存でき、保存した場合は証明書タブで確認できます。
 
-## 証明書
+<a id="certificate"></a>
+## 証明書 { #certificate }
 
 証明書タブではリポジトリから発行された全ての証明書を照会及び管理できます。
 
-### 証明書リスト
+<a id="list-of-certificates"></a>
+### 証明書リスト { #list-of-certificates }
 
 証明書タブでは発行された全ての証明書をテーブル形式で確認できます。テーブルには次の情報が表示されます。
 ![certificate_list](https://static.toastoven.net/prod_privateca/2025-12-23_ko/certificate_list.png)
@@ -354,11 +385,13 @@ ACME情報下部にはリポジトリ詳細情報が表示されます。
 
 各証明書項目には**ダウンロード**及び**失効**ボタンがあり、証明書を管理できます。
 
-### 証明書詳細情報
+<a id="certificate-details"></a>
+### 証明書詳細情報 { #certificate-details }
 
 証明書リストで一般名をクリックすると詳細情報ページに移動します。詳細ページには次の情報が表示され、上部のダウンロードボタンを通じて証明書PEMファイルをダウンロードできます。
 ![certificate_detail](https://static.toastoven.net/prod_privateca/2025-12-23_ko/certificate_detail.png)
 
+<a id="certificate-details-certificate-information"></a>
 #### 証明書情報
 - **一般名**：証明書の一般名
 - **シリアル番号**：固有シリアル番号
@@ -371,7 +404,8 @@ ACME情報下部にはリポジトリ詳細情報が表示されます。
 - **鍵用途**：digitalSignature、keyEnciphermentなど
 - **拡張鍵用途**：serverAuth、clientAuthなど
 
-### 証明書失効
+<a id="revoke-certificate"></a>
+### 証明書失効 { #revoke-certificate }
 
 証明書を失効させるには次のように進めます。
 
@@ -386,11 +420,13 @@ ACME情報下部にはリポジトリ詳細情報が表示されます。
 !!! danger "注意"
     証明書の失効は元に戻せない作業です。失効した証明書は再度有効化できないため、新しい証明書を発行する必要があります。
 
-## ACME管理
+<a id="acme-management"></a>
+## ACME管理 { #acme-management }
 
 ACME(automated certificate management environment)は証明書の発行及び更新を自動化するプロトコルです。Private CAのACME管理機能を使用すると、Let's Encryptクライアント(例：certbot)のようなACMEクライアントを通じて自動的に証明書を発行できます。
 
-### ACMEトークンリスト
+<a id="acme-token-list"></a>
+### ACMEトークンリスト { #acme-token-list }
 
 ACME管理タブでは作成された全てのACMEトークンをテーブル形式で確認できます。テーブルには次の情報が表示されます。
 ![acme_list_after](https://static.toastoven.net/prod_privateca/2025-12-23_ko/acme_list_after.png)
@@ -401,7 +437,8 @@ ACME管理タブでは作成された全てのACMEトークンをテーブル形
 
 各トークン項目には**削除**ボタンがあり、使用しなくなったトークンを削除できます。
 
-### ACMEトークン追加
+<a id="add-an-acme-token"></a>
+### ACMEトークン追加 { #add-an-acme-token }
 
 1. ACME管理タブで**+ ACMEトークン追加**をクリックします。
   ![acme_list](https://static.toastoven.net/prod_privateca/2025-12-23_ko/acme_list.png)
@@ -413,6 +450,7 @@ ACME管理タブでは作成された全てのACMEトークンをテーブル形
 
 3. **作成**をクリックしてトークンを作成します。
 
+<a id="add-an-acme-token-verify-information-after-acme-token-is-created"></a>
 #### ACMEトークン作成完了後の情報確認
 ![acme_once](https://static.toastoven.net/prod_privateca/2025-12-23_ko/acme_once.png)
 トークンが作成されると、次の情報が表示されます。
@@ -423,11 +461,13 @@ ACME管理タブでは作成された全てのACMEトークンをテーブル形
 !!! danger "注意"
     HMACキーはトークン作成時に一度だけ表示されます。必ず安全な場所にコピーして保管する必要があり、その後は再確認できません。HMACキーを紛失した場合は新しいトークンを作成する必要があります。
 
-### ACMEトークン詳細情報
+<a id="acme-token-details"></a>
+### ACMEトークン詳細情報 { #acme-token-details }
 
 ![acme_detail](https://static.toastoven.net/prod_privateca/2025-12-23_ko/acme_detail.png)
 トークンリストでトークン名をクリックすると詳細情報ページに移動します。詳細ページには次の情報が表示されます。
 
+<a id="acme-token-details-issued-certificate"></a>
 #### 発行された証明書
 トークンを使用して発行された証明書リストが表示されます。各証明書は次の情報を含みます。
 
@@ -436,11 +476,13 @@ ACME管理タブでは作成された全てのACMEトークンをテーブル形
 - **シリアル番号**：証明書シリアル番号
 - **有効開始日**：証明書有効開始日
 
-### ACMEクライアント設定例
+<a id="example-of-acme-client-setup"></a>
+### ACMEクライアント設定例 { #example-of-acme-client-setup }
 
 [ACMEを利用した証明書更新](./acme-guide.md)ページを参考にして作成します。
 
-### ACMEトークン削除
+<a id="delete-an-acme-token"></a>
+### ACMEトークン削除 { #delete-an-acme-token }
 
 1. ACME管理タブで削除するトークンの**削除**をクリックします。
   ![acme_detail_delete](https://static.toastoven.net/prod_privateca/2025-12-23_ko/acme_detail_delete.png)
@@ -450,7 +492,8 @@ ACME管理タブでは作成された全てのACMEトークンをテーブル形
 !!! tip "ポイント"
     ACMEトークンを削除しても、該当トークンですでに発行された証明書には影響しません。ただし、該当トークンを使用した自動更新は動作しなくなるため、新しいトークンを作成してACMEクライアント設定を更新する必要があります。
 
-## 証明書履歴
+<a id="certificate-history"></a>
+## 証明書履歴 { #certificate-history }
 
 ![history](https://static.toastoven.net/prod_privateca/2025-12-23_ko/history.png)
 証明書履歴タブではリポジトリで発生した証明書関連の活動を時系列で確認できます。履歴には次のような情報が含まれます。

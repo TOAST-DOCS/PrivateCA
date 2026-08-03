@@ -1,3 +1,5 @@
+<!-- pre-align:aligned sig=a02b34477090 -->
+
 # ACME 인증서 갱신 가이드(Certbot, acme.sh)
 **Management > Private CA > ACME 인증서 갱신 가이드(Certbot, acme.sh)**
 
@@ -13,11 +15,13 @@ Private CA 서비스는 ACME(automatic certificate management environment) 프�
     - **CSR(certificate signing request)**: 인증서 발급을 요청하기 위한 서명 요청 파일입니다.
     - **EAB(external account binding)**: ACME 서버에 인증하기 위한 계정 바인딩 정보입니다.
 
-## 사전 준비하기
+<a id="prepare-in-advance"></a>
+## 사전 준비하기 { #prepare-in-advance }
 
 ACME를 통한 인증서 발급을 시작하기 전에 다음 사항을 준비해야 합니다.
 
-### 1. Base 인증서 발급
+<a id="issue-a-base-certificate"></a>
+### 1. Base 인증서 발급 { #issue-a-base-certificate }
 
 Base 인증서는 ACME 서버가 자동 갱신 시 참조하는 "템플릿" 역할을 합니다.
 
@@ -25,7 +29,8 @@ Base 인증서는 ACME 서버가 자동 갱신 시 참조하는 "템플릿" 역�
 - Base 인증서는 콘솔에서 일반적인 인증서 발급 절차로 생성합니다.
 - Base 인증서를 발급 받은 후, 해당 인증서의 ID를 ACME Directory URL에 사용합니다.
 
-### 2. ACME 서버 정보 확인
+<a id="verify-acme-server-information"></a>
+### 2. ACME 서버 정보 확인 { #verify-acme-server-information }
 
 Private CA 콘솔에서 다음 정보를 확인합니다.
 
@@ -33,7 +38,8 @@ Private CA 콘솔에서 다음 정보를 확인합니다.
 - **ACME 토큰 ID**: 콘솔에서 발급한 ACME 토큰 ID(**YOUR_ACME_TOKEN_ID**)
 - **ACME HMAC 키**: 콘솔에서 발급한 ACME 토큰 HMAC 키(**YOUR_ACME_TOKEN_HMAC_KEY**)
 
-## 인증서 갱신하기
+<a id="renew-a-certificate"></a>
+## 인증서 갱신하기 { #renew-a-certificate }
 
 ACME 클라이언트로 Certbot 또는 acme.sh를 사용할 수 있습니다. 사용 환경에 맞는 도구를 선택하여 진행하세요.
 
@@ -43,8 +49,10 @@ ACME 클라이언트로 Certbot 또는 acme.sh를 사용할 수 있습니다. �
 !!! tip "알아두기"
     Kubernetes 환경에서 인증서를 자동으로 관리하려면 [ACME 인증서 갱신 가이드(cert-manager)](cert-manager-guide.md)를 참고하세요.
 
-### Certbot을 이용한 인증서 갱신
+<a id="renew-your-certificate-with-certbot"></a>
+### Certbot을 이용한 인증서 갱신 { #renew-your-certificate-with-certbot }
 
+<a id="renew-your-certificate-with-certbot-install-certbot"></a>
 #### Certbot 설치
 
 Certbot은 가장 널리 사용되는 ACME 클라이언트입니다. [Certbot 공식 문서](https://certbot.eff.org/)를 참고하여 운영 체제에 맞게 설치합니다.
@@ -62,6 +70,7 @@ sudo apt install certbot
 sudo yum install certbot
 ```
 
+<a id="renew-your-certificate-with-certbot-configure-commands"></a>
 #### 명령어 구성
 
 다음은 기본적인 인증서 발급 명령어 예시입니다.
@@ -82,6 +91,7 @@ certbot certonly \
   --register-unsafely-without-email
 ```
 
+<a id="renew-your-certificate-with-certbot-key-option-description"></a>
 #### 주요 옵션 설명
 
 | 옵션 | 설명 | 필수 | 기본값 |
@@ -109,6 +119,7 @@ certbot certonly \
 !!! danger "주의"
     도메인 지정 시 Base 인증서에 설정된 CN(common name)과 도메인 SAN(subject alternative name)을 정확히 입력해야 합니다. 인증서 발급 전 콘솔에서 Base 인증서의 CN과 SAN 정보를 확인하여 `-d` 옵션에 올바른 도메인을 지정했는지 반드시 검증하세요.
 
+<a id="renew-your-certificate-with-certbot-hook-script-example"></a>
 #### Hook 스크립트 예시
 
 ##### pre.sh(인증 전 실행 스크립트)
@@ -137,6 +148,7 @@ cp /etc/letsencrypt/live/example.com/privkey.pem ~/Downloads/
 # systemctl reload nginx
 ```
 
+<a id="renew-your-certificate-with-certbot-verify-issued-certificates"></a>
 #### 발급된 인증서 확인
 
 인증서는 기본적으로 다음 경로에 저장됩니다.
@@ -159,6 +171,7 @@ openssl x509 -in /etc/letsencrypt/live/<도메인명(CN)>/cert.pem -text -noout
 openssl x509 -in /etc/letsencrypt/live/<도메인명(CN)>/cert.pem -noout -dates
 ```
 
+<a id="renew-your-certificate-with-certbot-set-up-certificate-auto-renewal"></a>
 #### 인증서 자동 갱신 설정하기
 
 Certbot은 만료가 임박한 인증서를 자동으로 갱신할 수 있습니다.
@@ -217,6 +230,7 @@ renew_before_expiry = 30 days
     - Certbot 설치 시 자동 등록된 cron 작업에는 기본 옵션이 포함되어 있을 수 있으므로, 필요에 따라 `/etc/cron.d/certbot` 파일을 수정하는 것이 권장됩니다.
     - 기본 cron 작업에는 랜덤 지연(`perl -e 'sleep int(rand(43200))'`)이 포함되어 있습니다. 이는 ACME 서버 과부하 방지를 위한 것으로, 즉시 실행이 필요하면 해당 구문을 제거하거나 `--no-random-sleep-on-renew` 옵션을 사용해야 합니다.
 
+<a id="renew-your-certificate-with-certbot-troubleshooting"></a>
 #### 문제 해결하기
 
 ##### 인증서 발급 실패 시
@@ -231,10 +245,12 @@ renew_before_expiry = 30 days
 1. **Renewal 설정 확인**: `/etc/letsencrypt/renewal/<도메인>.conf` 파일이 존재하고 올바른지 확인합니다.
 2. **Hook 스크립트 존재 확인**: `manual-auth-hook`으로 지정한 스크립트가 여전히 존재하는지 확인합니다.
 
-### acme.sh를 이용한 인증서 갱신
+<a id="certificate-renewal-with-acmesh"></a>
+### acme.sh를 이용한 인증서 갱신 { #certificate-renewal-with-acmesh }
 
 acme.sh는 순수 Unix Shell로 작성된 경량 ACME 클라이언트입니다. 의존성이 적고 설치가 간편하여 다양한 환경에서 사용할 수 있습니다.
 
+<a id="certificate-renewal-with-acmesh-install-acmesh"></a>
 #### acme.sh 설치
 
 acme.sh는 설치 스크립트를 통해 간단히 설치할 수 있습니다.
@@ -264,6 +280,7 @@ cd acme.sh
 ./acme.sh --install
 ```
 
+<a id="certificate-renewal-with-acmesh-sign-up-for-an-acme-account"></a>
 #### ACME 계정 등록
 
 인증서를 발급하기 전에 먼저 ACME 서버에 계정을 등록해야 합니다.
@@ -279,6 +296,7 @@ acme.sh --register-account \
     - 계정 등록은 **최초 1회만** 수행하면 됩니다.
     - 등록 후에는 인증서 발급 시 `--eab-kid`와 `--eab-hmac-key` 옵션을 생략할 수 있습니다.
 
+<a id="certificate-renewal-with-acmesh-issue-certificate"></a>
 #### 인증서 발급
 
 계정 등록 후 인증서를 발급할 수 있습니다.
@@ -293,6 +311,7 @@ acme.sh --issue \
   --standalone
 ```
 
+<a id="certificate-renewal-with-acmesh-key-option-description"></a>
 #### 주요 옵션 설명
 
 | 옵션 | 설명 | 필수 | 기본값 |
@@ -315,6 +334,7 @@ acme.sh --issue \
 !!! danger "주의"
     도메인 지정 시 Base 인증서에 설정된 CN(common name)과 도메인 SAN(subject alternative name)을 정확히 입력해야 합니다. 인증서 발급 전 콘솔에서 Base 인증서의 CN과 SAN 정보를 확인하여 `-d` 옵션에 올바른 도메인을 지정했는지 반드시 검증하세요.
 
+<a id="certificate-renewal-with-acmesh-issue-certificates-in-standalone-mode"></a>
 #### Standalone 모드로 인증서 발급
 
 acme.sh가 임시 웹 서버를 실행하여 HTTP-01 Challenge를 처리합니다.
@@ -332,6 +352,7 @@ acme.sh --issue \
     - 기존 웹 서버가 80번 포트를 사용 중이면 일시적으로 중단해야 합니다.
     - 다른 포트를 사용하려면 `--httpport` 옵션을 추가합니다.
 
+<a id="certificate-renewal-with-acmesh-verify-issued-certificates"></a>
 #### 발급된 인증서 확인
 
 인증서는 기본적으로 다음 경로에 저장됩니다.
@@ -359,6 +380,7 @@ openssl x509 -in ~/.acme.sh/example.com/example.com.cer -text -noout
 openssl x509 -in ~/.acme.sh/example.com/example.com.cer -noout -dates
 ```
 
+<a id="certificate-renewal-with-acmesh-install-certificate-deployment"></a>
 #### 인증서 설치(배포)
 
 acme.sh는 `--install-cert` 명령어로 인증서를 원하는 위치에 복사하고 웹 서버를 재시작할 수 있습니다.
@@ -392,6 +414,7 @@ acme.sh --install-cert -d example.com \
     - `--ca-file`: CA 체인 저장 경로
     - `--reloadcmd`: 인증서 설치 후 자동으로 실행할 명령어
 
+<a id="certificate-renewal-with-acmesh-set-up-certificate-auto-renewal"></a>
 #### 인증서 자동 갱신 설정하기
 
 acme.sh는 설치 시 자동으로 cron 작업을 등록하여 인증서 만료를 확인하고 갱신합니다.
@@ -454,6 +477,7 @@ Le_RenewalDays=30
     - `Le_RenewalDays` 값은 ACME 서버의 Rate Limit 정책을 고려하여 신중히 조정해야 합니다.
     - Standalone 모드를 사용하는 경우, 갱신 시 80번 포트가 사용 가능해야 하므로 웹 서버를 일시 중단하는 스크립트가 필요할 수 있습니다.
 
+<a id="certificate-renewal-with-acmesh-troubleshooting"></a>
 #### 문제 해결하기
 
 ##### 인증서 발급 실패 시
@@ -479,7 +503,8 @@ acme.sh --issue \
 3. **로그 확인**: `~/.acme.sh/<도메인>/<도메인>.log` 파일에서 오류 메시지를 확인합니다.
 4. **수동 갱신 테스트**: `acme.sh --renew -d example.com --force --debug` 명령어로 수동 갱신을 시도하여 문제를 진단합니다.
 
-## ACME 프로토콜 정보
+<a id="about-acme-protocol"></a>
+## ACME 프로토콜 정보 { #about-acme-protocol }
 
 Private CA에서 제공하는 ACME Directory URL(`/directory`)을 통해 ACME 클라이언트는 필요한 모든 엔드포인트 정보를 자동으로 가져옵니다.
 
@@ -487,7 +512,8 @@ ACME 프로토콜의 전체 흐름은 클라이언트에 의해 자동으로 처
 
 ACME 프로토콜에 대한 자세한 내용은 [RFC 8555](https://datatracker.ietf.org/doc/html/rfc8555)를 참고하세요.
 
-## 참고 자료
+<a id="references"></a>
+## 참고 자료 { #references }
 
 - [Certbot 공식 문서](https://certbot.eff.org/)
 - [acme.sh 공식 문서](https://github.com/acmesh-official/acme.sh)

@@ -1,3 +1,5 @@
+<!-- pre-align:aligned sig=720aaaa1f9a2 -->
+
 # Guide to ACME Certificate Renewal
 **Management > Private CA > Guide to ACME Certificate Renewal**
 
@@ -12,11 +14,13 @@ This guide walks you through how to use the Private CA ACME server to issue cert
     - **Certificate signing request (CSR)**: a file used to request certificate issuance.
     - **External account binding (EAB**): Account binding information to authenticate to the ACME server.
 
-## Prepare in advance
+<a id="prepare-in-advance"></a>
+## Prepare in advance { #prepare-in-advance }
 
 Before you can begin issuing certificates through ACME, you need to prepare the following:
 
-### 1. Issue a Base Certificate
+<a id="issue-a-base-certificate"></a>
+### 1. Issue a Base Certificate { #issue-a-base-certificate }
 
 The base certificate acts as a "template" that the ACME server references for automatic renewal.
 
@@ -24,7 +28,8 @@ The base certificate acts as a "template" that the ACME server references for au
 - Base certificates are created in the console with the normal certificate issuance procedure.
 - After you've been issued a base certificate, use the ID from that certificate in your ACME Directory URL.
 
-### 2. Install Certbot
+<a id="install-certbot"></a>
+### 2. Install Certbot { #install-certbot }
 
 Certbot is the most widely used ACME client. Refer to the [official Certbot documentation](https://certbot.eff.org/) to install it for your operating system.
 
@@ -41,7 +46,8 @@ sudo apt install certbot
 sudo yum install certbot
 ```
 
-### 3. Verify ACME server information
+<a id="verify-acme-server-information"></a>
+### 3. Verify ACME server information { #verify-acme-server-information }
 
 In the Private CA console, verify the following information:
 
@@ -49,11 +55,13 @@ In the Private CA console, verify the following information:
 - **ACME token ID**: ACME token ID issued from the console**(YOUR_ACME_TOKEN_ID**)
 - **ACME HMAC key**: Console-issued ACME token**HMAC** key **(YOUR_ACME_TOKEN_HMAC_KEY**)
 
-## Renew a Certificate
+<a id="renew-a-certificate"></a>
+## Renew a Certificate { #renew-a-certificate }
 
 The process for using Certbot to issue a certificate is as follows:
 
-### Configure commands
+<a id="configure-commands"></a>
+### Configure commands { #configure-commands }
 
 Here's an example of a basic certificate issuance command:
 
@@ -73,7 +81,8 @@ certbot certonly \
   --register-unsafely-without-email
 ```
 
-### Key Option Description
+<a id="key-option-description"></a>
+### Key Option Description { #key-option-description }
 
 | Options | Description | Required | Default |
 |------|------|------|--------|
@@ -100,8 +109,10 @@ certbot certonly \
 !!! danger "Caution"
     When specifying a domain, you must enter the common name (CN) and domain subject alternative name (SAN) set in the base certificate exactly. Before issuing the certificate, be sure to verify that you specified the correct domain in the `-d` option by checking the CN and SAN information for the base certificate in the console.
 
-### Hook script example
+<a id="hook-script-example"></a>
+### Hook script example { #hook-script-example }
 
+<a id="hook-script-example-presh-pre-authentication-execution-script"></a>
 #### pre.sh (pre-authentication execution script)
 
 The `manual-auth-hook` must exist as a file, even if its contents are empty. This is to prevent errors when renewing the certificate.
@@ -111,6 +122,7 @@ The `manual-auth-hook` must exist as a file, even if its contents are empty. Thi
 # You can add any necessary authentication preprocessing tasks here.
 ```
 
+<a id="hook-script-example-postsh-script-to-execute-after-certificate-issuance"></a>
 #### post.sh (script to execute after certificate issuance)
 
 The `deploy-hook` is only executed if the certificate is successfully issued.
@@ -128,7 +140,8 @@ cp /etc/letsencrypt/live/example.com/privkey.pem ~/Downloads/
 # systemctl reload nginx
 ```
 
-## Verify Issued Certificates
+<a id="verify-issued-certificates"></a>
+## Verify Issued Certificates { #verify-issued-certificates }
 
 Certificates are stored in the following paths by default:
 
@@ -140,7 +153,8 @@ Certificates are stored in the following paths by default:
 └── privkey.pem # private key
 ```
 
-### Verify Certificate Contents
+<a id="verify-certificate-contents"></a>
+### Verify Certificate Contents { #verify-certificate-contents }
 
 ```bash
 # Verify Certificate Information
@@ -150,23 +164,27 @@ openssl x509 -in /etc/letsencrypt/live/<domain name (CN)>/cert.pem -text -noout
 openssl x509 -in /etc/letsencrypt/live/<domain name (CN)>/cert.pem -noout -dates
 ```
 
-## Set up Certificate Auto-renewal
+<a id="set-up-certificate-auto-renewal"></a>
+## Set up Certificate Auto-renewal { #set-up-certificate-auto-renewal }
 
 Certbot can automatically renew certificates that are nearing expiration.
 
-### Renewal Prerequisites
+<a id="renewal-prerequisites"></a>
+### Renewal Prerequisites { #renewal-prerequisites }
 
 - Must have an original issuance history.
 - The file `/etc/letsencrypt/renewal/<domain>.conf` must exist.
 - The certificate files should be located in the `/etc/letsencrypt/live/<domain>/` directory.
 
-### Set up Auto-renewal
+<a id="set-up-auto-renewal"></a>
+### Set up Auto-renewal { #set-up-auto-renewal }
 
 When you install Certbot, it automatically registers a cron or systemd timer to periodically check for certificate expiration.
 
 **Default renewal cycle**: Attempt to auto-renew 30 days before expiration
 
-### Manual renewal
+<a id="manual-renewal"></a>
+### Manual renewal { #manual-renewal }
 
 If necessary, you can perform a manual renewal with the following commands:
 
@@ -178,7 +196,8 @@ sudo certbot renew
 sudo certbot renew --force-renewal
 ```
 
-### Register a Cron job
+<a id="register-a-cron-job"></a>
+### Register a Cron job { #register-a-cron-job }
 
 If auto-renewal is not registered, you can manually add a cron job.
 
@@ -190,7 +209,8 @@ sudo crontab -e
 0 2 * * * certbot renew --no-random-sleep-on-renew
 ```
 
-### Change a renewal cycle
+<a id="change-a-renewal-cycle"></a>
+### Change a renewal cycle { #change-a-renewal-cycle }
 
 You can adjust the renewal interval in the `/etc/letsencrypt/renewal/<domain>.conf` file.
 
@@ -208,21 +228,25 @@ You can change the `renew_before_expiry` value to set how many days before the c
     - The auto-registered cron jobs that are included with the Certbot installation may contain default options, so it is recommended that you modify the `/etc/cron.d/certbot` file as needed.
     - The default cron job includes a random delay `(perl -e 'sleep int(rand(43200))')`. This is to prevent overloading the ACME server, and if you need it to execute immediately, you should remove the syntax or use the `--no-random-sleep-on-renew` option.
 
-## Troubleshooting
+<a id="troubleshooting"></a>
+## Troubleshooting { #troubleshooting }
 
-### If certificate issuance fails
+<a id="if-certificate-issuance-fails"></a>
+### If certificate issuance fails { #if-certificate-issuance-fails }
 
 1. **Verify** the **ACME Directory URL**: verify that the URL in the `--server` option is correct.
 2. **Verify EAB credentials**: verify that the `--eab-kid and` `--eab-hmac-key` values are correct.
 3. **Domain verification failed**: Verify that the Challenge method is suitable for your environment. For HTTP Challenge, port 80 must be open.
 4. **Hook script permissions**: ensure that the `pre.sh and` `post.sh` files have execute permissions.
 
-### If certificate renewal fails
+<a id="if-certificate-renewal-fails"></a>
+### If certificate renewal fails { #if-certificate-renewal-fails }
 
 1. **Verify Renewal settings**: verify that the `/etc/letsencrypt/renewal/<domain>.conf` file exists and is correct.
 2. **Check hook script existence**: verify that the script specified `with manual-auth-hook` still exists.
 
-## About ACME protocol
+<a id="about-acme-protocol"></a>
+## About ACME protocol { #about-acme-protocol }
 
 Through the ACME Directory URL `(/directory`) provided by the private CA, the ACME client automatically gets all the endpoint information it needs.
 
@@ -230,7 +254,8 @@ The ACME protocol workflow is fully automated by the client, requiring only the 
 
 For more information about the ACME protocol, see [RFC 8555](https://datatracker.ietf.org/doc/html/rfc8555).
 
-## References
+<a id="references"></a>
+## References { #references }
 
 - [Certbot official documentation](https://certbot.eff.org/)
 - [ACME Protocol Specification (RFC 8555)](https://datatracker.ietf.org/doc/html/rfc8555)

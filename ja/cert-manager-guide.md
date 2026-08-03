@@ -1,3 +1,5 @@
+<!-- pre-align:aligned sig=3ad92632ab87 -->
+
 # ACME証明書更新ガイド(cert-manager)
 **Management > Private CA > ACME証明書更新ガイド(cert-manager)**
 
@@ -15,11 +17,13 @@ Private CAサービスは、ACME(automatic certificate management environment)�
 !!! tip "ポイント"
     一般サーバー環境でCertbotまたはacme.shを使用して証明書を管理するには、[ACME証明書更新ガイド(Certbot, acme.sh)](acme-guide.md)を参照してください。
 
-## 事前準備
+<a id="prepare-in-advance"></a>
+## 事前準備 { #prepare-in-advance }
 
 ACMEを利用した証明書発行を開始する前に、以下の事項を準備する必要があります。
 
-### 1. Base証明書の発行
+<a id="issue-a-base-certificate"></a>
+### 1. Base証明書の発行 { #issue-a-base-certificate }
 
 Base証明書は、ACMEサーバーが自動更新時に参照する「テンプレート」の役割を果たします。
 
@@ -27,7 +31,8 @@ Base証明書は、ACMEサーバーが自動更新時に参照する「テンプ
 - Base証明書は、コンソールで一般的な証明書発行手順により作成します。
 - Base証明書を発行した後、該当証明書のIDをACME Directory URLに使用します。
 
-### 2. ACMEサーバー情報の確認
+<a id="verify-acme-server-information"></a>
+### 2. ACMEサーバー情報の確認 { #verify-acme-server-information }
 
 Private CAコンソールで以下の情報を確認します。
 
@@ -35,11 +40,13 @@ Private CAコンソールで以下の情報を確認します。
 - **ACMEトークンID**: コンソールで発行したACMEトークンID(**YOUR_ACME_TOKEN_ID**)
 - **ACME HMACキー**: コンソールで発行したACMEトークンHMACキー(**YOUR_ACME_TOKEN_HMAC_KEY**)
 
-## cert-managerを利用した証明書更新
+<a id="renew-certificates-with-cert-manager"></a>
+## cert-managerを利用した証明書更新 { #renew-certificates-with-cert-manager }
 
 Kubernetes環境では、cert-managerを使用して証明書を自動的に発行及び更新できます。
 
-### cert-managerのインストール
+<a id="install-cert-manager"></a>
+### cert-managerのインストール { #install-cert-manager }
 
 Kubernetesクラスターにcert-managerをインストールします。
 
@@ -53,7 +60,8 @@ kubectl apply -f https://github.com/cert-manager/cert-manager/releases/download/
 kubectl get pods -n cert-manager
 ```
 
-### Ingress Controllerのインストール
+<a id="install-ingress-controller"></a>
+### Ingress Controllerのインストール { #install-ingress-controller }
 
 HTTP-01 Challenge方式を使用するには、Ingress Controllerが必要です。
 
@@ -71,7 +79,8 @@ helm upgrade --install ingress-nginx ingress-nginx \
 kubectl get pods -n ingress-nginx
 ```
 
-### EAB Secretの作成
+<a id="create-an-eab-secret"></a>
+### EAB Secretの作成 { #create-an-eab-secret }
 
 ACME認証のためのEAB(external account binding)情報をKubernetes Secretとして作成します。
 
@@ -86,12 +95,14 @@ kubectl create secret generic acme-eab-secret \
     - EAB Secretは機密情報であるため、安全に管理する必要があります。
     - Secretが作成されたネームスペースとIssuerが配置されるネームスペースが同一である必要があります。
 
-### Issuer設定
+<a id="issuer-settings"></a>
+### Issuer設定 { #issuer-settings }
 
 Issuerは、証明書の発行を受けるCAを定義するcert-managerリソースです。Namespace単位で動作するIssuerと、クラスター全体で使用可能なClusterIssuerの中から選択して使用できます。
 
 HTTP-01 Challenge検証方式として、**Ingress**または**Gateway API**のいずれかを選択して使用できます。
 
+<a id="issuer-settings-method-1-configure-an-issuer-with-ingress"></a>
 #### 方法1: Ingressを利用した Issuer設定
 
 Ingress Controllerを使用する場合のIssuer設定例です。
@@ -123,6 +134,7 @@ spec:
           class: nginx
 ```
 
+<a id="issuer-settings-method-2-configure-an-issuer-with-gateway-api"></a>
 #### 方法2: Gateway APIを利用したIssuer設定
 
 Kubernetes Gateway APIを使用する場合のIssuer設定です。
@@ -288,6 +300,7 @@ spec:
 !!! tip "ポイント"
     Gateway API方式を使用すると、cert-managerが自動的にHTTPRoute、Service、Podを作成してChallengeを処理します。Gatewayリソースは事前に作成されている必要があります。
 
+<a id="issuer-settings-key-field-description"></a>
 #### 主なフィールドの説明
 
 | フィールド | 説明 | 必須 |
@@ -302,6 +315,7 @@ spec:
 | `spec.acme.solvers.http01.ingress.class` | Ingress方式: Ingress Controllerクラス名(例: `nginx`)。 | X |
 | `spec.acme.solvers.http01.gatewayHTTPRoute.parentRefs` | Gateway API方式: 参照するGatewayリソース情報。 | X |
 
+<a id="issuer-settings-apply-issuer-and-check-status"></a>
 #### Issuerの適用と状態確認
 
 Issuerリソースを適用します。
@@ -325,6 +339,7 @@ kubectl describe issuers.cert-manager.io my-acme-issuer-example-com -n default
     - `dns01` solverはDNSプロバイダー設定が必要です。
     - `skipTLSVerify: true`オプションは、Private CAサーバーがプライベート証明書を使用する場合に必須です。
 
+<a id="issuer-settings-configure-hostaliases-for-the-http-01-challenge-preliminary-work"></a>
 #### HTTP-01 ChallengeのためのhostAliases設定(先行作業)
 
 Certificateを作成する前に、HTTP-01 Challengeが成功するように設定する必要があります。
@@ -364,10 +379,12 @@ spec:
 
     これらのリソースはChallenge完了後、自動的に削除されます。
 
-### Certificateリソースの作成
+<a id="create-a-certificate-resource"></a>
+### Certificateリソースの作成 { #create-a-certificate-resource }
 
 Certificateリソースは、発行する証明書の属性を定義します。
 
+<a id="create-a-certificate-resource-example-of-certificate-configuration"></a>
 #### Certificate設定例
 
 ```yaml
@@ -392,6 +409,7 @@ spec:
     kind: Issuer
 ```
 
+<a id="create-a-certificate-resource-key-field-description"></a>
 #### 主なフィールドの説明
 
 | フィールド | 説明 | 必須 |
@@ -403,6 +421,7 @@ spec:
 | `spec.issuerRef.name` | 使用するIssuerまたはClusterIssuer名。 | O |
 | `spec.issuerRef.kind` | Issuerタイプ。`Issuer`または`ClusterIssuer`。 | X |
 
+<a id="create-a-certificate-resource-apply-the-certificate-and-check-its-status"></a>
 #### Certificateの適用と状態確認
 
 Certificateリソースを適用します。
@@ -438,10 +457,12 @@ kubectl get challenge -n default
     - Base証明書にないドメインを追加すると、証明書の発行に失敗します。
     - 証明書発行前に、コンソールでBase証明書のCNとSAN情報を確認し、正しいドメインを指定しているか必ず検証してください。
 
-### 発行された証明書の確認
+<a id="verify-issued-certificates"></a>
+### 発行された証明書の確認 { #verify-issued-certificates }
 
 証明書が正常に発行されると、指定したSecretに保存されます。
 
+<a id="verify-issued-certificates-confirm-secret"></a>
 #### Secret確認
 
 ```bash
@@ -449,6 +470,7 @@ kubectl get secret test-server-tls-example-com -n default
 kubectl describe secret test-server-tls-example-com -n default
 ```
 
+<a id="verify-issued-certificates-verify-certificate-contents"></a>
 #### 証明書内容の確認
 
 **証明書詳細情報の確認**
@@ -463,6 +485,7 @@ kubectl get secret test-server-tls-example-com -n default -o jsonpath='{.data.tl
 kubectl get secret test-server-tls-example-com -n default -o jsonpath='{.data.tls\.crt}' | base64 -d | openssl x509 -noout -dates
 ```
 
+<a id="verify-issued-certificates-secret-structure"></a>
 #### Secret構造
 
 発行された証明書Secretは以下のような構造を持ちます。
@@ -477,16 +500,19 @@ data:
   ca.crt: <base64-encoded CA certificate chain>
 ```
 
-### 証明書の自動更新
+<a id="certificate-auto-renewal"></a>
+### 証明書の自動更新 { #certificate-auto-renewal }
 
 cert-managerは、証明書の有効期限が近づくと自動的に更新を実行します。
 
+<a id="certificate-auto-renewal-how-auto-renewal-works"></a>
 #### 自動更新の動作方式
 
 - cert-managerは、定期的にCertificateリソースの有効期限を確認します。
 - `renewBefore`フィールドに設定された時間分だけ有効期限が残っている場合、自動的に更新を開始します。
 - 更新された証明書は、同一のSecretに自動的にアップデートされます。
 
+<a id="certificate-auto-renewal-set-renewal-cycle"></a>
 #### 更新周期の設定
 
 Certificateリソースの`renewBefore`フィールドを修正して、更新開始時点を調整できます。
@@ -496,6 +522,7 @@ spec:
   renewBefore: 720h  # 30日前に更新開始
 ```
 
+<a id="certificate-auto-renewal-manual-renewal"></a>
 #### 手動更新
 
 必要に応じてCertificateリソースを手動で更新できます。
@@ -530,6 +557,7 @@ kubectl apply -f test-server-cert-example-com.yml
     - `renewBefore`値を短く設定しすぎると、証明書が期限切れになる危険があるため注意が必要です。
     - 更新失敗時、cert-managerは自動的に再試行します。
 
+<a id="certificate-auto-renewal-how-to-test-for-renewals"></a>
 #### 更新テスト方法
 
 自動更新が正しく動作するかテストするには、以下の方法を使用できます。
@@ -556,10 +584,12 @@ spec:
 cmctl renew test-server-cert-example-com -n default
 ```
 
-### アプリケーションでの証明書使用
+<a id="using-certificates-in-applications"></a>
+### アプリケーションでの証明書使用 { #using-certificates-in-applications }
 
 発行された証明書はKubernetes Secretとして保存されるため、様々な方法でアプリケーションにマウントできます。
 
+<a id="using-certificates-in-applications-used-by-ingress"></a>
 #### Ingressでの使用
 
 ```yaml
@@ -588,6 +618,7 @@ spec:
               number: 80
 ```
 
+<a id="using-certificates-in-applications-mount-from-pod-to-volume"></a>
 #### PodでVolumeとしてマウント
 
 ```yaml
@@ -616,8 +647,10 @@ spec:
 - `/etc/tls/tls.key`: 秘密鍵
 - `/etc/tls/ca.crt`: CA証明書チェーン
 
-### トラブルシューティング
+<a id="troubleshooting"></a>
+### トラブルシューティング { #troubleshooting }
 
+<a id="troubleshooting-if-certificate-issuance-fails"></a>
 #### 証明書発行失敗時
 
 1. **Issuer状態確認**
@@ -654,6 +687,7 @@ kubectl describe challenge <challenge-name> -n default
 - HTTP-01 Challengeの場合、Ingressが正しく設定されているか確認します。
 - Challenge URLにアクセス可能か確認します。
 
+<a id="troubleshooting-common-errors-and-solutions"></a>
 #### 一般的なエラーと解決方法
 
 | エラーメッセージ | 原因 | 解決方法 |
@@ -664,6 +698,7 @@ kubectl describe challenge <challenge-name> -n default
 | `secret not found` | EAB Secretが見つかりません。 | Secretが正しいネームスペースに作成されたか確認します。 |
 | `x509: certificate signed by unknown authority` | TLS検証失敗。 | Issuerに`skipTLSVerify: true`を設定します。 |
 
+<a id="troubleshooting-check-logs"></a>
 #### ログ確認
 
 cert-managerの詳細ログを確認して問題を診断できます。
@@ -677,7 +712,8 @@ kubectl logs -n cert-manager deployment/cert-manager -f
     - 証明書チェーンは、最低3段階以上(Root → Intermediate → Leaf)で構成される必要があります。
     - `renewBefore`値は、ACMEサーバーのRate Limitポリシーを考慮して慎重に調整する必要があります。
 
-## ACMEプロトコル情報
+<a id="about-acme-protocol"></a>
+## ACMEプロトコル情報 { #about-acme-protocol }
 
 Private CAが提供するACME Directory URL(`/directory`)を通じて、ACMEクライアントは必要なすべてのエンドポイント情報を自動的に取得します。
 
@@ -685,7 +721,8 @@ ACMEプロトコルの全体の流れはクライアントによって自動的�
 
 ACMEプロトコルの詳細については、[RFC 8555](https://datatracker.ietf.org/doc/html/rfc8555)を参照してください。
 
-## 参考資料
+<a id="references"></a>
+## 参考資料 { #references }
 
 - [cert-manager公式ドキュメント](https://cert-manager.io/docs/)
 - [cert-manager ACME設定ガイド](https://cert-manager.io/docs/configuration/acme/)
