@@ -15,7 +15,7 @@ This guide explains how to use a Private CA ACME server with cert-manager to iss
     - **External account binding (EAB)**: Account binding information for authenticating to the ACME server.
 
 !!! tip "Notice"
-    To manage certificates using Certbot or acme.sh in a standard server environment, refer to the [ACME Certificate Renewal Guide (Certbot, acme.sh)](acme-guide.md).
+    To manage certificates using Certbot or acme.sh in a standard server environment, refer to the [ACME Certificate Renewal Guide (Certbot, acme.sh)](client-guide.md).
 
 <a id="prepare-in-advance"></a>
 ## Prepare in advance { #prepare-in-advance }
@@ -729,4 +729,4 @@ For more information about the ACME protocol, see [RFC 8555](https://datatracker
 - [ACME Protocol Specification (RFC 8555)](https://datatracker.ietf.org/doc/html/rfc8555)
 - [Let's Encrypt - Challenge Types](https://letsencrypt.org/docs/challenge-types/)
 - [Configure Kubernetes Ingress TLS](https://kubernetes.io/docs/concepts/services-networking/ingress/#tls)
-- [ACME Certificate Renewal Guide (Certbot, acme.sh)](acme-guide.md)
+- [ACME Certificate Renewal Guide (Certbot, acme.sh)](client-guide.md)

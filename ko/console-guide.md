@@ -479,7 +479,7 @@ ACME 관리 탭에서는 생성된 모든 ACME 토큰을 테이블 형태로 확
 <a id="example-of-acme-client-setup"></a>
 ### ACME 클라이언트 설정 예시 { #example-of-acme-client-setup }
 
-[ACME를 이용한 인증서 갱신](./acme-guide.md) 페이지를 참고하여 작성합니다.
+[ACME 인증서 갱신 가이드(Certbot, acme.sh)](./client-guide.md) 페이지를 참고하여 작성합니다.
 
 <a id="delete-an-acme-token"></a>
 ### ACME 토큰 삭제 { #delete-an-acme-token }

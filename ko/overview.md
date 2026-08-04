@@ -116,7 +116,7 @@ Private CA에서 인증서를 발급하는 기본 흐름은 다음과 같습니�
 Private CA를 처음 사용하는 경우 다음 가이드를 참고할 수 있습니다.
 
 - [콘솔 사용 가이드](./console-guide.md): Private CA 콘솔에서 저장소, 발급자, 인증서 템플릿, 인증서를 생성하고 관리하는 방법을 안내합니다.
-- [ACME를 이용한 인증서 갱신](./acme-guide.md): Certbot을 사용하여 인증서를 자동으로 발급하고 갱신하는 방법을 안내합니다.
+- [ACME 인증서 갱신 가이드(Certbot, acme.sh)](./client-guide.md): Certbot 또는 acme.sh를 사용하여 인증서를 자동으로 발급하고 갱신하는 방법을 안내합니다.
 - [API v2.0 가이드](./api-guide-v2.0.md): API를 통해 인증서를 다운로드하고 CRL, OCSP를 조회하는 방법을 안내합니다.
 
 !!! tip "알아두기"

@@ -15,7 +15,7 @@ Private CA 서비스는 ACME(automatic certificate management environment) 프�
     - **EAB(external account binding)**: ACME 서버에 인증하기 위한 계정 바인딩 정보입니다.
 
 !!! tip "알아두기"
-    일반 서버 환경에서 Certbot 또는 acme.sh를 사용하여 인증서를 관리하려면 [ACME 인증서 갱신 가이드(Certbot, acme.sh)](acme-guide.md)를 참고하세요.
+    일반 서버 환경에서 Certbot 또는 acme.sh를 사용하여 인증서를 관리하려면 [ACME 인증서 갱신 가이드(Certbot, acme.sh)](client-guide.md)를 참고하세요.
 
 <a id="prepare-in-advance"></a>
 ## 사전 준비하기 { #prepare-in-advance }
@@ -729,4 +729,4 @@ ACME 프로토콜에 대한 자세한 내용은 [RFC 8555](https://datatracker.i
 - [ACME 프로토콜 명세(RFC 8555)](https://datatracker.ietf.org/doc/html/rfc8555)
 - [Let's Encrypt - Challenge Types](https://letsencrypt.org/docs/challenge-types/)
 - [Kubernetes Ingress TLS 설정](https://kubernetes.io/docs/concepts/services-networking/ingress/#tls)
-- [ACME 인증서 갱신 가이드(Certbot, acme.sh)](acme-guide.md)
+- [ACME 인증서 갱신 가이드(Certbot, acme.sh)](client-guide.md)

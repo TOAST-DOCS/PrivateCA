@@ -116,7 +116,7 @@ Private CAで証明書を発行する基本フローは次のとおりです。
 Private CAを初めて使用する場合は、次のガイドを参考にしてください。
 
 - [コンソール利用ガイド](./console-guide.md)：Private CAコンソールでリポジトリ、発行者、証明書テンプレート、証明書を作成及び管理する方法を案内します。
-- [ACMEを利用した証明書更新](./acme-guide.md)：Certbotを使用して証明書を自動的に発行及び更新する方法を案内します。
+- [ACME証明書更新ガイド(Certbot, acme.sh)](./client-guide.md)：Certbotまたはacme.shを使用して証明書を自動的に発行及び更新する方法を案内します。
 - [API v2.0ガイド](./api-guide-v2.0.md)：APIを通じて証明書をダウンロードし、CRL、OCSPを照会する方法を案内します。
 
 !!! tip "ポイント"

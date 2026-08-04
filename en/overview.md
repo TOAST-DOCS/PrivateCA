@@ -116,7 +116,7 @@ Issued certificates can be downloaded in PEM format and applied to web servers, 
 If you're new to Private CA, you can refer to the following guide:
 
 - [Console User Guide](./console-guide.md): Guide to creating and managing repositories, issuers, certificate templates, and certificates in the Private CA console.
-- [Certificate renewal with ACME](./acme-guide.md): Guide to using Certbot to automatically issue and renew certificates.
+- [ACME Certificate Renewal Guide (Certbot, acme.sh)](./client-guide.md): Guide to using Certbot or acme.sh to automatically issue and renew certificates.
 - [API v2.0 Guide](./api-guide-v2.0.md): Guide to downloading certificates and retrieving CRLs and OCSPs via the API.
 
 !!! tip "Notice"
