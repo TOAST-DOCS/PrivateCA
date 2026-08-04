@@ -479,7 +479,7 @@ A list of certificates issued using the token is displayed. Each certificate con
 <a id="example-of-acme-client-setup"></a>
 ### Example of ACME client setup { #example-of-acme-client-setup }
 
-Use the [Certificate Renewal with ACME](./acme-guide.md) page as a guide to complete it.
+Use the [ACME Certificate Renewal Guide (Certbot, acme.sh)](./client-guide.md) page as a guide to complete it.
 
 <a id="delete-an-acme-token"></a>
 ### Delete an ACME token { #delete-an-acme-token }

@@ -479,7 +479,7 @@ ACME管理タブでは作成された全てのACMEトークンをテーブル形
 <a id="example-of-acme-client-setup"></a>
 ### ACMEクライアント設定例 { #example-of-acme-client-setup }
 
-[ACMEを利用した証明書更新](./acme-guide.md)ページを参考にして作成します。
+[ACME証明書更新ガイド(Certbot, acme.sh)](./client-guide.md)ページを参考にして作成します。
 
 <a id="delete-an-acme-token"></a>
 ### ACMEトークン削除 { #delete-an-acme-token }
