@@ -1,17 +1,23 @@
-## API v2.0ガイド
+<!-- pre-align:aligned sig=4582a5b44c83 -->
+
+<a id="api-v20-guide"></a>
+## API v2.0ガイド { #api-v20-guide }
 **Management > Private CA > API v2.0ガイド**
 
 NHN Cloud Private CA APIを使用して証明書をプログラムで管理できます。
 
-## Private CA API共通情報
+<a id="private-ca-api-common-information"></a>
+## Private CA API共通情報 { #private-ca-api-common-information }
 
-### APIエンドポイント
+<a id="api-endpoint"></a>
+### APIエンドポイント { #api-endpoint }
 
 | リージョン | エンドポイント |
 | --- | --- |
 | KR1 | https://kr1-pca.api.nhncloudservice.com |
 
-### 認証および権限
+<a id="authentication-and-authorization"></a>
+### 認証および権限 { #authentication-and-authorization }
 
 Private CA API v2.0は、API呼び出しおよび認証のための認証方法として、Appkey、User Access Keyトークンをサポートしています。
 
@@ -20,8 +26,10 @@ User Access Keyトークンは、User Access Keyをもとに発行されるBeare
 
 各認証方法の確認手順や使用方法の詳細は、それぞれ[Appkey](/nhncloud/ja/public-api/appkey/)、[User Access Keyトークン](/nhncloud/ja/public-api/user-access-key-token/)をご参照ください。
 
-### API一覧
+<a id="api-list"></a>
+### API一覧 { #api-list }
 
+<a id="api-list-repository"></a>
 #### リポジトリ
 
 | Method | URI | 説明 |
@@ -32,6 +40,7 @@ User Access Keyトークンは、User Access Keyをもとに発行されるBeare
 | PUT | /v2.0/appkeys/{appkey}/ca-stores/{caStoreId} | リポジトリを修正 |
 | DELETE | /v2.0/appkeys/{appkey}/ca-stores/{caStoreId} | リポジトリを削除 |
 
+<a id="api-list-certificate-issuer"></a>
 #### 証明書(発行者)
 
 | Method | URI | 説明 |
@@ -41,6 +50,7 @@ User Access Keyトークンは、User Access Keyをもとに発行されるBeare
 | GET | /v2.0/appkeys/{appkey}/ca-stores/{caStoreId}/certs/{certId} | 証明書詳細情報を照会 |
 | POST | /v2.0/appkeys/{appkey}/ca-stores/{caStoreId}/certs/{certId}/revoke | 証明書を失効させる |
 
+<a id="api-list-template"></a>
 #### テンプレート
 
 | Method | URI | 説明 |
@@ -52,12 +62,14 @@ User Access Keyトークンは、User Access Keyをもとに発行されるBeare
 | DELETE | /v2.0/appkeys/{appkey}/ca-stores/{caStoreId}/templates/{templateId} | テンプレートを削除 |
 | POST | /v2.0/appkeys/{appkey}/ca-stores/{caStoreId}/templates/{templateId}/certificates | テンプレートで証明書を発行 |
 
+<a id="api-list-certificate-download"></a>
 #### 証明書ダウンロード
 
 | Method | URI | 説明 |
 |--------|-----|------|
 | GET | /v2.0/appkeys/{appkey}/ca-stores/{caStoreId}/certs/{certId}/download | PEM形式の証明書をダウンロード |
 
+<a id="api-list-crl"></a>
 #### CRL
 
 | Method | URI | 説明 |
@@ -67,6 +79,7 @@ User Access Keyトークンは、User Access Keyをもとに発行されるBeare
 | GET | /v2.0/appkeys/{appkey}/ca-stores/{caStoreId}/certs/{issuerCertId}/crl/pem | PEM形式のCRLをダウンロード |
 | POST | /v2.0/appkeys/{appkey}/ca-stores/{caStoreId}/certs/{issuerCertId}/crl | CRLを手動で更新 |
 
+<a id="api-list-ocsp"></a>
 #### OCSP
 
 | Method | URI | 説明 |
@@ -74,9 +87,11 @@ User Access Keyトークンは、User Access Keyをもとに発行されるBeare
 | GET | /v2.0/appkeys/{appkey}/ca-stores/{caStoreId}/ocsp/{ocspRequestBase64} | Base64エンコードされたOCSPリクエストで証明書の状態を照会 |
 | POST | /v2.0/appkeys/{appkey}/ca-stores/{caStoreId}/ocsp | DER形式のOCSPリクエストで証明書の状態を照会 |
 
-## 事前準備
+<a id="prepare-in-advance"></a>
+## 事前準備 { #prepare-in-advance }
 
-### 権限管理
+<a id="manage-permissions"></a>
+### 権限管理 { #manage-permissions }
 
 Private CA APIはロールベースアクセス制御(RBAC)を使用し、次のように区分されます。
 
@@ -84,19 +99,23 @@ Private CA APIはロールベースアクセス制御(RBAC)を使用し、次の
 - **ADMIN**: リポジトリ/証明書/テンプレートの作成・修正・削除、CRL手動更新など、すべての管理操作を実行できます。
 - **パブリックエンドポイント**: CRLダウンロード(DER/PEM)とOCSP APIは、証明書検証用として認証なしでアクセス可能です。
 
-### 証明書形式
+<a id="certificate-formats"></a>
+### 証明書形式 { #certificate-formats }
 
 Private CA APIで使用する主な証明書形式は次のとおりです。
 
 - **PEM(privacy enhanced mail)**：テキストベースの証明書形式で、Base64でエンコードされており、`-----BEGIN CERTIFICATE-----`で始まります。人間が読むことができ、編集が容易です。
 - **DER(distinguished encoding rules)**：バイナリ形式の証明書で、PEMよりファイルサイズが小さく効率的です。主にJavaアプリケーションで使用されます。
 
-## リポジトリAPI
+<a id="repository-api"></a>
+## リポジトリAPI { #repository-api }
 
-### リポジトリ一覧照会
+<a id="list-repositories"></a>
+### リポジトリ一覧照会 { #list-repositories }
 
 リポジトリ一覧を照会します。
 
+<a id="list-repositories-request"></a>
 #### リクエスト
 
 ```
@@ -121,6 +140,7 @@ GET /v2.0/appkeys/{appkey}/ca-stores
 
 - `VIEWER`以上
 
+<a id="list-repositories-response"></a>
 #### レスポンス
 
 **Response Body**
@@ -184,10 +204,12 @@ GET /v2.0/appkeys/{appkey}/ca-stores
 | totalPageNo | Long | 全ページ数 |
 | currentPageNo | Long | 現在のページ番号(0から開始) |
 
-### リポジトリ詳細照会
+<a id="get-repository-details"></a>
+### リポジトリ詳細照会 { #get-repository-details }
 
 リポジトリ詳細情報を照会します。
 
+<a id="get-repository-details-request"></a>
 #### リクエスト
 
 ```
@@ -205,6 +227,7 @@ GET /v2.0/appkeys/{appkey}/ca-stores/{caStoreId}
 
 - `VIEWER`以上
 
+<a id="get-repository-details-response"></a>
 #### レスポンス
 
 **Response Body**
@@ -261,10 +284,12 @@ GET /v2.0/appkeys/{appkey}/ca-stores/{caStoreId}
 | lastChangeDatetime | LocalDateTime | 最終変更日時 |
 | lastChangeUser | String | 最終変更者 |
 
-### リポジトリ作成
+<a id="create-repository"></a>
+### リポジトリ作成 { #create-repository }
 
 リポジトリを作成します。
 
+<a id="create-repository-request"></a>
 #### リクエスト
 
 ```
@@ -305,6 +330,7 @@ POST /v2.0/appkeys/{appkey}/ca-stores
 }
 ```
 
+<a id="create-repository-response"></a>
 #### レスポンス
 
 **Response Body**
@@ -340,10 +366,12 @@ POST /v2.0/appkeys/{appkey}/ca-stores
 | lastChangeDatetime | LocalDateTime | 最終変更日時 |
 | lastChangeUser | String | 最終変更者 |
 
-### リポジトリ修正
+<a id="modify-repository"></a>
+### リポジトリ修正 { #modify-repository }
 
 リポジトリを修正します。
 
+<a id="modify-repository-request"></a>
 #### リクエスト
 
 ```
@@ -365,6 +393,7 @@ PUT /v2.0/appkeys/{appkey}/ca-stores/{caStoreId}
 
 - `ADMIN`
 
+<a id="modify-repository-response"></a>
 #### レスポンス
 
 **Response Body**
@@ -392,10 +421,12 @@ PUT /v2.0/appkeys/{appkey}/ca-stores/{caStoreId}
 | toastProjectId | Long | NHN CloudプロジェクトID |
 | status | String | リポジトリ状態 |
 
-### リポジトリ削除
+<a id="delete-repository"></a>
+### リポジトリ削除 { #delete-repository }
 
 リポジトリを削除します。
 
+<a id="delete-repository-request"></a>
 #### リクエスト
 
 ```
@@ -413,6 +444,7 @@ DELETE /v2.0/appkeys/{appkey}/ca-stores/{caStoreId}
 
 - `ADMIN`
 
+<a id="delete-repository-response"></a>
 #### レスポンス
 
 **Response Body**
@@ -440,12 +472,15 @@ DELETE /v2.0/appkeys/{appkey}/ca-stores/{caStoreId}
 | toastProjectId | Long | NHN CloudプロジェクトID |
 | status | String | リポジトリ状態(`DELETED`) |
 
-## 証明書(発行者)API
+<a id="certificate-issuer-api"></a>
+## 証明書(発行者)API { #certificate-issuer-api }
 
-### 証明書一覧照会
+<a id="list-certificates"></a>
+### 証明書一覧照会 { #list-certificates }
 
 リポジトリに含まれる証明書一覧を照会します。
 
+<a id="list-certificates-request"></a>
 #### リクエスト
 
 ```
@@ -472,6 +507,7 @@ GET /v2.0/appkeys/{appkey}/ca-stores/{caStoreId}/certs
 
 - `VIEWER`以上
 
+<a id="list-certificates-response"></a>
 #### レスポンス
 
 **Response Body**
@@ -537,10 +573,12 @@ GET /v2.0/appkeys/{appkey}/ca-stores/{caStoreId}/certs
 | totalPageNo | Long | 全ページ数 |
 | currentPageNo | Long | 現在のページ番号 |
 
-### 証明書詳細照会
+<a id="get-certificate-details"></a>
+### 証明書詳細照会 { #get-certificate-details }
 
 証明書詳細情報を照会します。
 
+<a id="get-certificate-details-request"></a>
 #### リクエスト
 
 ```
@@ -559,6 +597,7 @@ GET /v2.0/appkeys/{appkey}/ca-stores/{caStoreId}/certs/{certId}
 
 - `VIEWER`以上
 
+<a id="get-certificate-details-response"></a>
 #### レスポンス
 
 **Response Body**
@@ -635,10 +674,12 @@ GET /v2.0/appkeys/{appkey}/ca-stores/{caStoreId}/certs/{certId}
 | ocspUrl | String | OCSPサーバーURL |
 | policies | String[] | Certificate Policies OID一覧 |
 
-### 証明書(発行者)発行
+<a id="issue-certificate-issuer"></a>
+### 証明書(発行者)発行 { #issue-certificate-issuer }
 
 ROOTまたはINTERMEDIATE証明書(発行者)を発行します。
 
+<a id="issue-certificate-issuer-request"></a>
 #### リクエスト
 
 ```
@@ -744,6 +785,7 @@ POST /v2.0/appkeys/{appkey}/ca-stores/{caStoreId}/certs
 }
 ```
 
+<a id="issue-certificate-issuer-response"></a>
 #### レスポンス
 
 **Response Body**
@@ -804,10 +846,12 @@ POST /v2.0/appkeys/{appkey}/ca-stores/{caStoreId}/certs
 !!! note "参考"
     発行者証明書発行APIは、`privateKey`をレスポンスに含めません。発行者の秘密鍵はサーバーに安全に保存されます。
 
-### 証明書失効
+<a id="revoke-certificate"></a>
+### 証明書失効 { #revoke-certificate }
 
 証明書を失効させます。
 
+<a id="revoke-certificate-request"></a>
 #### リクエスト
 
 ```
@@ -826,6 +870,7 @@ POST /v2.0/appkeys/{appkey}/ca-stores/{caStoreId}/certs/{certId}/revoke
 
 - `ADMIN`
 
+<a id="revoke-certificate-response"></a>
 #### レスポンス
 
 **Response Body**
@@ -851,12 +896,15 @@ POST /v2.0/appkeys/{appkey}/ca-stores/{caStoreId}/certs/{certId}/revoke
 | serialNumber | String | 失効された証明書のシリアル番号 |
 | revocationDatetime | LocalDateTime | 失効日時 |
 
-## テンプレートAPI
+<a id="template-api"></a>
+## テンプレートAPI { #template-api }
 
-### テンプレート一覧照会
+<a id="list-templates"></a>
+### テンプレート一覧照会 { #list-templates }
 
 テンプレート一覧を照会します。
 
+<a id="list-templates-request"></a>
 #### リクエスト
 
 ```
@@ -882,6 +930,7 @@ GET /v2.0/appkeys/{appkey}/ca-stores/{caStoreId}/templates
 
 - `VIEWER`以上
 
+<a id="list-templates-response"></a>
 #### レスポンス
 
 **Response Body**
@@ -923,10 +972,12 @@ GET /v2.0/appkeys/{appkey}/ca-stores/{caStoreId}/templates
 | totalPageNo | Number | 全ページ数 |
 | currentPageNo | Number | 現在のページ番号(0から開始) |
 
-### テンプレート詳細照会
+<a id="get-template-details"></a>
+### テンプレート詳細照会 { #get-template-details }
 
 テンプレート詳細情報を照会します。
 
+<a id="get-template-details-request"></a>
 #### リクエスト
 
 ```
@@ -945,6 +996,7 @@ GET /v2.0/appkeys/{appkey}/ca-stores/{caStoreId}/templates/{templateId}
 
 - `VIEWER`以上
 
+<a id="get-template-details-response"></a>
 #### レスポンス
 
 **Response Body**
@@ -1031,10 +1083,12 @@ GET /v2.0/appkeys/{appkey}/ca-stores/{caStoreId}/templates/{templateId}
 | lastChangeDatetime | LocalDateTime | 最終変更日時 |
 | lastChangeUser | String | 最終変更者 |
 
-### テンプレート作成
+<a id="create-template"></a>
+### テンプレート作成 { #create-template }
 
 テンプレートを作成します。
 
+<a id="create-template-request"></a>
 #### リクエスト
 
 ```
@@ -1130,6 +1184,7 @@ POST /v2.0/appkeys/{appkey}/ca-stores/{caStoreId}/templates
 
 - `ADMIN`
 
+<a id="create-template-response"></a>
 #### レスポンス
 
 **Response Body**
@@ -1161,10 +1216,12 @@ POST /v2.0/appkeys/{appkey}/ca-stores/{caStoreId}/templates
 | signingCertificateId | Long | 署名に使用される発行者証明書ID |
 | signingCertificateName | String | 署名に使用される発行者証明書名 |
 
-### テンプレート修正
+<a id="modify-template"></a>
+### テンプレート修正 { #modify-template }
 
 テンプレートを修正します。
 
+<a id="modify-template-request"></a>
 #### リクエスト
 
 ```
@@ -1187,6 +1244,7 @@ PUT /v2.0/appkeys/{appkey}/ca-stores/{caStoreId}/templates/{templateId}
 
 - `ADMIN`
 
+<a id="modify-template-response"></a>
 #### レスポンス
 
 **Response Body**
@@ -1206,10 +1264,12 @@ PUT /v2.0/appkeys/{appkey}/ca-stores/{caStoreId}/templates/{templateId}
 |------|------|------|
 | body | Boolean | 修正の成否 |
 
-### テンプレート削除
+<a id="delete-template"></a>
+### テンプレート削除 { #delete-template }
 
 テンプレートを削除します。
 
+<a id="delete-template-request"></a>
 #### リクエスト
 
 ```
@@ -1228,6 +1288,7 @@ DELETE /v2.0/appkeys/{appkey}/ca-stores/{caStoreId}/templates/{templateId}
 
 - `ADMIN`
 
+<a id="delete-template-response"></a>
 #### レスポンス
 
 **Response Body**
@@ -1247,10 +1308,12 @@ DELETE /v2.0/appkeys/{appkey}/ca-stores/{caStoreId}/templates/{templateId}
 |------|------|------|
 | body | Boolean | 削除の成否 |
 
-### テンプレートによる証明書発行
+<a id="issue-certificate-using-template"></a>
+### テンプレートによる証明書発行 { #issue-certificate-using-template }
 
 テンプレートを使用して証明書を発行します。
 
+<a id="issue-certificate-using-template-request"></a>
 #### リクエスト
 
 ```
@@ -1322,6 +1385,7 @@ POST /v2.0/appkeys/{appkey}/ca-stores/{caStoreId}/templates/{templateId}/certifi
 }
 ```
 
+<a id="issue-certificate-using-template-response"></a>
 #### レスポンス
 
 **Response Body**(GENERATEモード)
@@ -1421,12 +1485,15 @@ POST /v2.0/appkeys/{appkey}/ca-stores/{caStoreId}/templates/{templateId}/certifi
 !!! danger "注意"
     GENERATEモードで発行する際、レスポンスに含まれる`privateKey`は**このレスポンスが唯一の返却時点**です。サーバーには保存されないため、ただちに安全な場所に保存してください。SIGNモードはクライアントが秘密鍵を保有するため、レスポンスに`privateKey`は含まれません。
 
-## 証明書ダウンロードAPI
+<a id="certificate-download-api"></a>
+## 証明書ダウンロードAPI { #certificate-download-api }
 
-### 証明書のダウンロード
+<a id="download-the-certificate"></a>
+### 証明書のダウンロード { #download-the-certificate }
 
 発行された証明書をPEM形式でダウンロードします。
 
+<a id="download-the-certificate-request"></a>
 #### リクエスト
 
 ```
@@ -1445,6 +1512,7 @@ GET /v2.0/appkeys/{appkey}/ca-stores/{caStoreId}/certs/{certId}/download
 
 - `VIEWER`以上
 
+<a id="download-the-certificate-response"></a>
 #### レスポンス
 
 **Response Headers**
@@ -1456,14 +1524,17 @@ GET /v2.0/appkeys/{appkey}/ca-stores/{caStoreId}/certs/{certId}/download
 
 証明書データ(PEM形式)
 
-## CRL API
+<a id="crl-api"></a>
+## CRL API { #crl-api }
 
 CRL(certificate revocation list)は、特定の発行者が発行した証明書のうち、失効した証明書のリストを提供するメカニズムです。クライアントはCRLをダウンロードして、証明書が失効しているか確認できます。
 
-### CRL情報照会
+<a id="retrieve-crl-information"></a>
+### CRL情報照会 { #retrieve-crl-information }
 
 特定発行者のCRL情報を照会します。
 
+<a id="retrieve-crl-information-request"></a>
 #### リクエスト
 
 ```
@@ -1482,6 +1553,7 @@ GET /v2.0/appkeys/{appkey}/ca-stores/{caStoreId}/certs/{issuerCertId}/crl
 
 - `VIEWER`以上
 
+<a id="retrieve-crl-information-response"></a>
 #### レスポンス
 
 **Response Body**
@@ -1507,10 +1579,12 @@ GET /v2.0/appkeys/{appkey}/ca-stores/{caStoreId}/certs/{issuerCertId}/crl
 | thisUpdate | LocalDateTime | CRL発行時間 |
 | nextUpdate | LocalDateTime | 次回CRL予定時間 |
 
-### CRLダウンロード(DER形式)
+<a id="download-the-crl-der-format"></a>
+### CRLダウンロード(DER形式) { #download-the-crl-der-format }
 
 CRLをDER(バイナリ)形式でダウンロードします。
 
+<a id="download-the-crl-der-format-request"></a>
 #### リクエスト
 
 ```
@@ -1529,6 +1603,7 @@ GET /v2.0/appkeys/{appkey}/ca-stores/{caStoreId}/certs/{issuerCertId}/crl/der
 
 - 権限チェックなし(公開エンドポイント)
 
+<a id="download-the-crl-der-format-response"></a>
 #### レスポンス
 
 **Response Headers**
@@ -1540,10 +1615,12 @@ GET /v2.0/appkeys/{appkey}/ca-stores/{caStoreId}/certs/{issuerCertId}/crl/der
 
 CRLデータ(DER形式)
 
-### CRLダウンロード(PEM形式)
+<a id="download-the-crl-pem-format"></a>
+### CRLダウンロード(PEM形式) { #download-the-crl-pem-format }
 
 CRLをPEM形式でダウンロードします。
 
+<a id="download-the-crl-pem-format-request"></a>
 #### リクエスト
 
 ```
@@ -1562,6 +1639,7 @@ GET /v2.0/appkeys/{appkey}/ca-stores/{caStoreId}/certs/{issuerCertId}/crl/pem
 
 - 権限チェックなし(公開エンドポイント)
 
+<a id="download-the-crl-pem-format-response"></a>
 #### レスポンス
 
 **Response Headers**
@@ -1573,10 +1651,12 @@ GET /v2.0/appkeys/{appkey}/ca-stores/{caStoreId}/certs/{issuerCertId}/crl/pem
 
 CRLデータ(PEM形式)
 
-### CRL手動更新
+<a id="manually-renew-a-crl"></a>
+### CRL手動更新 { #manually-renew-a-crl }
 
 CRLを手動で更新します。
 
+<a id="manually-renew-a-crl-request"></a>
 #### リクエスト
 
 ```
@@ -1595,6 +1675,7 @@ POST /v2.0/appkeys/{appkey}/ca-stores/{caStoreId}/certs/{issuerCertId}/crl
 
 - `ADMIN`
 
+<a id="manually-renew-a-crl-response"></a>
 #### レスポンス
 
 **Response Body**
@@ -1610,14 +1691,17 @@ POST /v2.0/appkeys/{appkey}/ca-stores/{caStoreId}/certs/{issuerCertId}/crl
 }
 ```
 
-## OCSP API
+<a id="ocsp-api"></a>
+## OCSP API { #ocsp-api }
 
 OCSP(online certificate status protocol)は、個別証明書の失効状態を素早く確認できるプロトコルです。CRLとは異なり、全リストをダウンロードせず、特定証明書の状態のみリクエスト時点で照会できます。
 
-### OCSP状態照会(GET)
+<a id="get-ocsp-status-get"></a>
+### OCSP状態照会(GET) { #get-ocsp-status-get }
 
 Base64でエンコードされたOCSPリクエストを処理します。
 
+<a id="get-ocsp-status-get-request"></a>
 #### リクエスト
 
 ```
@@ -1657,6 +1741,7 @@ OCSP_REQUEST=$(openssl ocsp -issuer ca.pem -cert cert.pem -reqout - | base64 -w 
 curl -X GET "https://kr1-pca.api.nhncloudservice.com/v2.0/appkeys/my-appkey/ca-stores/1/ocsp/${OCSP_REQUEST}"
 ```
 
+<a id="get-ocsp-status-get-response"></a>
 #### レスポンス
 
 **Response Headers**
@@ -1667,10 +1752,12 @@ curl -X GET "https://kr1-pca.api.nhncloudservice.com/v2.0/appkeys/my-appkey/ca-s
 
 OCSPレスポンス(DER形式)
 
-### OCSP状態照会(POST)
+<a id="ocsp-status-query-post"></a>
+### OCSP状態照会(POST) { #ocsp-status-query-post }
 
 DER形式OCSPリクエストを処理します。
 
+<a id="ocsp-status-query-post-request"></a>
 #### リクエスト
 
 ```
@@ -1712,6 +1799,7 @@ curl -X POST "https://kr1-pca.api.nhncloudservice.com/v2.0/appkeys/my-appkey/ca-
 openssl ocsp -respin ocsp-response.der -text
 ```
 
+<a id="ocsp-status-query-post-response"></a>
 #### レスポンス
 
 **Response Headers**
@@ -1722,27 +1810,32 @@ openssl ocsp -respin ocsp-response.der -text
 
 OCSPレスポンス(DER形式)
 
-## トラブルシューティング
+<a id="troubleshooting"></a>
+## トラブルシューティング { #troubleshooting }
 
-### CRLが更新されない場合
+<a id="if-the-crl-is-not-renewed"></a>
+### CRLが更新されない場合 { #if-the-crl-is-not-renewed }
 
 1. コンソールのリポジトリ詳細情報でCRLが有効になっているか確認します。
 2. 手動更新APIを呼び出して即時更新します。
 3. CRL更新サイクル(`crlRefreshPeriod`)を確認し、調整します。
 
-### OCSPレスポンスがない場合
+<a id="if-there-is-no-ocsp-response"></a>
+### OCSPレスポンスがない場合 { #if-there-is-no-ocsp-response }
 
 1. コンソールのリポジトリ詳細情報でOCSPが有効になっているか確認します。
 2. 正しいリポジトリIDを使用しているか確認します。
 3. OCSPリクエストが正しい形式(DER)か確認します。
 
-### OCSPレスポンス結果が実際の証明書状態と異なる場合
+<a id="ocsp-response-results-differ-from-the-actual-certificate-status"></a>
+### OCSPレスポンス結果が実際の証明書状態と異なる場合 { #ocsp-response-results-differ-from-the-actual-certificate-status }
 
 1. OCSPレスポンスは更新サイクルに従ってキャッシュされるため、最近証明書を失効させた場合、更新サイクルが過ぎるまで以前の状態が返されることがあります。
 2. コンソールのリポジトリ詳細情報でOCSP更新サイクルを確認します。
 3. 即時最新状態を確認する必要がある場合、更新サイクルが経過した後に再度照会します。
 
-### 証明書にCRL/OCSP URLがない場合
+<a id="if-the-certificate-doesnt-have-a-crlocsp-url"></a>
+### 証明書にCRL/OCSP URLがない場合 { #if-the-certificate-doesnt-have-a-crlocsp-url }
 
 - 証明書発行時に該当Extensionが含まれていない場合です。
 - リポジトリ設定でCRL/OCSPを有効にした後、証明書を再発行する必要があります。
