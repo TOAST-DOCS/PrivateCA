@@ -1,17 +1,23 @@
-## API v2.0 Guide
+<!-- pre-align:aligned sig=4582a5b44c83 -->
+
+<a id="api-v20-guide"></a>
+## API v2.0 Guide { #api-v20-guide }
 **Management > Private CA > API v2.0 Guide**
 
 You can use the NHN Cloud Private CA API to manage certificates programmatically.
 
-## Private CA API Common Information
+<a id="private-ca-api-common-information"></a>
+## Private CA API Common Information { #private-ca-api-common-information }
 
-### API Endpoint
+<a id="api-endpoint"></a>
+### API Endpoint { #api-endpoint }
 
 | Region | Endpoint |
 | --- | --- |
 | KR1 | https://kr1-pca.api.nhncloudservice.com |
 
-### Authentication and Authorization
+<a id="authentication-and-authorization"></a>
+### Authentication and Authorization { #authentication-and-authorization }
 
 Private CA API v2.0 supports Appkey and User Access Key token as authentication methods for API calls.
 
@@ -20,8 +26,10 @@ A User Access Key token is a temporary, Bearer-type access token issued from a U
 
 For more information on how to check and use each authentication method, see [Appkey](/nhncloud/en/public-api/appkey/) and [User Access Key Token](/nhncloud/en/public-api/user-access-key-token/).
 
-### API List
+<a id="api-list"></a>
+### API List { #api-list }
 
+<a id="api-list-repository"></a>
 #### Repository
 
 | Method | URI | Description |
@@ -32,6 +40,7 @@ For more information on how to check and use each authentication method, see [Ap
 | PUT | /v2.0/appkeys/{appkey}/ca-stores/{caStoreId} | Modifies a repository |
 | DELETE | /v2.0/appkeys/{appkey}/ca-stores/{caStoreId} | Deletes a repository |
 
+<a id="api-list-certificate-issuer"></a>
 #### Certificate (Issuer)
 
 | Method | URI | Description |
@@ -41,6 +50,7 @@ For more information on how to check and use each authentication method, see [Ap
 | GET | /v2.0/appkeys/{appkey}/ca-stores/{caStoreId}/certs/{certId} | Retrieves detailed information of a certificate |
 | POST | /v2.0/appkeys/{appkey}/ca-stores/{caStoreId}/certs/{certId}/revoke | Revokes a certificate |
 
+<a id="api-list-template"></a>
 #### Template
 
 | Method | URI | Description |
@@ -52,12 +62,14 @@ For more information on how to check and use each authentication method, see [Ap
 | DELETE | /v2.0/appkeys/{appkey}/ca-stores/{caStoreId}/templates/{templateId} | Deletes a template |
 | POST | /v2.0/appkeys/{appkey}/ca-stores/{caStoreId}/templates/{templateId}/certificates | Issues a certificate using a template |
 
+<a id="api-list-certificate-download"></a>
 #### Certificate Download
 
 | Method | URI | Description |
 |--------|-----|------|
 | GET | /v2.0/appkeys/{appkey}/ca-stores/{caStoreId}/certs/{certId}/download | Downloads a certificate in PEM format |
 
+<a id="api-list-crl"></a>
 #### CRL
 
 | Method | URI | Description |
@@ -67,6 +79,7 @@ For more information on how to check and use each authentication method, see [Ap
 | GET | /v2.0/appkeys/{appkey}/ca-stores/{caStoreId}/certs/{issuerCertId}/crl/pem | Downloads a CRL in PEM format |
 | POST | /v2.0/appkeys/{appkey}/ca-stores/{caStoreId}/certs/{issuerCertId}/crl | Manually renews a CRL |
 
+<a id="api-list-ocsp"></a>
 #### OCSP
 
 | Method | URI | Description |
@@ -74,9 +87,11 @@ For more information on how to check and use each authentication method, see [Ap
 | GET | /v2.0/appkeys/{appkey}/ca-stores/{caStoreId}/ocsp/{ocspRequestBase64} | Retrieves certificate status using a Base64-encoded OCSP request |
 | POST | /v2.0/appkeys/{appkey}/ca-stores/{caStoreId}/ocsp | Retrieves certificate status using a DER format OCSP request |
 
-## Prepare in advance
+<a id="prepare-in-advance"></a>
+## Prepare in advance { #prepare-in-advance }
 
-### Manage permissions
+<a id="manage-permissions"></a>
+### Manage permissions { #manage-permissions }
 
 The Private CA API uses role-based access control (RBAC), which is categorized as follows:
 
@@ -84,19 +99,23 @@ The Private CA API uses role-based access control (RBAC), which is categorized a
 - **ADMIN**: You can perform all administrative tasks, including creating·modifying·deleting repositories/certificates/templates, manually renewing CRLs.
 - **Public endpoints**: The CRL download (DER/PEM) and OCSP APIs are accessible without authentication for certificate validation.
 
-### Certificate formats
+<a id="certificate-formats"></a>
+### Certificate formats { #certificate-formats }
 
 The main certificate formats used by the Private CA API are as follows:
 
 - **Privacy enhanced mail (PEM)**: A text-based certificate format, encoded in Base64 and starting with `-----BEGIN CERTIFICATE-----`. Human-readable and easy to edit.
 - **Distinguished encoding rules (DER)**: A certificate in binary format, which is smaller and more efficient than PEM. It is primarily used in Java applications.
 
-## Repository API
+<a id="repository-api"></a>
+## Repository API { #repository-api }
 
-### List Repositories
+<a id="list-repositories"></a>
+### List Repositories { #list-repositories }
 
 Retrieves a list of repositories.
 
+<a id="list-repositories-request"></a>
 #### Request
 
 ```
@@ -121,6 +140,7 @@ GET /v2.0/appkeys/{appkey}/ca-stores
 
 - `VIEWER` or higher
 
+<a id="list-repositories-response"></a>
 #### Response
 
 **Response Body**
@@ -184,10 +204,12 @@ GET /v2.0/appkeys/{appkey}/ca-stores
 | totalPageNo | Long | Total number of pages |
 | currentPageNo | Long | Current page number (starts from 0) |
 
-### Get Repository Details
+<a id="get-repository-details"></a>
+### Get Repository Details { #get-repository-details }
 
 Retrieves detailed information of a repository.
 
+<a id="get-repository-details-request"></a>
 #### Request
 
 ```
@@ -205,6 +227,7 @@ GET /v2.0/appkeys/{appkey}/ca-stores/{caStoreId}
 
 - `VIEWER` or higher
 
+<a id="get-repository-details-response"></a>
 #### Response
 
 **Response Body**
@@ -261,10 +284,12 @@ GET /v2.0/appkeys/{appkey}/ca-stores/{caStoreId}
 | lastChangeDatetime | LocalDateTime | Last modified date |
 | lastChangeUser | String | Last modified by |
 
-### Create Repository
+<a id="create-repository"></a>
+### Create Repository { #create-repository }
 
 Creates a repository.
 
+<a id="create-repository-request"></a>
 #### Request
 
 ```
@@ -305,6 +330,7 @@ POST /v2.0/appkeys/{appkey}/ca-stores
 }
 ```
 
+<a id="create-repository-response"></a>
 #### Response
 
 **Response Body**
@@ -340,10 +366,12 @@ POST /v2.0/appkeys/{appkey}/ca-stores
 | lastChangeDatetime | LocalDateTime | Last modified date |
 | lastChangeUser | String | Last modified by |
 
-### Modify Repository
+<a id="modify-repository"></a>
+### Modify Repository { #modify-repository }
 
 Modifies a repository.
 
+<a id="modify-repository-request"></a>
 #### Request
 
 ```
@@ -365,6 +393,7 @@ Same as Create Repository.
 
 - `ADMIN`
 
+<a id="modify-repository-response"></a>
 #### Response
 
 **Response Body**
@@ -392,10 +421,12 @@ Same as Create Repository.
 | toastProjectId | Long | NHN Cloud project ID |
 | status | String | Repository status |
 
-### Delete Repository
+<a id="delete-repository"></a>
+### Delete Repository { #delete-repository }
 
 Deletes a repository.
 
+<a id="delete-repository-request"></a>
 #### Request
 
 ```
@@ -413,6 +444,7 @@ DELETE /v2.0/appkeys/{appkey}/ca-stores/{caStoreId}
 
 - `ADMIN`
 
+<a id="delete-repository-response"></a>
 #### Response
 
 **Response Body**
@@ -440,12 +472,15 @@ DELETE /v2.0/appkeys/{appkey}/ca-stores/{caStoreId}
 | toastProjectId | Long | NHN Cloud project ID |
 | status | String | Repository status (`DELETED`) |
 
-## Certificate (Issuer) API
+<a id="certificate-issuer-api"></a>
+## Certificate (Issuer) API { #certificate-issuer-api }
 
-### List Certificates
+<a id="list-certificates"></a>
+### List Certificates { #list-certificates }
 
 Retrieves a list of certificates included in a repository.
 
+<a id="list-certificates-request"></a>
 #### Request
 
 ```
@@ -472,6 +507,7 @@ GET /v2.0/appkeys/{appkey}/ca-stores/{caStoreId}/certs
 
 - `VIEWER` or higher
 
+<a id="list-certificates-response"></a>
 #### Response
 
 **Response Body**
@@ -537,10 +573,12 @@ GET /v2.0/appkeys/{appkey}/ca-stores/{caStoreId}/certs
 | totalPageNo | Long | Total number of pages |
 | currentPageNo | Long | Current page number |
 
-### Get Certificate Details
+<a id="get-certificate-details"></a>
+### Get Certificate Details { #get-certificate-details }
 
 Retrieves detailed information of a certificate.
 
+<a id="get-certificate-details-request"></a>
 #### Request
 
 ```
@@ -559,6 +597,7 @@ GET /v2.0/appkeys/{appkey}/ca-stores/{caStoreId}/certs/{certId}
 
 - `VIEWER` or higher
 
+<a id="get-certificate-details-response"></a>
 #### Response
 
 **Response Body**
@@ -635,10 +674,12 @@ GET /v2.0/appkeys/{appkey}/ca-stores/{caStoreId}/certs/{certId}
 | ocspUrl | String | OCSP server URL |
 | policies | String[] | Certificate Policies OID list |
 
-### Issue Certificate (Issuer)
+<a id="issue-certificate-issuer"></a>
+### Issue Certificate (Issuer) { #issue-certificate-issuer }
 
 Issues a ROOT or INTERMEDIATE certificate (issuer).
 
+<a id="issue-certificate-issuer-request"></a>
 #### Request
 
 ```
@@ -744,6 +785,7 @@ POST /v2.0/appkeys/{appkey}/ca-stores/{caStoreId}/certs
 }
 ```
 
+<a id="issue-certificate-issuer-response"></a>
 #### Response
 
 **Response Body**
@@ -804,10 +846,12 @@ POST /v2.0/appkeys/{appkey}/ca-stores/{caStoreId}/certs
 !!! note "Note"
     The issuer certificate issuance API does not include `privateKey` in the response. The issuer's private key is stored securely on the server.
 
-### Revoke Certificate
+<a id="revoke-certificate"></a>
+### Revoke Certificate { #revoke-certificate }
 
 Revokes a certificate.
 
+<a id="revoke-certificate-request"></a>
 #### Request
 
 ```
@@ -826,6 +870,7 @@ POST /v2.0/appkeys/{appkey}/ca-stores/{caStoreId}/certs/{certId}/revoke
 
 - `ADMIN`
 
+<a id="revoke-certificate-response"></a>
 #### Response
 
 **Response Body**
@@ -851,12 +896,15 @@ POST /v2.0/appkeys/{appkey}/ca-stores/{caStoreId}/certs/{certId}/revoke
 | serialNumber | String | Serial number of the revoked certificate |
 | revocationDatetime | LocalDateTime | Revocation date |
 
-## Template API
+<a id="template-api"></a>
+## Template API { #template-api }
 
-### List Templates
+<a id="list-templates"></a>
+### List Templates { #list-templates }
 
 Retrieves a list of templates.
 
+<a id="list-templates-request"></a>
 #### Request
 
 ```
@@ -882,6 +930,7 @@ GET /v2.0/appkeys/{appkey}/ca-stores/{caStoreId}/templates
 
 - `VIEWER` or higher
 
+<a id="list-templates-response"></a>
 #### Response
 
 **Response Body**
@@ -923,10 +972,12 @@ GET /v2.0/appkeys/{appkey}/ca-stores/{caStoreId}/templates
 | totalPageNo | Number | Total number of pages |
 | currentPageNo | Number | Current page number (starts from 0) |
 
-### Get Template Details
+<a id="get-template-details"></a>
+### Get Template Details { #get-template-details }
 
 Retrieves detailed information of a template.
 
+<a id="get-template-details-request"></a>
 #### Request
 
 ```
@@ -945,6 +996,7 @@ GET /v2.0/appkeys/{appkey}/ca-stores/{caStoreId}/templates/{templateId}
 
 - `VIEWER` or higher
 
+<a id="get-template-details-response"></a>
 #### Response
 
 **Response Body**
@@ -1031,10 +1083,12 @@ GET /v2.0/appkeys/{appkey}/ca-stores/{caStoreId}/templates/{templateId}
 | lastChangeDatetime | LocalDateTime | Last modified date |
 | lastChangeUser | String | Last modified by |
 
-### Create Template
+<a id="create-template"></a>
+### Create Template { #create-template }
 
 Creates a template.
 
+<a id="create-template-request"></a>
 #### Request
 
 ```
@@ -1130,6 +1184,7 @@ POST /v2.0/appkeys/{appkey}/ca-stores/{caStoreId}/templates
 
 - `ADMIN`
 
+<a id="create-template-response"></a>
 #### Response
 
 **Response Body**
@@ -1161,10 +1216,12 @@ POST /v2.0/appkeys/{appkey}/ca-stores/{caStoreId}/templates
 | signingCertificateId | Long | ID of the issuer certificate used for signing |
 | signingCertificateName | String | Name of the issuer certificate used for signing |
 
-### Modify Template
+<a id="modify-template"></a>
+### Modify Template { #modify-template }
 
 Modifies a template.
 
+<a id="modify-template-request"></a>
 #### Request
 
 ```
@@ -1187,6 +1244,7 @@ Same as Create Template.
 
 - `ADMIN`
 
+<a id="modify-template-response"></a>
 #### Response
 
 **Response Body**
@@ -1206,10 +1264,12 @@ Same as Create Template.
 |------|------|------|
 | body | Boolean | Whether the modification was successful |
 
-### Delete Template
+<a id="delete-template"></a>
+### Delete Template { #delete-template }
 
 Deletes a template.
 
+<a id="delete-template-request"></a>
 #### Request
 
 ```
@@ -1228,6 +1288,7 @@ DELETE /v2.0/appkeys/{appkey}/ca-stores/{caStoreId}/templates/{templateId}
 
 - `ADMIN`
 
+<a id="delete-template-response"></a>
 #### Response
 
 **Response Body**
@@ -1247,10 +1308,12 @@ DELETE /v2.0/appkeys/{appkey}/ca-stores/{caStoreId}/templates/{templateId}
 |------|------|------|
 | body | Boolean | Whether the deletion was successful |
 
-### Issue Certificate Using Template
+<a id="issue-certificate-using-template"></a>
+### Issue Certificate Using Template { #issue-certificate-using-template }
 
 Issues a certificate using a template.
 
+<a id="issue-certificate-using-template-request"></a>
 #### Request
 
 ```
@@ -1322,6 +1385,7 @@ POST /v2.0/appkeys/{appkey}/ca-stores/{caStoreId}/templates/{templateId}/certifi
 }
 ```
 
+<a id="issue-certificate-using-template-response"></a>
 #### Response
 
 **Response Body** (GENERATE mode)
@@ -1421,12 +1485,15 @@ POST /v2.0/appkeys/{appkey}/ca-stores/{caStoreId}/templates/{templateId}/certifi
 !!! danger "Caution"
     When issuing in GENERATE mode, the `privateKey` included in the response is **the only time it is returned**. It is not stored on the server, so save it immediately to a secure location. In SIGN mode, the client holds the private key, so `privateKey` is not included in the response.
 
-## Certificate download API
+<a id="certificate-download-api"></a>
+## Certificate download API { #certificate-download-api }
 
-### Download the certificate
+<a id="download-the-certificate"></a>
+### Download the certificate { #download-the-certificate }
 
 Download the issued certificate in PEM format.
 
+<a id="download-the-certificate-request"></a>
 #### Request
 
 ```
@@ -1445,6 +1512,7 @@ GET /v2.0/appkeys/{appkey}/ca-stores/{caStoreId}/certs/{certId}/download
 
 - `VIEWER` and above
 
+<a id="download-the-certificate-response"></a>
 #### Response
 
 **Response Headers**
@@ -1456,14 +1524,17 @@ GET /v2.0/appkeys/{appkey}/ca-stores/{caStoreId}/certs/{certId}/download
 
 Certificate data (PEM format)
 
-## CRL API
+<a id="crl-api"></a>
+## CRL API { #crl-api }
 
 A certificate revocation list (CRL) is a mechanism that provides a list of certificates issued by a particular issuer that have been revoked. Clients can download the CRL to verify that the certificate has been revoked.
 
-### Retrieve CRL information
+<a id="retrieve-crl-information"></a>
+### Retrieve CRL information { #retrieve-crl-information }
 
 Retrieve CRL information for a specific issuer.
 
+<a id="retrieve-crl-information-request"></a>
 #### Request
 
 ```
@@ -1482,6 +1553,7 @@ GET /v2.0/appkeys/{appkey}/ca-stores/{caStoreId}/certs/{issuerCertId}/crl
 
 - `VIEWER` and above
 
+<a id="retrieve-crl-information-response"></a>
 #### Response
 
 **Response Body**
@@ -1507,10 +1579,12 @@ GET /v2.0/appkeys/{appkey}/ca-stores/{caStoreId}/certs/{issuerCertId}/crl
 | thisUpdate | LocalDateTime | CRL issue time |
 | nextUpdate | LocalDateTime | Next CRL expected time |
 
-### Download the CRL (DER format)
+<a id="download-the-crl-der-format"></a>
+### Download the CRL (DER format) { #download-the-crl-der-format }
 
 Download the CRL in DER (binary) format.
 
+<a id="download-the-crl-der-format-request"></a>
 #### Request
 
 ```
@@ -1529,6 +1603,7 @@ GET /v2.0/appkeys/{appkey}/ca-stores/{caStoreId}/certs/{issuerCertId}/crl/der
 
 - No permission checks (public endpoints)
 
+<a id="download-the-crl-der-format-response"></a>
 #### Response
 
 **Response Headers**
@@ -1540,10 +1615,12 @@ GET /v2.0/appkeys/{appkey}/ca-stores/{caStoreId}/certs/{issuerCertId}/crl/der
 
 CRL data (DER format)
 
-### Download the CRL (PEM format)
+<a id="download-the-crl-pem-format"></a>
+### Download the CRL (PEM format) { #download-the-crl-pem-format }
 
 Download the CRL in PEM format.
 
+<a id="download-the-crl-pem-format-request"></a>
 #### Request
 
 ```
@@ -1562,6 +1639,7 @@ GET /v2.0/appkeys/{appkey}/ca-stores/{caStoreId}/certs/{issuerCertId}/crl/pem
 
 - No permission checks (public endpoints)
 
+<a id="download-the-crl-pem-format-response"></a>
 #### Response
 
 **Response Headers**
@@ -1573,10 +1651,12 @@ GET /v2.0/appkeys/{appkey}/ca-stores/{caStoreId}/certs/{issuerCertId}/crl/pem
 
 CRL data (PEM format)
 
-### Manually renew a CRL
+<a id="manually-renew-a-crl"></a>
+### Manually renew a CRL { #manually-renew-a-crl }
 
 Renew the CRL manually.
 
+<a id="manually-renew-a-crl-request"></a>
 #### Request
 
 ```
@@ -1595,6 +1675,7 @@ POST /v2.0/appkeys/{appkey}/ca-stores/{caStoreId}/certs/{issuerCertId}/crl
 
 - `ADMIN`
 
+<a id="manually-renew-a-crl-response"></a>
 #### Response
 
 **Response Body**
@@ -1610,14 +1691,17 @@ POST /v2.0/appkeys/{appkey}/ca-stores/{caStoreId}/certs/{issuerCertId}/crl
 }
 ```
 
-## OCSP API
+<a id="ocsp-api"></a>
+## OCSP API { #ocsp-api }
 
 The online certificate status protocol (OCSP) is a protocol that allows you to quickly check the revocation status of individual certificates. Unlike CRLs, you can look up the status of a specific certificate at the time of the request without downloading the entire list.
 
-### Get OCSP Status (GET)
+<a id="get-ocsp-status-get"></a>
+### Get OCSP Status (GET) { #get-ocsp-status-get }
 
 Processes Base64-encoded OCSP requests.
 
+<a id="get-ocsp-status-get-request"></a>
 #### Request
 
 ```
@@ -1657,6 +1741,7 @@ OCSP_REQUEST=$(openssl ocsp -issuer ca.pem -cert cert.pem -reqout - | base64 -w 
 curl -X GET "https://kr1-pca.api.nhncloudservice.com/v2.0/appkeys/my-appkey/ca-stores/1/ocsp/${OCSP_REQUEST}"
 ```
 
+<a id="get-ocsp-status-get-response"></a>
 #### Response
 
 **Response Headers**
@@ -1667,10 +1752,12 @@ curl -X GET "https://kr1-pca.api.nhncloudservice.com/v2.0/appkeys/my-appkey/ca-s
 
 OCSP response (DER format)
 
-### OCSP Status Query (POST)
+<a id="ocsp-status-query-post"></a>
+### OCSP Status Query (POST) { #ocsp-status-query-post }
 
 Process OCSP requests in DER format.
 
+<a id="ocsp-status-query-post-request"></a>
 #### Request
 
 ```
@@ -1712,6 +1799,7 @@ curl -X POST "https://kr1-pca.api.nhncloudservice.com/v2.0/appkeys/my-appkey/ca-
 openssl ocsp -respin ocsp-response.der -text
 ```
 
+<a id="ocsp-status-query-post-response"></a>
 #### Response
 
 **Response Headers**
@@ -1722,27 +1810,32 @@ openssl ocsp -respin ocsp-response.der -text
 
 OCSP response (DER format)
 
-## Troubleshooting
+<a id="troubleshooting"></a>
+## Troubleshooting { #troubleshooting }
 
-### If the CRL is not renewed
+<a id="if-the-crl-is-not-renewed"></a>
+### If the CRL is not renewed { #if-the-crl-is-not-renewed }
 
 1. In the console, under Repository details, verify that CRLs are enabled.
 2. Call the manual renewal API to renew immediately.
 3. Check and adjust the CRL refresh period (`crlRefreshPeriod`).
 
-### If there is no OCSP response
+<a id="if-there-is-no-ocsp-response"></a>
+### If there is no OCSP response { #if-there-is-no-ocsp-response }
 
 1. In the console, under Repository details, verify that OCSP is enabled.
 2. Make sure you're using the correct repository ID.
 3. Verify that the OCSP request is in the correct format (DER).
 
-### OCSP response results differ from the actual certificate status
+<a id="ocsp-response-results-differ-from-the-actual-certificate-status"></a>
+### OCSP response results differ from the actual certificate status { #ocsp-response-results-differ-from-the-actual-certificate-status }
 
 1. OCSP responses are cached based on the renewal cycle, so if you recently revoked a certificate, the old state might be returned until the renewal cycle has passed.
 2. In the console, under Repository details, check the OCSP renewal cycle.
 3. If you need to see the latest status immediately, look it up again after the renewal cycle has passed.
 
-### If the certificate doesn't have a CRL/OCSP URL
+<a id="if-the-certificate-doesnt-have-a-crlocsp-url"></a>
+### If the certificate doesn't have a CRL/OCSP URL { #if-the-certificate-doesnt-have-a-crlocsp-url }
 
 - The extension was not included when the certificate was issued.
 - After you enable CRL/OCSP in your repository settings, you must reissue the certificate.

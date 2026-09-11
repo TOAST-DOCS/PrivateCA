@@ -1,3 +1,5 @@
+<!-- pre-align:aligned sig=3ad92632ab87 -->
+
 # ACME 인증서 갱신 가이드(cert-manager)
 **Management > Private CA > ACME 인증서 갱신 가이드(cert-manager)**
 
@@ -13,13 +15,15 @@ Private CA 서비스는 ACME(automatic certificate management environment) 프�
     - **EAB(external account binding)**: ACME 서버에 인증하기 위한 계정 바인딩 정보입니다.
 
 !!! tip "알아두기"
-    일반 서버 환경에서 Certbot 또는 acme.sh를 사용하여 인증서를 관리하려면 [ACME 인증서 갱신 가이드(Certbot, acme.sh)](acme-guide.md)를 참고하세요.
+    일반 서버 환경에서 Certbot 또는 acme.sh를 사용하여 인증서를 관리하려면 [ACME 인증서 갱신 가이드(Certbot, acme.sh)](client-guide.md)를 참고하세요.
 
-## 사전 준비하기
+<a id="prepare-in-advance"></a>
+## 사전 준비하기 { #prepare-in-advance }
 
 ACME를 통한 인증서 발급을 시작하기 전에 다음 사항을 준비해야 합니다.
 
-### 1. Base 인증서 발급
+<a id="issue-a-base-certificate"></a>
+### 1. Base 인증서 발급 { #issue-a-base-certificate }
 
 Base 인증서는 ACME 서버가 자동 갱신 시 참조하는 "템플릿" 역할을 합니다.
 
@@ -27,7 +31,8 @@ Base 인증서는 ACME 서버가 자동 갱신 시 참조하는 "템플릿" 역�
 - Base 인증서는 콘솔에서 일반적인 인증서 발급 절차로 생성합니다.
 - Base 인증서를 발급 받은 후, 해당 인증서의 ID를 ACME Directory URL에 사용합니다.
 
-### 2. ACME 서버 정보 확인
+<a id="verify-acme-server-information"></a>
+### 2. ACME 서버 정보 확인 { #verify-acme-server-information }
 
 Private CA 콘솔에서 다음 정보를 확인합니다.
 
@@ -35,11 +40,13 @@ Private CA 콘솔에서 다음 정보를 확인합니다.
 - **ACME 토큰 ID**: 콘솔에서 발급한 ACME 토큰 ID(**YOUR_ACME_TOKEN_ID**)
 - **ACME HMAC 키**: 콘솔에서 발급한 ACME 토큰 HMAC 키(**YOUR_ACME_TOKEN_HMAC_KEY**)
 
-## cert-manager를 이용한 인증서 갱신
+<a id="renew-certificates-with-cert-manager"></a>
+## cert-manager를 이용한 인증서 갱신 { #renew-certificates-with-cert-manager }
 
 Kubernetes 환경에서는 cert-manager를 사용하여 인증서를 자동으로 발급하고 갱신할 수 있습니다.
 
-### cert-manager 설치
+<a id="install-cert-manager"></a>
+### cert-manager 설치 { #install-cert-manager }
 
 Kubernetes 클러스터에 cert-manager를 설치합니다.
 
@@ -53,7 +60,8 @@ kubectl apply -f https://github.com/cert-manager/cert-manager/releases/download/
 kubectl get pods -n cert-manager
 ```
 
-### Ingress Controller 설치
+<a id="install-ingress-controller"></a>
+### Ingress Controller 설치 { #install-ingress-controller }
 
 HTTP-01 Challenge 방식을 사용하려면 Ingress Controller가 필요합니다.
 
@@ -71,7 +79,8 @@ helm upgrade --install ingress-nginx ingress-nginx \
 kubectl get pods -n ingress-nginx
 ```
 
-### EAB Secret 생성
+<a id="create-an-eab-secret"></a>
+### EAB Secret 생성 { #create-an-eab-secret }
 
 ACME 인증을 위한 EAB(external account binding) 정보를 Kubernetes Secret으로 생성합니다.
 
@@ -86,12 +95,14 @@ kubectl create secret generic acme-eab-secret \
     - EAB Secret은 민감한 정보이므로 안전하게 관리해야 합니다.
     - Secret이 생성된 네임스페이스와 Issuer가 위치할 네임스페이스가 동일해야 합니다.
 
-### Issuer 설정
+<a id="issuer-settings"></a>
+### Issuer 설정 { #issuer-settings }
 
 Issuer는 인증서를 발급 받을 CA를 정의하는 cert-manager 리소스입니다. Namespace 단위로 동작하는 Issuer와 클러스터 전체에서 사용 가능한 ClusterIssuer 중 선택하여 사용할 수 있습니다.
 
 HTTP-01 Challenge 검증 방식으로 **Ingress** 또는 **Gateway API** 중 하나를 선택하여 사용할 수 있습니다.
 
+<a id="issuer-settings-method-1-configure-an-issuer-with-ingress"></a>
 #### 방법 1: Ingress를 이용한 Issuer 설정
 
 Ingress Controller를 사용하는 경우의 Issuer 설정 예시입니다.
@@ -123,6 +134,7 @@ spec:
           class: nginx
 ```
 
+<a id="issuer-settings-method-2-configure-an-issuer-with-gateway-api"></a>
 #### 방법 2: Gateway API를 이용한 Issuer 설정
 
 Kubernetes Gateway API를 사용하는 경우의 Issuer 설정입니다.
@@ -288,6 +300,7 @@ spec:
 !!! tip "알아두기"
     Gateway API 방식을 사용하면 cert-manager가 자동으로 HTTPRoute, Service, Pod를 생성하여 Challenge를 처리합니다. Gateway 리소스는 미리 생성되어 있어야 합니다.
 
+<a id="issuer-settings-key-field-description"></a>
 #### 주요 필드 설명
 
 | 필드 | 설명 | 필수 |
@@ -302,6 +315,7 @@ spec:
 | `spec.acme.solvers.http01.ingress.class` | Ingress 방식: Ingress Controller 클래스 이름(예: `nginx`). | X |
 | `spec.acme.solvers.http01.gatewayHTTPRoute.parentRefs` | Gateway API 방식: 참조할 Gateway 리소스 정보. | X |
 
+<a id="issuer-settings-apply-issuer-and-check-status"></a>
 #### Issuer 적용 및 상태 확인
 
 Issuer 리소스를 적용합니다.
@@ -325,6 +339,7 @@ kubectl describe issuers.cert-manager.io my-acme-issuer-example-com -n default
     - `dns01` solver는 DNS 프로바이더 설정이 필요합니다.
     - `skipTLSVerify: true` 옵션은 Private CA 서버가 사설 인증서를 사용하는 경우 필수입니다.
 
+<a id="issuer-settings-configure-hostaliases-for-the-http-01-challenge-preliminary-work"></a>
 #### HTTP-01 Challenge를 위한 hostAliases 설정(선행 작업)
 
 Certificate를 생성하기 전에 HTTP-01 Challenge가 성공할 수 있도록 설정해야 합니다.
@@ -364,10 +379,12 @@ spec:
 
     이러한 리소스는 Challenge 완료 후 자동으로 삭제됩니다.
 
-### Certificate 리소스 생성
+<a id="create-a-certificate-resource"></a>
+### Certificate 리소스 생성 { #create-a-certificate-resource }
 
 Certificate 리소스는 발급 받을 인증서의 속성을 정의합니다.
 
+<a id="create-a-certificate-resource-example-of-certificate-configuration"></a>
 #### Certificate 설정 예시
 
 ```yaml
@@ -392,6 +409,7 @@ spec:
     kind: Issuer
 ```
 
+<a id="create-a-certificate-resource-key-field-description"></a>
 #### 주요 필드 설명
 
 | 필드 | 설명 | 필수 |
@@ -403,6 +421,7 @@ spec:
 | `spec.issuerRef.name` | 사용할 Issuer 또는 ClusterIssuer 이름. | O |
 | `spec.issuerRef.kind` | Issuer 유형. `Issuer` 또는 `ClusterIssuer`. | X |
 
+<a id="create-a-certificate-resource-apply-the-certificate-and-check-its-status"></a>
 #### Certificate 적용 및 상태 확인
 
 Certificate 리소스를 적용합니다.
@@ -438,10 +457,12 @@ kubectl get challenge -n default
     - Base 인증서에 없는 도메인을 추가하면 인증서 발급이 실패합니다.
     - 인증서 발급 전 콘솔에서 Base 인증서의 CN과 SAN 정보를 확인하여 올바른 도메인을 지정했는지 반드시 검증하세요.
 
-### 발급된 인증서 확인
+<a id="verify-issued-certificates"></a>
+### 발급된 인증서 확인 { #verify-issued-certificates }
 
 인증서가 성공적으로 발급되면 지정한 Secret에 저장됩니다.
 
+<a id="verify-issued-certificates-confirm-secret"></a>
 #### Secret 확인
 
 ```bash
@@ -449,6 +470,7 @@ kubectl get secret test-server-tls-example-com -n default
 kubectl describe secret test-server-tls-example-com -n default
 ```
 
+<a id="verify-issued-certificates-verify-certificate-contents"></a>
 #### 인증서 내용 확인
 
 **인증서 상세 정보 확인**
@@ -463,6 +485,7 @@ kubectl get secret test-server-tls-example-com -n default -o jsonpath='{.data.tl
 kubectl get secret test-server-tls-example-com -n default -o jsonpath='{.data.tls\.crt}' | base64 -d | openssl x509 -noout -dates
 ```
 
+<a id="verify-issued-certificates-secret-structure"></a>
 #### Secret 구조
 
 발급된 인증서 Secret은 다음과 같은 구조를 갖습니다.
@@ -477,16 +500,19 @@ data:
   ca.crt: <base64-encoded CA certificate chain>
 ```
 
-### 인증서 자동 갱신
+<a id="certificate-auto-renewal"></a>
+### 인증서 자동 갱신 { #certificate-auto-renewal }
 
 cert-manager는 인증서 만료가 임박하면 자동으로 갱신을 수행합니다.
 
+<a id="certificate-auto-renewal-how-auto-renewal-works"></a>
 #### 자동 갱신 동작 방식
 
 - cert-manager는 주기적으로 Certificate 리소스의 만료 시간을 확인합니다.
 - `renewBefore` 필드에 설정된 시간만큼 만료일이 남았을 때 자동으로 갱신을 시작합니다.
 - 갱신된 인증서는 동일한 Secret에 자동으로 업데이트됩니다.
 
+<a id="certificate-auto-renewal-set-renewal-cycle"></a>
 #### 갱신 주기 설정
 
 Certificate 리소스의 `renewBefore` 필드를 수정하여 갱신 시작 시점을 조정할 수 있습니다.
@@ -496,6 +522,7 @@ spec:
   renewBefore: 720h  # 30일 전에 갱신 시작
 ```
 
+<a id="certificate-auto-renewal-manual-renewal"></a>
 #### 수동 갱신
 
 필요 시 Certificate 리소스를 수동으로 갱신할 수 있습니다.
@@ -530,6 +557,7 @@ kubectl apply -f test-server-cert-example-com.yml
     - `renewBefore` 값을 너무 짧게 설정하면 인증서가 만료될 위험이 있으므로 주의해야 합니다.
     - 갱신 실패 시 cert-manager는 자동으로 재시도합니다.
 
+<a id="certificate-auto-renewal-how-to-test-for-renewals"></a>
 #### 갱신 테스트 방법
 
 자동 갱신이 제대로 동작하는지 테스트하려면 다음 방법을 사용할 수 있습니다.
@@ -556,10 +584,12 @@ spec:
 cmctl renew test-server-cert-example-com -n default
 ```
 
-### 애플리케이션에서 인증서 사용
+<a id="using-certificates-in-applications"></a>
+### 애플리케이션에서 인증서 사용 { #using-certificates-in-applications }
 
 발급된 인증서는 Kubernetes Secret으로 저장되므로 다양한 방식으로 애플리케이션에 마운트할 수 있습니다.
 
+<a id="using-certificates-in-applications-used-by-ingress"></a>
 #### Ingress에서 사용
 
 ```yaml
@@ -588,6 +618,7 @@ spec:
               number: 80
 ```
 
+<a id="using-certificates-in-applications-mount-from-pod-to-volume"></a>
 #### Pod에서 Volume으로 마운트
 
 ```yaml
@@ -616,8 +647,10 @@ spec:
 - `/etc/tls/tls.key`: 개인 키
 - `/etc/tls/ca.crt`: CA 인증서 체인
 
-### 문제 해결하기
+<a id="troubleshooting"></a>
+### 문제 해결하기 { #troubleshooting }
 
+<a id="troubleshooting-if-certificate-issuance-fails"></a>
 #### 인증서 발급 실패 시
 
 1. **Issuer 상태 확인**
@@ -654,6 +687,7 @@ kubectl describe challenge <challenge-name> -n default
 - HTTP-01 Challenge의 경우 Ingress가 올바르게 설정되었는지 확인합니다.
 - Challenge URL에 접근 가능한지 확인합니다.
 
+<a id="troubleshooting-common-errors-and-solutions"></a>
 #### 일반적인 오류와 해결 방법
 
 | 오류 메시지 | 원인 | 해결 방법 |
@@ -664,6 +698,7 @@ kubectl describe challenge <challenge-name> -n default
 | `secret not found` | EAB Secret을 찾을 수 없습니다. | Secret이 올바른 네임스페이스에 생성되었는지 확인합니다. |
 | `x509: certificate signed by unknown authority` | TLS 검증 실패. | Issuer에 `skipTLSVerify: true`를 설정합니다. |
 
+<a id="troubleshooting-check-logs"></a>
 #### 로그 확인
 
 cert-manager의 상세 로그를 확인하여 문제를 진단할 수 있습니다.
@@ -677,7 +712,8 @@ kubectl logs -n cert-manager deployment/cert-manager -f
     - 인증서 체인은 최소 3단 이상(Root → Intermediate → Leaf) 구성되어야 합니다.
     - `renewBefore` 값은 ACME 서버의 Rate Limit 정책을 고려하여 신중히 조정해야 합니다.
 
-## ACME 프로토콜 정보
+<a id="about-acme-protocol"></a>
+## ACME 프로토콜 정보 { #about-acme-protocol }
 
 Private CA에서 제공하는 ACME Directory URL(`/directory`)을 통해 ACME 클라이언트는 필요한 모든 엔드포인트 정보를 자동으로 가져옵니다.
 
@@ -685,11 +721,12 @@ ACME 프로토콜의 전체 흐름은 클라이언트에 의해 자동으로 처
 
 ACME 프로토콜에 대한 자세한 내용은 [RFC 8555](https://datatracker.ietf.org/doc/html/rfc8555)를 참고하세요.
 
-## 참고 자료
+<a id="references"></a>
+## 참고 자료 { #references }
 
 - [cert-manager 공식 문서](https://cert-manager.io/docs/)
 - [cert-manager ACME 설정 가이드](https://cert-manager.io/docs/configuration/acme/)
 - [ACME 프로토콜 명세(RFC 8555)](https://datatracker.ietf.org/doc/html/rfc8555)
 - [Let's Encrypt - Challenge Types](https://letsencrypt.org/docs/challenge-types/)
 - [Kubernetes Ingress TLS 설정](https://kubernetes.io/docs/concepts/services-networking/ingress/#tls)
-- [ACME 인증서 갱신 가이드(Certbot, acme.sh)](acme-guide.md)
+- [ACME 인증서 갱신 가이드(Certbot, acme.sh)](client-guide.md)
