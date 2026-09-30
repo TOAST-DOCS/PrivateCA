@@ -177,10 +177,10 @@ ACME 정보 하단에는 저장소 상세 정보가 표시됩니다.
     - SAN(subject alternative name) 설정
         - **SAN에서 일반 이름 제외**: SAN 목록에서 일반 이름(CN)을 자동으로 제외할지 여부를 선택합니다.
         - **주체 시리얼 번호**: 주체의 고유 시리얼 번호를 입력합니다.
-        - **주체 대체 이름(SANs)**: 도메인 형식의 추가 식별 이름(예: example.com, sub.example.com)
+        - **주체 대체 이름(SANs)**: 도메인 형식의 추가 식별 이름(예: example.com, sub.example.com). 언더스코어(_)가 포함되거나 IP 주소 형태인 값은 입력할 수 없습니다.
         - **IP 주체 대체 이름(IP SANs)**: IP 주소 형식의 추가 식별 이름(예: 192.168.1.1, 10.0.0.1)
         - **URI 주체 대체 이름(URI SANs)**: URI 형식의 추가 식별 이름(예: https://example.com, spiffe://example.org)
-        - **기타 SANs**: 기타 형식의 SAN(예: 1.2.3.4;UTF8:test@example.com)
+        - **기타 SANs**: 기타 형식의 SAN(예: 1.2.3.4;UTF8String:test@example.com). TYPE은 UTF8String, IA5String, PrintableString, BMPString, UniversalString 중 하나를 입력합니다.
 
     - 주체 정보(Subject)
         - **국가(C)**: 국가 코드
@@ -192,6 +192,7 @@ ACME 정보 하단에는 저장소 상세 정보가 표시됩니다.
         - **부서(조직 단위)(OU)**: 부서명
 
 3. **추가**를 클릭하여 발급자를 추가합니다.
+    - 입력값이 올바르지 않으면 오류가 발생한 필드가 속한 섹션이 자동으로 펼쳐지고, 첫 번째 오류 섹션으로 이동합니다.
 
 <a id="issuer-details"></a>
 ### 발급자 상세 정보 { #issuer-details }
@@ -275,7 +276,7 @@ ACME 정보 하단에는 저장소 상세 정보가 표시됩니다.
     - SAN 옵션
         - **IP SANs 허용**: IP 주소를 SAN에 포함할 수 있도록 허용합니다.
         - **URI 주체 대체 이름(URI SANs)**: URI 형식의 SAN을 입력합니다.(예: https://example.com, spiffe://example.org)
-        - **기타 SANs**: 기타 형식의 SAN을 입력합니다.(예: 1.2.3.4;UTF8:test@example.com)
+        - **기타 SANs**: 기타 형식의 SAN을 입력합니다.(예: 1.2.3.4;UTF8String:test@example.com). TYPE은 UTF8String, IA5String, PrintableString, BMPString, UniversalString 중 하나를 입력합니다.
 
     - 공통 반영 설정
         - 설정
@@ -317,6 +318,7 @@ ACME 정보 하단에는 저장소 상세 정보가 표시됩니다.
             CSR의 Subject DN에 대한 값을 설정하더라도 인증서 템플릿에서 설정한 값으로 덮어씁니다.
 
 3. **추가**를 클릭하여 인증서 템플릿을 추가합니다.
+    - 입력값이 올바르지 않으면 오류가 발생한 필드가 속한 섹션이 자동으로 펼쳐지고, 첫 번째 오류 섹션으로 이동합니다.
 
 <a id="certificate-template-details"></a>
 ### 인증서 템플릿 상세 정보 { #certificate-template-details }
@@ -334,6 +336,8 @@ ACME 정보 하단에는 저장소 상세 정보가 표시됩니다.
 1. 인증서 템플릿 목록에서 **수정**을 클릭하거나, 상세 페이지에서 **수정**을 클릭합니다.
 2. 인증서 템플릿 수정 페이지에서 필요한 내용을 변경합니다.
 3. **수정**을 클릭하여 변경 사항을 저장합니다.
+    - 입력값이 올바르지 않으면 오류가 발생한 필드가 속한 섹션이 자동으로 펼쳐지고, 첫 번째 오류 섹션으로 이동합니다.
+    - 기존에 저장된 값 중 형식이 올바르지 않은 값(예: 잘못된 OID)이 있으면 저장되지 않습니다. 해당 값을 올바르게 수정한 후 저장하세요.
 
 <a id="modify-delete-certificate-template-delete-a-certificate-template"></a>
 #### 인증서 템플릿 삭제
@@ -362,6 +366,7 @@ ACME 정보 하단에는 저장소 상세 정보가 표시됩니다.
     - **SAN 정보**: 추가 SAN 정보
 
 4. **확인**을 클릭하여 인증서를 생성합니다.
+    - 입력값이 올바르지 않으면 오류가 발생한 필드가 속한 섹션이 자동으로 펼쳐지고, 첫 번째 오류 섹션으로 이동합니다.
 
 생성된 인증서는 사용자의 선택에 따라 Private CA에 저장할 수 있고, 저장한 경우 인증서 탭에서 확인할 수 있습니다.
 
