@@ -712,9 +712,9 @@ POST /v2.0/appkeys/{appkey}/ca-stores/{caStoreId}/certs
 | keyInfo | Object | Y | 키 정보 | 하단 참조 |
 | signatureAlgorithm | String | Y | 서명 알고리즘 | 하단 참조<br>선택한 Key에 맞는 서명 알고리즘 필수(보통 SHA256 형태 선택) |
 | excludeCommonNameFromSans | Boolean | N | CN을 SAN에서 제외 | 기본값: `false` |
-| sans | String[] | N | DNS SAN 목록 | |
-| ipSans | String[] | N | IP SAN 목록 | |
-| urlSans | String[] | N | URL SAN 목록 | |
+| sans | String[] | N | DNS SAN 목록 | 도메인 형식<br>언더스코어(`_`) 포함 불가<br>IP 주소 형태 불가 |
+| ipSans | String[] | N | IP SAN 목록 | IP 주소 형식 |
+| urlSans | String[] | N | URL SAN 목록 | URI 형식 |
 | otherSans | OidInfo[] | N | 기타 SAN 목록 | 하단 OidInfo 참조 |
 
 **KeyInfo**
@@ -755,7 +755,7 @@ POST /v2.0/appkeys/{appkey}/ca-stores/{caStoreId}/certs
 
 | 이름 | 타입 | 필수 | 설명 |
 |------|------|------|------|
-| oid | String | Y | OID(예: `1.2.840.113549.1.9.1`) |
+| oid | String | Y | OID 형식(예: `1.2.840.113549.1.9.1`) |
 | type | String | Y | `UTF8String`, `IA5String`, `PrintableString`, `BMPString`, `UniversalString` |
 | value | String | Y | 값(최대 255자) |
 
@@ -1113,7 +1113,7 @@ POST /v2.0/appkeys/{appkey}/ca-stores/{caStoreId}/templates
 | maxSpecificDate | String | 조건부 | 최대 만료일 제한 | 1970-01-01T00:00:00 ~ 2999-12-31T23:59:59<br>형식: `2025-12-31T23:59:59`<br>`maxTTL`과 택 1 |
 | backDateValidation | Number | N | 백데이트 유효성(초) | 0 ~ 2,592,000(최대 30일)<br>기본값: `30` |
 | allowIpSans | Boolean | N | IP SAN 허용 여부 | 기본값: `false` |
-| urlSansWhitelist | String[] | N | URL SAN 화이트리스트 | |
+| urlSansWhitelist | String[] | N | URL SAN 화이트리스트 | URI 형식 |
 | otherSansWhitelist | OidInfo[] | N | 기타 SAN 화이트리스트 | |
 | storeInServer | Boolean | N | 서버에 인증서 저장 여부 | 기본값: `true` |
 | basicConstraintsValidForNonCa | Boolean | N | Non-CA에 대한 Basic Constraints 검사 | 기본값: `false` |
@@ -1123,8 +1123,8 @@ POST /v2.0/appkeys/{appkey}/ca-stores/{caStoreId}/templates
 | signatureBits | Number | N | 서명 비트 수 | `256`, `384`, `512`<br>기본값: `256`<br>ED25519의 경우 무시됨 |
 | keyUsage | String[] | N | 키 사용 용도 | 하단 참조 |
 | extendedKeyUsage | String[] | N | 확장 키 사용 용도 | 하단 참조 |
-| extendedKeyUsageOids | String[] | N | 확장 키 사용 커스텀 OID | |
-| policies | String[] | N | 정책 OID 목록 | |
+| extendedKeyUsageOids | String[] | N | 확장 키 사용 커스텀 OID | OID 형식(예: `1.3.6.1.5.5.7.3.1`) |
+| policies | String[] | N | 정책 OID 목록 | OID 형식(예: `2.5.29.32.0`) |
 | subjectInfo | Object | N | 주체 정보 | 하단 참조 |
 | useCsrOtherFields | Boolean | N | CSR의 기타 필드 사용 여부 | 기본값: `false` |
 | otherFields | OidInfo[] | N | 기타 필드 | 하단 참조 |
@@ -1176,7 +1176,7 @@ POST /v2.0/appkeys/{appkey}/ca-stores/{caStoreId}/templates
 
 | 이름 | 타입 | 필수 | 설명 |
 |------|------|------|------|
-| oid | String | Y | OID(예: `1.2.840.113549.1.9.1`) |
+| oid | String | Y | OID 형식(예: `1.2.840.113549.1.9.1`) |
 | type | String | Y | `UTF8String`, `IA5String`, `PrintableString`, `BMPString`, `UniversalString` |
 | value | String | Y | 값(최대 255자) |
 
@@ -1239,6 +1239,9 @@ PUT /v2.0/appkeys/{appkey}/ca-stores/{caStoreId}/templates/{templateId}
 **Request Body**
 
 템플릿 생성과 동일합니다.
+
+!!! danger "주의"
+    템플릿 수정 요청은 요청 본문 전체를 다시 검증합니다. 템플릿 조회 결과를 그대로 요청 본문으로 사용하는 경우, 이전에 저장된 형식이 올바르지 않은 값(예: 잘못된 OID)이 포함되어 있으면 `INVALID_PARAMETER` 오류가 발생합니다. 해당 값을 올바르게 수정한 후 요청하세요.
 
 **필요 권한**
 
@@ -1342,16 +1345,16 @@ POST /v2.0/appkeys/{appkey}/ca-stores/{caStoreId}/templates/{templateId}/certifi
 | removeRootsFromChain | Boolean | N | 체인에서 루트 제거 | SIGN 모드 시에만 사용 |
 | excludeCommonNameFromSans | Boolean | N | CN을 SAN에서 제외 | |
 | serialNumber | String | N | Serial Number | 최대 64자 |
-| sans | String[] | N | DNS SAN 목록 | |
-| ipSans | String[] | N | IP SAN 목록 | |
-| urlSans | String[] | N | URL SAN 목록 | |
+| sans | String[] | N | DNS SAN 목록 | 도메인 형식<br>언더스코어(`_`) 포함 불가<br>IP 주소 형태 불가 |
+| ipSans | String[] | N | IP SAN 목록 | IP 주소 형식 |
+| urlSans | String[] | N | URL SAN 목록 | URI 형식 |
 | otherSans | OidInfo[] | N | 기타 SAN 목록 | 하단 참조 |
 
 **OidInfo(기타 SAN)**
 
 | 이름 | 타입 | 필수 | 설명 |
 |------|------|------|------|
-| oid | String | Y | OID(예: `1.2.840.113549.1.9.1`) |
+| oid | String | Y | OID 형식(예: `1.2.840.113549.1.9.1`) |
 | type | String | Y | `UTF8String`, `IA5String`, `PrintableString`, `BMPString`, `UniversalString` |
 | value | String | Y | 값(최대 255자) |
 
