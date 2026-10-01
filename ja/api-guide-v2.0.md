@@ -1,3 +1,5 @@
+<!-- machine_translated: true -->
+
 <!-- pre-align:aligned sig=4582a5b44c83 -->
 
 <a id="api-v20-guide"></a>
@@ -712,9 +714,9 @@ POST /v2.0/appkeys/{appkey}/ca-stores/{caStoreId}/certs
 | keyInfo | Object | Y | キー情報 | 下記参照 |
 | signatureAlgorithm | String | Y | 署名アルゴリズム | 下記参照<br>選択したKeyに合う署名アルゴリズムが必須(通常はSHA256形式を選択) |
 | excludeCommonNameFromSans | Boolean | N | CNをSANから除外 | デフォルト値: `false` |
-| sans | String[] | N | DNS SAN一覧 | |
-| ipSans | String[] | N | IP SAN一覧 | |
-| urlSans | String[] | N | URL SAN一覧 | |
+| sans | String[] | N | DNS SAN一覧 | ドメイン形式<br>アンダースコア(`_`)は使用不可<br>IPアドレス形式は不可 |
+| ipSans | String[] | N | IP SAN一覧 | IPアドレス形式 |
+| urlSans | String[] | N | URL SAN一覧 | URI形式 |
 | otherSans | OidInfo[] | N | その他SAN一覧 | 下記のOidInfoを参照 |
 
 **KeyInfo**
@@ -755,7 +757,7 @@ POST /v2.0/appkeys/{appkey}/ca-stores/{caStoreId}/certs
 
 | 名前 | タイプ | 必須 | 説明 |
 |------|------|------|------|
-| oid | String | Y | OID(例: `1.2.840.113549.1.9.1`) |
+| oid | String | Y | OID形式(例: `1.2.840.113549.1.9.1`) |
 | type | String | Y | `UTF8String`, `IA5String`, `PrintableString`, `BMPString`, `UniversalString` |
 | value | String | Y | 値(最大255文字) |
 
@@ -1113,7 +1115,7 @@ POST /v2.0/appkeys/{appkey}/ca-stores/{caStoreId}/templates
 | maxSpecificDate | String | 条件付き | 最大有効期限制限 | 1970-01-01T00:00:00 ～ 2999-12-31T23:59:59<br>形式: `2025-12-31T23:59:59`<br>maxTTLと排他 |
 | backDateValidation | Number | N | バックデート有効性(秒) | 0 ～ 2,592,000(最大30日)<br>デフォルト値: `30` |
 | allowIpSans | Boolean | N | IP SAN許可の有無 | デフォルト値: `false` |
-| urlSansWhitelist | String[] | N | URL SANホワイトリスト | |
+| urlSansWhitelist | String[] | N | URL SANホワイトリスト | URI 形式 |
 | otherSansWhitelist | OidInfo[] | N | その他SANホワイトリスト | |
 | storeInServer | Boolean | N | サーバーに証明書を保存するかどうか | デフォルト値: `true` |
 | basicConstraintsValidForNonCa | Boolean | N | Non-CAに対するBasic Constraints検証 | デフォルト値: `false` |
@@ -1123,8 +1125,8 @@ POST /v2.0/appkeys/{appkey}/ca-stores/{caStoreId}/templates
 | signatureBits | Number | N | 署名ビット数 | `256`、`384`、`512`<br>デフォルト値: `256`<br>ED25519の場合は無視される |
 | keyUsage | String[] | N | キー使用用途 | 下記参照 |
 | extendedKeyUsage | String[] | N | 拡張キー使用用途 | 下記参照 |
-| extendedKeyUsageOids | String[] | N | 拡張キー使用カスタムOID | |
-| policies | String[] | N | ポリシーOID一覧 | |
+| extendedKeyUsageOids | String[] | N | 拡張キー使用カスタムOID | OID形式（例: `1.3.6.1.5.5.7.3.1`） |
+| policies | String[] | N | ポリシーOID一覧 | OID形式（例: `2.5.29.32.0`） |
 | subjectInfo | Object | N | 主体情報 | 下記参照 |
 | useCsrOtherFields | Boolean | N | CSRのその他フィールド使用の有無 | デフォルト値: `false` |
 | otherFields | OidInfo[] | N | その他フィールド | 下記参照 |
@@ -1176,7 +1178,7 @@ POST /v2.0/appkeys/{appkey}/ca-stores/{caStoreId}/templates
 
 | 名前 | タイプ | 必須 | 説明 |
 |------|------|------|------|
-| oid | String | Y | OID(例: `1.2.840.113549.1.9.1`) |
+| oid | String | Y | OID形式(例: `1.2.840.113549.1.9.1`) |
 | type | String | Y | `UTF8String`, `IA5String`, `PrintableString`, `BMPString`, `UniversalString` |
 | value | String | Y | 値(最大255文字) |
 
@@ -1239,6 +1241,9 @@ PUT /v2.0/appkeys/{appkey}/ca-stores/{caStoreId}/templates/{templateId}
 **Request Body**
 
 テンプレート作成と同じです。
+
+!!! danger "注意"
+    テンプレートの変更リクエストは、リクエスト本文全体を再検証します。テンプレートの照会結果をそのままリクエスト本文として使用する場合、以前に保存された形式が正しくない値（例：不正な OID）が含まれていると、`INVALID_PARAMETER` エラーが発生します。該当する値を正しく修正してからリクエストしてください。
 
 **必要権限**
 
@@ -1342,16 +1347,16 @@ POST /v2.0/appkeys/{appkey}/ca-stores/{caStoreId}/templates/{templateId}/certifi
 | removeRootsFromChain | Boolean | N | チェーンからルートを削除 | SIGNモード時のみ使用 |
 | excludeCommonNameFromSans | Boolean | N | CNをSANから除外 | |
 | serialNumber | String | N | Serial Number | 最大64文字 |
-| sans | String[] | N | DNS SAN一覧 | |
-| ipSans | String[] | N | IP SAN一覧 | |
-| urlSans | String[] | N | URL SAN一覧 | |
+| sans | String[] | N | DNS SAN一覧 | ドメイン形式<br>アンダースコア(`_`)は使用不可<br>IPアドレス形式は不可 |
+| ipSans | String[] | N | IP SAN一覧 | IPアドレス形式 |
+| urlSans | String[] | N | URL SAN一覧 | URI形式 |
 | otherSans | OidInfo[] | N | その他SAN一覧 | 下記参照 |
 
 **OidInfo(その他SAN)**
 
 | 名前 | タイプ | 必須 | 説明 |
 |------|------|------|------|
-| oid | String | Y | OID(例: `1.2.840.113549.1.9.1`) |
+| oid | String | Y | OID形式(例: `1.2.840.113549.1.9.1`) |
 | type | String | Y | `UTF8String`, `IA5String`, `PrintableString`, `BMPString`, `UniversalString` |
 | value | String | Y | 値(最大255文字) |
 
