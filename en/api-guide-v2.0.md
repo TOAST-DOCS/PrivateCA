@@ -1,3 +1,5 @@
+<!-- machine_translated: true -->
+
 <!-- pre-align:aligned sig=4582a5b44c83 -->
 
 <a id="api-v20-guide"></a>
@@ -712,9 +714,9 @@ POST /v2.0/appkeys/{appkey}/ca-stores/{caStoreId}/certs
 | keyInfo | Object | Y | Key information | See below |
 | signatureAlgorithm | String | Y | Signature algorithm | See below<br>Must match the selected key (SHA256 format recommended) |
 | excludeCommonNameFromSans | Boolean | N | Exclude CN from SAN | Default: `false` |
-| sans | String[] | N | DNS SAN list | |
-| ipSans | String[] | N | IP SAN list | |
-| urlSans | String[] | N | URL SAN list | |
+| sans | String[] | N | DNS SAN list | Domain format<br>Cannot contain underscores (`_`)<br>IP address format not allowed |
+| ipSans | String[] | N | IP SAN list | IP address format |
+| urlSans | String[] | N | URL SAN list | URI format |
 | otherSans | OidInfo[] | N | Other SAN list | See OidInfo below |
 
 **KeyInfo**
@@ -755,7 +757,7 @@ POST /v2.0/appkeys/{appkey}/ca-stores/{caStoreId}/certs
 
 | Name | Type | Required | Description |
 |------|------|------|------|
-| oid | String | Y | OID (e.g., `1.2.840.113549.1.9.1`) |
+| oid | String | Y | OID format (e.g., `1.2.840.113549.1.9.1`) |
 | type | String | Y | `UTF8String`, `IA5String`, `PrintableString`, `BMPString`, `UniversalString` |
 | value | String | Y | Value (maximum 255 characters) |
 
@@ -1113,7 +1115,7 @@ POST /v2.0/appkeys/{appkey}/ca-stores/{caStoreId}/templates
 | maxSpecificDate | String | Conditional | Maximum expiration date limit | 1970-01-01T00:00:00 ~ 2999-12-31T23:59:59<br>Format: `2025-12-31T23:59:59`<br>Either `maxSpecificDate` or `maxTTL` |
 | backDateValidation | Number | N | Back-date validation (seconds) | 0 ~ 2,592,000 (max 30 days)<br>Default: `30` |
 | allowIpSans | Boolean | N | IP SAN enabled | Default: `false` |
-| urlSansWhitelist | String[] | N | URL SAN whitelist | |
+| urlSansWhitelist | String[] | N | URL SAN whitelist | URI format |
 | otherSansWhitelist | OidInfo[] | N | Other SAN whitelist | |
 | storeInServer | Boolean | N | Certificate storage on server enabled | Default: `true` |
 | basicConstraintsValidForNonCa | Boolean | N | Basic Constraints validation for non-CA | Default: `false` |
@@ -1123,8 +1125,8 @@ POST /v2.0/appkeys/{appkey}/ca-stores/{caStoreId}/templates
 | signatureBits | Number | N | Signature bit length | `256`, `384`, `512`<br>Default: `256`<br>Ignored for ED25519 |
 | keyUsage | String[] | N | Key usage | See below |
 | extendedKeyUsage | String[] | N | Extended key usage | See below |
-| extendedKeyUsageOids | String[] | N | Extended key usage custom OID | |
-| policies | String[] | N | Policy OID list | |
+| extendedKeyUsageOids | String[] | N | Extended key usage custom OID | OID format (e.g., `1.3.6.1.5.5.7.3.1`) |
+| policies | String[] | N | Policy OID list | OID format (e.g., `2.5.29.32.0`) |
 | subjectInfo | Object | N | Subject information | See below |
 | useCsrOtherFields | Boolean | N | CSR other fields enabled | Default: `false` |
 | otherFields | OidInfo[] | N | Other fields | See below |
@@ -1176,7 +1178,7 @@ POST /v2.0/appkeys/{appkey}/ca-stores/{caStoreId}/templates
 
 | Name | Type | Required | Description |
 |------|------|------|------|
-| oid | String | Y | OID (e.g., `1.2.840.113549.1.9.1`) |
+| oid | String | Y | OID format (e.g., `1.2.840.113549.1.9.1`) |
 | type | String | Y | `UTF8String`, `IA5String`, `PrintableString`, `BMPString`, `UniversalString` |
 | value | String | Y | Value (maximum 255 characters) |
 
@@ -1239,6 +1241,9 @@ PUT /v2.0/appkeys/{appkey}/ca-stores/{caStoreId}/templates/{templateId}
 **Request Body**
 
 Same as Create Template.
+
+!!! danger "Caution"
+    A modify template request re-validates the entire request body. If you use the view template result as the request body as-is and it contains a previously saved value in an invalid format (for example, an invalid OID), an `INVALID_PARAMETER` error occurs. Correct the value and then submit the request.
 
 **Required Permissions**
 
@@ -1342,16 +1347,16 @@ POST /v2.0/appkeys/{appkey}/ca-stores/{caStoreId}/templates/{templateId}/certifi
 | removeRootsFromChain | Boolean | N | Remove root from chain | Available in SIGN mode only |
 | excludeCommonNameFromSans | Boolean | N | Exclude CN from SAN | |
 | serialNumber | String | N | Serial Number | Maximum 64 characters |
-| sans | String[] | N | DNS SAN list | |
-| ipSans | String[] | N | IP SAN list | |
-| urlSans | String[] | N | URL SAN list | |
+| sans | String[] | N | DNS SAN list | Domain format<br>Cannot contain underscores (`_`)<br>IP address format not allowed |
+| ipSans | String[] | N | IP SAN list | IP address format |
+| urlSans | String[] | N | URL SAN list | URI format |
 | otherSans | OidInfo[] | N | Other SAN list | See below |
 
 **OidInfo (Other SAN)**
 
 | Name | Type | Required | Description |
 |------|------|------|------|
-| oid | String | Y | OID (e.g., `1.2.840.113549.1.9.1`) |
+| oid | String | Y | OID format (e.g., `1.2.840.113549.1.9.1`) |
 | type | String | Y | `UTF8String`, `IA5String`, `PrintableString`, `BMPString`, `UniversalString` |
 | value | String | Y | Value (maximum 255 characters) |
 
